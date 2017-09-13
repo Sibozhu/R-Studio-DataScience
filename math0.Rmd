@@ -1,0 +1,32 @@
+---
+title: "math"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+tmp <- seq(3,6,by=0.1)
+t <- exp(tmp)*cos(tmp)
+t
+```
+
+```{r}
+plot(t,type="l",col="blue")
+points(exp(tmp),col="red")
+points(cos(tmp),col="green")
+```
+```{r}
+set.seed(50)
+xVec <- sample(0:999, 250, replace=T)
+yVec <- sample(0:999, 250, replace=T)
+
+t <- yVec[-1] - xVec[-length(xVec)]
+
+head(t,20)
+
+
+
+```
