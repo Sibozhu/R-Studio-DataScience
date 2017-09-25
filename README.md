@@ -1,5 +1,3 @@
 # MA415
 
-This is a line from RStudio
-
-Hello World!!!
+This is repo for MA415 R data science
