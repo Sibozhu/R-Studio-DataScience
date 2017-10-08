@@ -1,0 +1,105 @@
+---
+title: "MA415/615 EDA Project"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(plotly)
+```
+
+```{r}
+# SUPPRESS GLOBAL WARNING
+options(warn = -1)
+
+# SET TO ONE DIGIT AFTER DECIMAL POINT
+options(digits = 2)
+
+# PREPARE PACKAGES
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load("dplyr", "ggplot2", "tibble", "tidyr", "readxl", "reshape2")
+
+#downloading data
+
+download.file(
+  "https://www.eia.gov/consumption/residential/data/2015/hc/hc3.7.xlsx",
+  "NORTH_MID.xlsx", quiet = TRUE, mode = "wb")
+
+
+download.file(
+  "https://www.eia.gov/consumption/residential/data/2015/hc/hc3.8.xlsx",
+  "SOUTH_WEST.xlsx", quiet = TRUE, mode = "wb")
+
+#selecting data 
+NM_size <- read_excel("NORTH_MID.xlsx", sheet = "data", range = "A108:H113",
+                          col_names = FALSE, col_types = "text")
+
+NM_type <- read_excel("NORTH_MID.xlsx", sheet = "data", range = "A115:H121",
+                          col_names = FALSE, col_types = "text")
+
+NM_age <- read_excel("NORTH_MID.xlsx", sheet = "data", range = "A123:H129",
+                          col_names = FALSE, col_types = "text")
+
+SW_size <- read_excel("SOUTH_WEST.xlsx", sheet = "data", range = "A111:K116",
+                          col_names = FALSE, col_types = "text")
+
+SW_type <- read_excel("SOUTH_WEST.xlsx", sheet = "data", range = "A118:K124",
+                          col_names = FALSE, col_types = "text")
+
+SW_age <- read_excel("SOUTH_WEST.xlsx", sheet = "data", range = "A126:K132",
+                          col_names = FALSE, col_types = "text")
+
+#create duplicate data for future use
+NM_size_1 <- NM_size
+
+NM_type_1 <- NM_type
+
+NM_age_1 <- NM_age
+
+SW_size_1 <- SW_size
+
+SW_type_1 <- SW_type
+
+SW_age_1 <- SW_age
+
+#rename column's names
+colnames(NM_size_1)      <- c("Most-used refrigerator size", "Total U.S", "Total U.S",
+                           "New England", "Middle Atlantic", "Middle Atlantic",
+                           "East North Central", "West North Central")
+
+colnames(NM_type_1)      <- c("Most-used refrigerator type", "Total U.S", "Total U.S",
+                           "New England", "Middle Atlantic", "Middle Atlantic",
+                           "East North Central", "West North Central")
+
+colnames(NM_age_1)      <- c("Most-used refrigerator age", "Total U.S", "Total U.S",
+                           "New England", "Middle Atlantic", "Middle Atlantic",
+                           "East North Central", "West North Central")
+
+colnames(SW_size_1)      <- c("Most-used refrigerator size", "Total U.S", "Total South",
+                           "South Atlantic", "East South Central", "West South Central",
+                           "Total West", "Total Mountain", "Mountain North",
+                           "Mountain South", "Pacific")
+
+colnames(SW_type_1)      <- c("Most-used refrigerator type", "Total U.S", "Total South",
+                           "South Atlantic", "East South Central", "West South Central",
+                           "Total West", "Total Mountain", "Mountain North",
+                           "Mountain South", "Pacific")
+
+colnames(SW_age_1)      <- c("Most-used refrigerator age", "Total U.S", "Total South",
+                           "South Atlantic", "East South Central", "West South Central",
+                           "Total West", "Total Mountain", "Mountain North",
+                           "Mountain South", "Pacific")
+
+SW_age_1
+
+# MELT DATA 
+NM_size_2 <- as_tibble(melt(NM_size_1, id = 1))
+NM_type_2 <- as_tibble(melt(NM_type_1, id = 1))
+NM_age_2 <- as_tibble(melt(NM_age_1, id = 1))
+SW <- as_tibble(melt(SW_size_1, id = 1))
+SW_type_2 <- as_tibble(melt(SW_type_1, id = 1))
+SW_age_2 <- as_tibble(melt(SW_age_1, id = 1))
+```
+
+
+

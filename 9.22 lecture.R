@@ -1,16 +1,9 @@
 library(tidyverse)
 
-library(nycflights13)
+library(haven)
 
-?nycflights13
+library(jsonlite)
 
-flights
+mt1 <- read_csv(readr_exam("mtcars.csv"))
 
-starwars
-
-filter(starwars,species=="Human")
-filter(starwars,mass > 1000)
-
-arrange(mtcars,cyl,disp)
-arrange(mtcars,desc(disp))
-
+mt1a <- 
