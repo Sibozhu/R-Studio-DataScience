@@ -149,7 +149,7 @@ colnames(SW_age_2)      <- c("RFG_AGE",
 
 
 
-#MELT DATA 
+#Melting Data 
 NM_size_3 <- as_tibble(melt(NM_size_2, id = 1))
 NM_type_3 <- as_tibble(melt(NM_type_2, id = 1))
 NM_age_3 <- as_tibble(melt(NM_age_2, id = 1))
@@ -219,7 +219,7 @@ names(SW_type_SUM)[2] <- "Total Number of Unit"
 names(SW_age_SUM)[1] <- "Region"
 names(SW_age_SUM)[2] <- "Total Number of Unit"
 
-#Merge
+#Merge Sum with Original Data
 TTL_NM_size <- merge(x = NM_size_3, y = NM_size_SUM, by = "Region", all = TRUE)
 names(TTL_NM_size)[3] <- "Number of Unit"
 names(TTL_NM_size)[4] <- "Total Number of Unit by Region"
@@ -256,6 +256,8 @@ names(TTL_SW_age)[4] <- "Total Number of Unit by Region"
 TTL_SW_age$Percentage <- 100*(TTL_SW_age$`Number of Unit` /TTL_SW_age$`Total Number of Unit by Region`)
 rm(list = ls(pattern = "^T_"))
 
+
+#Start plotting
 PLOT_NM_SIZE_PERC <- ggplot(data = TTL_NM_size, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_SIZE`)) +
                  labs(y = "Percentage") +
