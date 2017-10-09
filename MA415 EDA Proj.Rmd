@@ -307,7 +307,7 @@ rm(list = ls(pattern = "^T_"))
 #Start plotting
 PLOT_NM_SIZE_PERC <- ggplot(data = TTL_NM_size, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_SIZE`)) +
-                 labs(y = "Percentage of Northeast and Midwest regions, 2015") +
+                 labs(title = "Percentage of Northeast and Midwest regions, 2015") +
                  coord_flip()
 
 PLOT_NM_SIZE <- ggplot(data = TTL_NM_size, aes(x = `Region`, y = `Number of Unit`)) +
@@ -317,7 +317,7 @@ PLOT_NM_SIZE <- ggplot(data = TTL_NM_size, aes(x = `Region`, y = `Number of Unit
 
 PLOT_NM_TYPE_PERC <- ggplot(data = TTL_NM_type, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_TYPE`)) +
-                 labs(y = "Percentage of Northeast and Midwest regions, 2015") +
+                 labs(title = "Percentage of Northeast and Midwest regions, 2015") +
                  coord_flip()
 
 PLOT_NM_TYPE <- ggplot(data = TTL_NM_type, aes(x = `Region`, y = `Number of Unit`)) +
@@ -339,7 +339,7 @@ PLOT_NM_TYPE <- ggplot(data = TTL_NM_type, aes(x = `Region`, y = `Number of Unit
 
 PLOT_SW_SIZE_PERC <- ggplot(data = TTL_SW_size, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_SIZE`)) +
-                 labs(y = "Percentage of South and West regions, 2015") +
+                 labs(title = "Percentage of South and West regions, 2015") +
                  coord_flip()
 
 PLOT_SW_SIZE <- ggplot(data = TTL_SW_size, aes(x = `Region`, y = `Number of Unit`)) +
@@ -349,7 +349,7 @@ PLOT_SW_SIZE <- ggplot(data = TTL_SW_size, aes(x = `Region`, y = `Number of Unit
 
 PLOT_SW_TYPE_PERC <- ggplot(data = TTL_SW_type, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_TYPE`)) +
-                 labs(y = "Percentage of South and West regions, 2015") +
+                 labs(title = "Percentage of South and West regions, 2015") +
                  coord_flip()
 
 PLOT_SW_TYPE <- ggplot(data = TTL_SW_type, aes(x = `Region`, y = `Number of Unit`)) +
