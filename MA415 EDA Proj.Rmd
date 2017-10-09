@@ -265,7 +265,7 @@ PLOT_NM_SIZE_PERC <- ggplot(data = TTL_NM_size, aes(x = `Region`, y = Percentage
 PLOT_NM_SIZE <- ggplot(data = TTL_NM_size, aes(x = `Region`, y = `Number of Unit`)) +
              geom_col(aes(fill = `RFG_SIZE`)) +
              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-             labs(title = "Region")
+             labs(title = "Appliances in homes in the Northeast and Midwest regions, 2015")
 
 PLOT_NM_TYPE_PERC <- ggplot(data = TTL_NM_type, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_TYPE`)) +
@@ -275,7 +275,7 @@ PLOT_NM_TYPE_PERC <- ggplot(data = TTL_NM_type, aes(x = `Region`, y = Percentage
 PLOT_NM_TYPE <- ggplot(data = TTL_NM_type, aes(x = `Region`, y = `Number of Unit`)) +
              geom_col(aes(fill = `RFG_TYPE`)) +
              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-             labs(title = "Region")
+             labs(title = "Appliances in homes in the Northeast and Midwest regions, 2015")
 
 PLOT_NM_AGE_PERC <- ggplot(data = TTL_NM_age, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_AGE`)) +
@@ -285,7 +285,7 @@ PLOT_NM_AGE_PERC <- ggplot(data = TTL_NM_age, aes(x = `Region`, y = Percentage))
 PLOT_NM_AGE <- ggplot(data = TTL_NM_age, aes(x = `Region`, y = `Number of Unit`)) +
              geom_col(aes(fill = `RFG_AGE`)) +
              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-             labs(title = "Region")
+             labs(title = "Appliances in homes in the Northeast and Midwest regions, 2015")
 
 ###########
 
@@ -297,7 +297,7 @@ PLOT_SW_SIZE_PERC <- ggplot(data = TTL_SW_size, aes(x = `Region`, y = Percentage
 PLOT_SW_SIZE <- ggplot(data = TTL_SW_size, aes(x = `Region`, y = `Number of Unit`)) +
              geom_col(aes(fill = `RFG_SIZE`)) +
              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-             labs(title = "Region")
+             labs(title = "Appliances in homes in the South and West regions, 2015")
 
 PLOT_SW_TYPE_PERC <- ggplot(data = TTL_SW_type, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_TYPE`)) +
@@ -307,7 +307,7 @@ PLOT_SW_TYPE_PERC <- ggplot(data = TTL_SW_type, aes(x = `Region`, y = Percentage
 PLOT_SW_TYPE <- ggplot(data = TTL_SW_type, aes(x = `Region`, y = `Number of Unit`)) +
              geom_col(aes(fill = `RFG_TYPE`)) +
              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-             labs(title = "Region")
+             labs(title = "Appliances in homes in the South and West regions, 2015")
 
 PLOT_SW_AGE_PERC <- ggplot(data = TTL_SW_age, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_AGE`)) +
@@ -317,7 +317,7 @@ PLOT_SW_AGE_PERC <- ggplot(data = TTL_SW_age, aes(x = `Region`, y = Percentage))
 PLOT_SW_AGE <- ggplot(data = TTL_SW_age, aes(x = `Region`, y = `Number of Unit`)) +
              geom_col(aes(fill = `RFG_AGE`)) +
              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-             labs(title = "Region")
+             labs(title = "Appliances in homes in the South and West regions, 2015")
 
 PLOT_NM_SIZE_PERC
 PLOT_NM_SIZE
