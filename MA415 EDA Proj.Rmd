@@ -92,9 +92,13 @@ colnames(SW_type_1)      <- c("RFG_TYPE", "TTL_US", "TTL_SOUTH",
                            # "TTL_WEST", "TTL_MOUNT", "MOUNT_N",
                            # "MOUNT_SOUTH", "PACIF")
 
-NM_size_1
 #Saving total column for future use
-# NM_size_TTL <- 
+NM_size_TTL <- within(NM_size_1,rm(TTL_US,N_ENG,MID_ATL_NE))
+NM_type_TTL <- within(NM_type_1,rm(TTL_US,N_ENG,MID_ATL_NE))
+
+SW_size_TTL <- within(SW_size_1,rm(TTL_US,S_ATL,ES_CENT,WS_CENT,TTL_MOUNT,MOUNT_N,MOUNT_SOUTH,PACIF))
+SW_type_TTL <- within(SW_type_1,rm(TTL_US,S_ATL,ES_CENT,WS_CENT,TTL_MOUNT,MOUNT_N,MOUNT_SOUTH,PACIF))
+
 ```
 
 ```{r}
@@ -118,6 +122,12 @@ SW_size_2$RFG_SIZE    <- as.factor(SW_size_2$RFG_SIZE)
 SW_type_2$RFG_TYPE    <- as.factor(SW_type_2$RFG_TYPE)
 # SW_age_2$RFG_AGE    <- as.factor(SW_age_2$RFG_AGE)
 
+NM_size_TTL$RFG_SIZE    <- as.factor(NM_size_TTL$RFG_SIZE)
+NM_type_TTL$RFG_TYPE    <- as.factor(NM_type_TTL$RFG_TYPE)
+SW_size_TTL$RFG_SIZE    <- as.factor(SW_size_TTL$RFG_SIZE)
+SW_type_TTL$RFG_TYPE    <- as.factor(SW_type_TTL$RFG_TYPE)
+
+
 #cleaning data, mark unknown data as N/A
 NM_size_2[, 2:6]    <- sapply(NM_size_2[, 2:6], as.numeric)
 NM_type_2[, 2:6]    <- sapply(NM_type_2[, 2:6], as.numeric)
@@ -125,6 +135,11 @@ NM_type_2[, 2:6]    <- sapply(NM_type_2[, 2:6], as.numeric)
 SW_size_2[, 2:7]    <- sapply(SW_size_2[, 2:7], as.numeric)
 SW_type_2[, 2:7]    <- sapply(SW_type_2[, 2:7], as.numeric)
 # SW_age_2[, 2:7]    <- sapply(SW_age_2[, 2:7], as.numeric)
+NM_size_TTL[, 2:5]    <- sapply(NM_size_TTL[, 2:5], as.numeric)
+NM_type_TTL[, 2:5]    <- sapply(NM_type_TTL[, 2:5], as.numeric)
+
+SW_size_TTL[, 2:3]    <- sapply(SW_size_TTL[, 2:3], as.numeric)
+SW_type_TTL[, 2:3]    <- sapply(SW_type_TTL[, 2:3], as.numeric)
 
 #rename columns
 colnames(NM_size_2)      <- c("RFG_SIZE",
@@ -165,6 +180,12 @@ NM_type_3 <- as_tibble(melt(NM_type_2, id = 1))
 SW_size_3 <- as_tibble(melt(SW_size_2, id = 1))
 SW_type_3 <- as_tibble(melt(SW_type_2, id = 1))
 # SW_age_3 <- as_tibble(melt(SW_age_2, id = 1))
+NM_size_TTL <- as_tibble(melt(NM_size_TTL, id = 1))
+NM_type_TTL <- as_tibble(melt(NM_type_TTL, id = 1))
+SW_size_TTL <- as_tibble(melt(SW_size_TTL, id = 1))
+SW_type_TTL <- as_tibble(melt(SW_type_TTL, id = 1))
+
+
 
 #Update column's name
 names(NM_size_3)[2]    <- "Region"
@@ -173,6 +194,10 @@ names(NM_type_3)[2]    <- "Region"
 names(SW_size_3)[2]    <- "Region"
 names(SW_type_3)[2]    <- "Region"
 # names(SW_age_3)[2]    <- "Region"
+names(NM_size_TTL)[2]    <- "Region"
+names(NM_type_TTL)[2]    <- "Region"
+names(SW_size_TTL)[2]    <- "Region"
+names(SW_type_TTL)[2]    <- "Region"
 
 names(NM_size_3)[3]    <- "Number of Unit"
 names(NM_type_3)[3]    <- "Number of Unit"
@@ -180,7 +205,12 @@ names(NM_type_3)[3]    <- "Number of Unit"
 names(SW_size_3)[3]    <- "Number of Unit"
 names(SW_type_3)[3]    <- "Number of Unit"
 # names(SW_age_3)[3]    <- "Number of Unit"
+names(NM_size_TTL)[3]    <- "Number of Unit"
+names(NM_type_TTL)[3]    <- "Number of Unit"
+names(SW_size_TTL)[3]    <- "Number of Unit"
+names(SW_type_TTL)[3]    <- "Number of Unit"
 
+SW_type_TTL
 
 
 
