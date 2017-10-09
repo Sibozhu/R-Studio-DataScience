@@ -332,11 +332,7 @@ PLOT_SW_TYPE
 PLOT_SW_AGE_PERC
 PLOT_SW_AGE
 
-#ggplot(NM_size_3, aes(x = `variable`, y = `value`)) +
-#  geom_col(aes()) + coord_flip() +
-#  labs(title = "Comming soon")
 
-#i <- ggplot(NM_size_2, aes(variable, value))
 
 ```
 
