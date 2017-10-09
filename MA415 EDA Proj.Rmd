@@ -48,6 +48,9 @@ SW_type <- read_excel("SOUTH_WEST.xlsx", sheet = "data", range = "A118:K124",
 SW_age <- read_excel("SOUTH_WEST.xlsx", sheet = "data", range = "A126:K132",
                           col_names = FALSE, col_types = "text")
 
+```
+
+```{r}
 #create duplicate data for future use
 NM_size_1 <- NM_size
 
@@ -89,7 +92,10 @@ colnames(SW_age_1)      <- c("RFG_AGE", "TTL_US", "TTL_SOUTH",
                            "TTL_WEST", "TTL_MOUNT", "MOUNT_N",
                            "MOUNT_SOUTH", "PACIF")
 
+NM_size_1
+```
 
+```{r}
 
 #Drop the Unnecessary Column
 
@@ -146,7 +152,9 @@ colnames(SW_age_2)      <- c("RFG_AGE",
                             "MOUNT_N",
                            "MOUNT_SOUTH", "PACIF")
 
+```
 
+```{r}
 
 #Melting Data 
 NM_size_3 <- as_tibble(melt(NM_size_2, id = 1))
@@ -173,6 +181,10 @@ names(SW_age_3)[3]    <- "Number of Unit"
 
 
 
+
+```
+
+```{r}
 
 #getting sumn of data
 NM_size_SUM <- aggregate(NM_size_3$`Number of Unit`, 
@@ -255,7 +267,9 @@ names(TTL_SW_age)[4] <- "Total Number of Unit by Region"
 TTL_SW_age$Percentage <- 100*(TTL_SW_age$`Number of Unit` /TTL_SW_age$`Total Number of Unit by Region`)
 rm(list = ls(pattern = "^T_"))
 
+```
 
+```{r}
 #Start plotting
 PLOT_NM_SIZE_PERC <- ggplot(data = TTL_NM_size, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_SIZE`)) +
@@ -319,19 +333,25 @@ PLOT_SW_AGE <- ggplot(data = TTL_SW_age, aes(x = `Region`, y = `Number of Unit`)
              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
              labs(title = "Appliances in homes in the South and West regions, 2015")
 
+```
+
+
+
+
+```{r}
+#export result
+
 PLOT_NM_SIZE_PERC
 PLOT_NM_SIZE
 PLOT_NM_TYPE_PERC
 PLOT_NM_TYPE
-PLOT_NM_AGE_PERC
-PLOT_NM_AGE
+
 
 PLOT_SW_SIZE_PERC
 PLOT_SW_SIZE
 PLOT_SW_TYPE_PERC
 PLOT_SW_TYPE
-PLOT_SW_AGE_PERC
-PLOT_SW_AGE
+
 
 
 
