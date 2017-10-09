@@ -93,8 +93,8 @@ colnames(SW_type_1)      <- c("RFG_TYPE", "TTL_US", "TTL_SOUTH",
                            # "MOUNT_SOUTH", "PACIF")
 
 #Saving total column for future use
-NM_size_TTL <- within(NM_size_1,rm(TTL_US,N_ENG,MID_ATL_NE))
-NM_type_TTL <- within(NM_type_1,rm(TTL_US,N_ENG,MID_ATL_NE))
+NM_size_TTL <- within(NM_size_1,rm(TTL_US,N_ENG,MID_ATL_NE,EN_CENT,WN_CENT))
+NM_type_TTL <- within(NM_type_1,rm(TTL_US,N_ENG,MID_ATL_NE,EN_CENT,WN_CENT))
 
 SW_size_TTL <- within(SW_size_1,rm(TTL_US,S_ATL,ES_CENT,WS_CENT,TTL_MOUNT,MOUNT_N,MOUNT_SOUTH,PACIF))
 SW_type_TTL <- within(SW_type_1,rm(TTL_US,S_ATL,ES_CENT,WS_CENT,TTL_MOUNT,MOUNT_N,MOUNT_SOUTH,PACIF))
@@ -135,8 +135,8 @@ NM_type_2[, 2:6]    <- sapply(NM_type_2[, 2:6], as.numeric)
 SW_size_2[, 2:7]    <- sapply(SW_size_2[, 2:7], as.numeric)
 SW_type_2[, 2:7]    <- sapply(SW_type_2[, 2:7], as.numeric)
 # SW_age_2[, 2:7]    <- sapply(SW_age_2[, 2:7], as.numeric)
-NM_size_TTL[, 2:5]    <- sapply(NM_size_TTL[, 2:5], as.numeric)
-NM_type_TTL[, 2:5]    <- sapply(NM_type_TTL[, 2:5], as.numeric)
+NM_size_TTL[, 2:3]    <- sapply(NM_size_TTL[, 2:3], as.numeric)
+NM_type_TTL[, 2:3]    <- sapply(NM_type_TTL[, 2:3], as.numeric)
 
 SW_size_TTL[, 2:3]    <- sapply(SW_size_TTL[, 2:3], as.numeric)
 SW_type_TTL[, 2:3]    <- sapply(SW_type_TTL[, 2:3], as.numeric)
@@ -209,8 +209,6 @@ names(NM_size_TTL)[3]    <- "Number of Unit"
 names(NM_type_TTL)[3]    <- "Number of Unit"
 names(SW_size_TTL)[3]    <- "Number of Unit"
 names(SW_type_TTL)[3]    <- "Number of Unit"
-
-SW_type_TTL
 
 
 
@@ -299,13 +297,17 @@ rm(list = ls(pattern = "^T_"))
 # TTL_SW_age$Percentage <- 100*(TTL_SW_age$`Number of Unit` /TTL_SW_age$`Total Number of Unit by Region`)
 # rm(list = ls(pattern = "^T_"))
 
+TTL_size <- merge(x = NM_size_TTL, y = SW_size_TTL, by = c("RFG_SIZE","Region","Number of Unit"), all = TRUE)
+TTL_type <- merge(x = NM_type_TTL, y = SW_type_TTL, by = c("RFG_TYPE","Region","Number of Unit"), all = TRUE)
+rm(list = ls(pattern = "^T_"))
+
 ```
 
 ```{r}
 #Start plotting
 PLOT_NM_SIZE_PERC <- ggplot(data = TTL_NM_size, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_SIZE`)) +
-                 labs(y = "Percentage") +
+                 labs(y = "Percentage of Northeast and Midwest regions, 2015") +
                  coord_flip()
 
 PLOT_NM_SIZE <- ggplot(data = TTL_NM_size, aes(x = `Region`, y = `Number of Unit`)) +
@@ -315,7 +317,7 @@ PLOT_NM_SIZE <- ggplot(data = TTL_NM_size, aes(x = `Region`, y = `Number of Unit
 
 PLOT_NM_TYPE_PERC <- ggplot(data = TTL_NM_type, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_TYPE`)) +
-                 labs(y = "Percentage") +
+                 labs(y = "Percentage of Northeast and Midwest regions, 2015") +
                  coord_flip()
 
 PLOT_NM_TYPE <- ggplot(data = TTL_NM_type, aes(x = `Region`, y = `Number of Unit`)) +
@@ -337,7 +339,7 @@ PLOT_NM_TYPE <- ggplot(data = TTL_NM_type, aes(x = `Region`, y = `Number of Unit
 
 PLOT_SW_SIZE_PERC <- ggplot(data = TTL_SW_size, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_SIZE`)) +
-                 labs(y = "Percentage") +
+                 labs(y = "Percentage of South and West regions, 2015") +
                  coord_flip()
 
 PLOT_SW_SIZE <- ggplot(data = TTL_SW_size, aes(x = `Region`, y = `Number of Unit`)) +
@@ -347,7 +349,7 @@ PLOT_SW_SIZE <- ggplot(data = TTL_SW_size, aes(x = `Region`, y = `Number of Unit
 
 PLOT_SW_TYPE_PERC <- ggplot(data = TTL_SW_type, aes(x = `Region`, y = Percentage)) +
                  geom_col(aes(fill = `RFG_TYPE`)) +
-                 labs(y = "Percentage") +
+                 labs(y = "Percentage of South and West regions, 2015") +
                  coord_flip()
 
 PLOT_SW_TYPE <- ggplot(data = TTL_SW_type, aes(x = `Region`, y = `Number of Unit`)) +
@@ -365,6 +367,18 @@ PLOT_SW_TYPE <- ggplot(data = TTL_SW_type, aes(x = `Region`, y = `Number of Unit
              # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
              # labs(title = "Appliances in homes in the South and West regions, 2015")
 
+######
+
+PLOT_SIZE_TTL <- ggplot(data = TTL_size, aes(x = `Region`, y = `Number of Unit`)) +
+             geom_col(aes(fill = `RFG_SIZE`)) +
+             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+             labs(title = "Appliances of refrigerator size in homes in U.S big regions, 2015")
+
+PLOT_TYPE_TTL <- ggplot(data = TTL_type, aes(x = `Region`, y = `Number of Unit`)) +
+             geom_col(aes(fill = `RFG_TYPE`)) +
+             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+             labs(title = "Appliances of refrigerator type in homes in U.S big regions, 2015")
+
 ```
 
 
@@ -372,17 +386,20 @@ PLOT_SW_TYPE <- ggplot(data = TTL_SW_type, aes(x = `Region`, y = `Number of Unit
 
 ```{r}
 #export result
+PLOT_SIZE_TTL
+PLOT_TYPE_TTL
 
-PLOT_NM_SIZE_PERC
 PLOT_NM_SIZE
-PLOT_NM_TYPE_PERC
+PLOT_NM_SIZE_PERC
 PLOT_NM_TYPE
+PLOT_NM_TYPE_PERC
 
 
-PLOT_SW_SIZE_PERC
 PLOT_SW_SIZE
-PLOT_SW_TYPE_PERC
+PLOT_SW_SIZE_PERC
 PLOT_SW_TYPE
+PLOT_SW_TYPE_PERC
+
 
 
 
