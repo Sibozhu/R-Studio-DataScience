@@ -63,42 +63,107 @@ SW_type_1 <- SW_type
 SW_age_1 <- SW_age
 
 #rename column's names
-colnames(NM_size_1)      <- c("Most-used refrigerator size", "Total U.S", "Total U.S",
-                           "New England", "Middle Atlantic", "Middle Atlantic",
-                           "East North Central", "West North Central")
+colnames(NM_size_1)      <- c("RFG_SIZE", "TTL_US", "TTL_NE",
+                           "N_ENG", "MID_ATL_NE", "MID_ATL_MW",
+                           "EN_CENT", "WN_CENT")
 
-colnames(NM_type_1)      <- c("Most-used refrigerator type", "Total U.S", "Total U.S",
-                           "New England", "Middle Atlantic", "Middle Atlantic",
-                           "East North Central", "West North Central")
+colnames(NM_type_1)      <- c("RFG_TYPE", "TTL_US", "TTL_NE",
+                           "N_ENG", "MID_ATL_NE", "MID_ATL_MW",
+                           "EN_CENT", "WN_CENT")
 
-colnames(NM_age_1)      <- c("Most-used refrigerator age", "Total U.S", "Total U.S",
-                           "New England", "Middle Atlantic", "Middle Atlantic",
-                           "East North Central", "West North Central")
+colnames(NM_age_1)      <- c("RFG_AGE", "TTL_US", "TTL_NE",
+                           "N_ENG", "MID_ATL_NE", "MID_ATL_MW",
+                           "EN_CENT", "WN_CENT")
 
-colnames(SW_size_1)      <- c("Most-used refrigerator size", "Total U.S", "Total South",
-                           "South Atlantic", "East South Central", "West South Central",
-                           "Total West", "Total Mountain", "Mountain North",
-                           "Mountain South", "Pacific")
+colnames(SW_size_1)      <- c("RFG_SIZE", "TTL_US", "TTL_SOUTH",
+                           "S_ATL", "ES_CENT", "WS_CENT",
+                           "TTL_WEST", "TTL_MOUNT", "MOUNT_N",
+                           "MOUNT_SOUTH", "PACIF")
 
-colnames(SW_type_1)      <- c("Most-used refrigerator type", "Total U.S", "Total South",
-                           "South Atlantic", "East South Central", "West South Central",
-                           "Total West", "Total Mountain", "Mountain North",
-                           "Mountain South", "Pacific")
+colnames(SW_type_1)      <- c("RFG_TYPE", "TTL_US", "TTL_SOUTH",
+                           "S_ATL", "ES_CENT", "WS_CENT",
+                           "TTL_WEST", "TTL_MOUNT", "MOUNT_N",
+                           "MOUNT_SOUTH", "PACIF")
 
-colnames(SW_age_1)      <- c("Most-used refrigerator age", "Total U.S", "Total South",
-                           "South Atlantic", "East South Central", "West South Central",
-                           "Total West", "Total Mountain", "Mountain North",
-                           "Mountain South", "Pacific")
+colnames(SW_age_1)      <- c("RFG_AGE", "TTL_US", "TTL_SOUTH",
+                           "S_ATL", "ES_CENT", "WS_CENT",
+                           "TTL_WEST", "TTL_MOUNT", "MOUNT_N",
+                           "MOUNT_SOUTH", "PACIF")
 
-SW_age_1
+
+
+#Drop the Unnecessary Column
+
+NM_size_2 <- within(NM_size_1, rm(TTL_US,TTL_NE))
+NM_type_2 <- within(NM_type_1, rm(TTL_US,TTL_NE))
+NM_age_2 <- within(NM_age_1, rm(TTL_US,TTL_NE))
+SW_size_2 <- within(SW_size_1, rm(TTL_US,TTL_SOUTH,TTL_WEST,TTL_MOUNT))
+SW_type_2 <- within(SW_type_1, rm(TTL_US,TTL_SOUTH,TTL_WEST,TTL_MOUNT))
+SW_age_2 <- within(SW_age_1, rm(TTL_US,TTL_SOUTH,TTL_WEST,TTL_MOUNT))
+
+SW_size_2
+
+# COERCE FRIDGE TYPE COLUMN TO FACTOR
+NM_size_2$RFG_SIZE    <- as.factor(NM_size_2$RFG_SIZE)
+NM_type_2$RFG_TYPE    <- as.factor(NM_type_2$RFG_TYPE)
+NM_age_2$RFG_AGE    <- as.factor(NM_age_2$RFG_AGE)
+SW_size_2$RFG_SIZE    <- as.factor(SW_size_2$RFG_SIZE)
+SW_type_2$RFG_TYPE    <- as.factor(SW_type_2$RFG_TYPE)
+SW_age_2$RFG_AGE    <- as.factor(SW_age_2$RFG_AGE)
+
+#cleaning data, mark unknown data as N/A
+NM_size_2[, 2:6]    <- sapply(NM_size_2[, 2:6], as.numeric)
+NM_type_2[, 2:6]    <- sapply(NM_type_2[, 2:6], as.numeric)
+NM_age_2[, 2:6]    <- sapply(NM_age_2[, 2:6], as.numeric)
+SW_size_2[, 2:7]    <- sapply(SW_size_2[, 2:7], as.numeric)
+SW_type_2[, 2:7]    <- sapply(SW_type_2[, 2:7], as.numeric)
+SW_age_2[, 2:7]    <- sapply(SW_age_2[, 2:7], as.numeric)
+
+#rename columns
+colnames(NM_size_2)      <- c("RFG_SIZE",
+                           "N_ENG", "MID_ATL_NE", "MID_ATL_MW",
+                           "EN_CENT", "WN_CENT")
+
+colnames(NM_type_2)      <- c("RFG_TYPE", 
+                           "N_ENG", "MID_ATL_NE", "MID_ATL_MW",
+                           "EN_CENT", "WN_CENT")
+
+colnames(NM_age_2)      <- c("RFG_AGE", 
+                           "N_ENG", "MID_ATL_NE", "MID_ATL_MW",
+                           "EN_CENT", "WN_CENT")
+
+colnames(SW_size_2)      <- c("RFG_SIZE", 
+                           "S_ATL", "ES_CENT", "WS_CENT",
+                           "MOUNT_N",
+                           "MOUNT_SOUTH", "PACIF")
+
+colnames(SW_type_2)      <- c("RFG_TYPE", 
+                           "S_ATL", "ES_CENT", "WS_CENT",
+                           "MOUNT_N",
+                           "MOUNT_SOUTH", "PACIF")
+
+colnames(SW_age_2)      <- c("RFG_AGE", 
+                           "S_ATL", "ES_CENT", "WS_CENT",
+                            "MOUNT_N",
+                           "MOUNT_SOUTH", "PACIF")
+
+SW_size_2
 
 # MELT DATA 
-NM_size_2 <- as_tibble(melt(NM_size_1, id = 1))
-NM_type_2 <- as_tibble(melt(NM_type_1, id = 1))
-NM_age_2 <- as_tibble(melt(NM_age_1, id = 1))
-SW <- as_tibble(melt(SW_size_1, id = 1))
-SW_type_2 <- as_tibble(melt(SW_type_1, id = 1))
-SW_age_2 <- as_tibble(melt(SW_age_1, id = 1))
+#NM_size_3 <- as_tibble(melt(NM_size_2, id = 1))
+#NM_type_3 <- as_tibble(melt(NM_type_2, id = 1))
+#NM_age_3 <- as_tibble(melt(NM_age_2, id = 1))
+#SW_size_3 <- as_tibble(melt(SW_size_2, id = 1))
+#SW_type_3 <- as_tibble(melt(SW_type_2, id = 1))
+#SW_age_3 <- as_tibble(melt(SW_age_2, id = 1))
+
+
+#ggplot(NM_size_3, aes(x = `variable`, y = `value`)) +
+#  geom_col(aes()) + coord_flip() +
+#  labs(title = "Comming soon")
+
+#i <- ggplot(NM_size_2, aes(variable, value))
+
 ```
 
 
