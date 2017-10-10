@@ -30,7 +30,9 @@ download.file(
 download.file(
   "https://www.eia.gov/consumption/residential/data/2015/hc/hc3.8.xlsx",
   "SOUTH_WEST.xlsx", quiet = TRUE, mode = "wb")
+```
 
+```{r}
 #selecting data 
 NM_size <- read_excel("NORTH_MID.xlsx", sheet = "data", range = "A108:H113",
                           col_names = FALSE, col_types = "text")
@@ -65,7 +67,10 @@ SW_size_1 <- SW_size
 SW_type_1 <- SW_type
 
 # SW_age_1 <- SW_age
+```
 
+
+```{r}
 #rename column's names
 colnames(NM_size_1)      <- c("RFG_SIZE", "TTL_US", "TTL_NE",
                            "N_ENG", "MID_ATL", "TTL_MID_WEST",
@@ -94,6 +99,9 @@ colnames(SW_type_1)      <- c("RFG_TYPE", "TTL_US", "TTL_SOUTH",
                            # "TTL_WEST", "TTL_MOUNT", "MOUNT_N",
                            # "MOUNT_SOUTH", "PACIF")
 
+```
+
+```{r}
 #Saving total column for future use
 NM_size_TTL <- within(NM_size_1,rm(TTL_US,N_ENG,MID_ATL,EN_CENT,WN_CENT))
 NM_type_TTL <- within(NM_type_1,rm(TTL_US,N_ENG,MID_ATL,EN_CENT,WN_CENT))
@@ -115,7 +123,9 @@ SW_type_2 <- within(SW_type_1, rm(TTL_US,TTL_SOUTH,TTL_WEST,TTL_MOUNT))
 # SW_age_2 <- within(SW_age_1, rm(TTL_US,TTL_SOUTH,TTL_WEST,TTL_MOUNT))
 
 
+```
 
+```{r}
 # COERCE FRIDGE TYPE COLUMN TO FACTOR
 NM_size_2$RFG_SIZE    <- as.factor(NM_size_2$RFG_SIZE)
 NM_type_2$RFG_TYPE    <- as.factor(NM_type_2$RFG_TYPE)
@@ -128,8 +138,10 @@ NM_size_TTL$RFG_SIZE    <- as.factor(NM_size_TTL$RFG_SIZE)
 NM_type_TTL$RFG_TYPE    <- as.factor(NM_type_TTL$RFG_TYPE)
 SW_size_TTL$RFG_SIZE    <- as.factor(SW_size_TTL$RFG_SIZE)
 SW_type_TTL$RFG_TYPE    <- as.factor(SW_type_TTL$RFG_TYPE)
+```
 
 
+```{r}
 #cleaning data, mark unknown data as N/A
 NM_size_2[, 2:5]    <- sapply(NM_size_2[, 2:5], as.numeric)
 NM_type_2[, 2:5]    <- sapply(NM_type_2[, 2:5], as.numeric)
@@ -142,7 +154,9 @@ NM_type_TTL[, 2:3]    <- sapply(NM_type_TTL[, 2:3], as.numeric)
 
 SW_size_TTL[, 2:3]    <- sapply(SW_size_TTL[, 2:3], as.numeric)
 SW_type_TTL[, 2:3]    <- sapply(SW_type_TTL[, 2:3], as.numeric)
+```
 
+```{r}
 #rename columns
 colnames(NM_size_2)      <- c("RFG_SIZE",
                            "N_ENG", "MID_ATL",
@@ -187,8 +201,9 @@ NM_type_TTL <- as_tibble(melt(NM_type_TTL, id = 1))
 SW_size_TTL <- as_tibble(melt(SW_size_TTL, id = 1))
 SW_type_TTL <- as_tibble(melt(SW_type_TTL, id = 1))
 
+```
 
-
+```{r}
 #Update column's name
 names(NM_size_3)[2]    <- "Region"
 names(NM_type_3)[2]    <- "Region"
@@ -244,7 +259,9 @@ SW_type_SUM <- aggregate(SW_type_3$`Number of Unit`,
 # SW_age_SUM <- aggregate(SW_age_3$`Number of Unit`, 
                            # by = list(category = SW_age_3$`Region`),
                            # FUN=sum, na.rm = TRUE)
+```
 
+```{r}
 #Rename Columns
 names(NM_size_SUM)[1] <- "Region"
 names(NM_size_SUM)[2] <- "Total Number of Unit"
@@ -263,7 +280,9 @@ names(SW_type_SUM)[2] <- "Total Number of Unit"
 
 # names(SW_age_SUM)[1] <- "Region"
 # names(SW_age_SUM)[2] <- "Total Number of Unit"
+```
 
+```{r}
 #Merge Sum with Original Data
 TTL_NM_size <- merge(x = NM_size_3, y = NM_size_SUM, by = "Region", all = TRUE)
 names(TTL_NM_size)[3] <- "Number of Unit"
