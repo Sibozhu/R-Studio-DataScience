@@ -4,7 +4,7 @@ author: "Xiaoqian Xue, Sibo Zhu,  Li Liu,  Yufei Lin,  Danni Fu"
 date: "2017/10/10"
 output: html_document
 ---
-###Introduction 
+#Introduction 
 In order to find the best plan for marketing the refrigerators in U.S, we explore the EIA data in 2015 RECS Survey. In this project, we focus on the Appliance by Household income (HC 3.5), and the Refrigerator’s size and type in the Northeast and Midwest regions (HC 3.7) and in the South and West regions (HC 3.8). 
 
 Different regions may have different demands for the refrigerator size and type. Household living in the rich regions, for example New England or East Coast, may not need a very large refrigerator since they are very close to the market and may buy the more expansive refrigerator with more function. On the contrary, household living in the middle or south may need a large refrigerator with simple design.
@@ -13,7 +13,7 @@ To get a more scientific result,  we use R to explore the data and plot to see t
 
 
 
-###Exploring for different regions
+##Exploring for different regions
 
 We obtained the data from the Housing Appliances of February 27, 2017 in the Northeast and
 Midwest regions (HC3.7) and in the South and West regions (HC3.8).  
@@ -397,7 +397,7 @@ PLOT_SW_TYPE_PERC
 In general, medium size and two doors refrigerator with top freezers is the most popular size throughout U.S, especially in the West North Central and East North Central, in all South and West regions. Also, the two doors refrigerators with top freezers can also be marketed in all South and West regions. The large size refrigerator can also be the another target for marketing, since it is more popular than the medium size in the Middle Atlantic , New England , West Central and South Atlantic.  
 
 
-
+##Exploring for different income levels
 
 ```{r}
 #Income Analysis Part
