@@ -216,7 +216,7 @@ names(SW_type_TTL)[3]    <- "Number of Unit"
 
 ```{r}
 
-#getting sumn of data
+#getting sum of data
 NM_size_SUM <- aggregate(NM_size_3$`Number of Unit`, 
                            by = list(category = NM_size_3$`Region`),
                            FUN=sum, na.rm = TRUE)
