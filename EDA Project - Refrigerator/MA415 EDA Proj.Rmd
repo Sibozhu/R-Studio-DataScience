@@ -4,10 +4,19 @@ author: "Xiaoqian Xue, Sibo Zhu,  Li Liu,  Yufei Lin,  Danni Fu"
 date: "2017/10/10"
 output: html_document
 ---
+###Introduction 
+In order to find the best plan for marketing the refrigerators in U.S, we explore the EIA data in 2015 RECS Survey. In this project, we focus on the Appliance by Household income (HC 3.5), and the Refrigerator’s size and type in the Northeast and Midwest regions (HC 3.7) and in the South and West regions (HC 3.8). 
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+Different regions may have different demands for the refrigerator size and type. Household living in the rich regions, for example New England or East Coast, may not need a very large refrigerator since they are very close to the market and may buy the more expansive refrigerator with more function. On the contrary, household living in the middle or south may need a large refrigerator with simple design.
+ 
+To get a more scientific result,  we use R to explore the data and plot to see the distributions of the EDA data and provide analysis as following. 
+
+
+
+###Exploring for different regions
+
+We obtained the data from the Housing Appliances of February 27, 2017 in the Northeast and
+Midwest regions (HC3.7) and in the South and West regions (HC3.8).  
 
 ```{r}
 # SUPPRESS GLOBAL WARNING
@@ -32,6 +41,9 @@ download.file(
   "SOUTH_WEST.xlsx", quiet = TRUE, mode = "wb")
 ```
 
+To find the best marketing strategy, we want to know for northeast, Midwest, south and west regions, the number of housing units using refrigerator for different sizes, types and ages.  Therefore we draw the data (i.e. most-used refrigerator size, most-used refrigerator type and most-used refrigerator age for New England, Middle Atlantic, East North Central, West North Central, South Atlantic, East South Central, West South Central, Mountain North, Mountain South and Pacific regions)  from Table HC 3.7 and HC 3.8. 
+
+
 ```{r}
 #selecting data 
 NM_size <- read_excel("NORTH_MID.xlsx", sheet = "data", range = "A108:H113",
@@ -40,17 +52,11 @@ NM_size <- read_excel("NORTH_MID.xlsx", sheet = "data", range = "A108:H113",
 NM_type <- read_excel("NORTH_MID.xlsx", sheet = "data", range = "A115:H121",
                           col_names = FALSE, col_types = "text")
 
-# NM_age <- read_excel("NORTH_MID.xlsx", sheet = "data", range = "A123:H129",
-                          # col_names = FALSE, col_types = "text")
-
 SW_size <- read_excel("SOUTH_WEST.xlsx", sheet = "data", range = "A111:K116",
                           col_names = FALSE, col_types = "text")
 
 SW_type <- read_excel("SOUTH_WEST.xlsx", sheet = "data", range = "A118:K124",
                           col_names = FALSE, col_types = "text")
-
-# SW_age <- read_excel("SOUTH_WEST.xlsx", sheet = "data", range = "A126:K132",
-                          # col_names = FALSE, col_types = "text")
 
 ```
 
@@ -60,13 +66,10 @@ NM_size_1 <- NM_size
 
 NM_type_1 <- NM_type
 
-# NM_age_1 <- NM_age
-
 SW_size_1 <- SW_size
 
 SW_type_1 <- SW_type
 
-# SW_age_1 <- SW_age
 ```
 
 
@@ -80,10 +83,6 @@ colnames(NM_type_1)      <- c("RFG_TYPE", "TTL_US", "TTL_NE",
                            "N_ENG", "MID_ATL", "TTL_MID_WEST",
                            "EN_CENT", "WN_CENT")
 
-# colnames(NM_age_1)      <- c("RFG_AGE", "TTL_US", "TTL_NE",
-                           # "N_ENG", "MID_ATL", "TTL_MID_WEST",
-                           # "EN_CENT", "WN_CENT")
-
 colnames(SW_size_1)      <- c("RFG_SIZE", "TTL_US", "TTL_SOUTH",
                            "S_ATL", "ES_CENT", "WS_CENT",
                            "TTL_WEST", "TTL_MOUNT", "MOUNT_N",
@@ -93,11 +92,6 @@ colnames(SW_type_1)      <- c("RFG_TYPE", "TTL_US", "TTL_SOUTH",
                            "S_ATL", "ES_CENT", "WS_CENT",
                            "TTL_WEST", "TTL_MOUNT", "MOUNT_N",
                            "MOUNT_SOUTH", "PACIF")
-
-# colnames(SW_age_1)      <- c("RFG_AGE", "TTL_US", "TTL_SOUTH",
-                           # "S_ATL", "ES_CENT", "WS_CENT",
-                           # "TTL_WEST", "TTL_MOUNT", "MOUNT_N",
-                           # "MOUNT_SOUTH", "PACIF")
 
 ```
 
@@ -117,10 +111,8 @@ SW_type_TTL <- within(SW_type_1,rm(TTL_US,S_ATL,ES_CENT,WS_CENT,TTL_MOUNT,MOUNT_
 
 NM_size_2 <- within(NM_size_1, rm(TTL_US,TTL_NE,TTL_MID_WEST))
 NM_type_2 <- within(NM_type_1, rm(TTL_US,TTL_NE,TTL_MID_WEST))
-# NM_age_2 <- within(NM_age_1, rm(TTL_US,TTL_NE))
 SW_size_2 <- within(SW_size_1, rm(TTL_US,TTL_SOUTH,TTL_WEST,TTL_MOUNT))
 SW_type_2 <- within(SW_type_1, rm(TTL_US,TTL_SOUTH,TTL_WEST,TTL_MOUNT))
-# SW_age_2 <- within(SW_age_1, rm(TTL_US,TTL_SOUTH,TTL_WEST,TTL_MOUNT))
 
 
 ```
@@ -129,10 +121,8 @@ SW_type_2 <- within(SW_type_1, rm(TTL_US,TTL_SOUTH,TTL_WEST,TTL_MOUNT))
 # COERCE FRIDGE TYPE COLUMN TO FACTOR
 NM_size_2$RFG_SIZE    <- as.factor(NM_size_2$RFG_SIZE)
 NM_type_2$RFG_TYPE    <- as.factor(NM_type_2$RFG_TYPE)
-# NM_age_2$RFG_AGE    <- as.factor(NM_age_2$RFG_AGE)
 SW_size_2$RFG_SIZE    <- as.factor(SW_size_2$RFG_SIZE)
 SW_type_2$RFG_TYPE    <- as.factor(SW_type_2$RFG_TYPE)
-# SW_age_2$RFG_AGE    <- as.factor(SW_age_2$RFG_AGE)
 
 NM_size_TTL$RFG_SIZE    <- as.factor(NM_size_TTL$RFG_SIZE)
 NM_type_TTL$RFG_TYPE    <- as.factor(NM_type_TTL$RFG_TYPE)
@@ -145,10 +135,8 @@ SW_type_TTL$RFG_TYPE    <- as.factor(SW_type_TTL$RFG_TYPE)
 #cleaning data, mark unknown data as N/A
 NM_size_2[, 2:5]    <- sapply(NM_size_2[, 2:5], as.numeric)
 NM_type_2[, 2:5]    <- sapply(NM_type_2[, 2:5], as.numeric)
-# NM_age_2[, 2:6]    <- sapply(NM_age_2[, 2:6], as.numeric)
 SW_size_2[, 2:7]    <- sapply(SW_size_2[, 2:7], as.numeric)
 SW_type_2[, 2:7]    <- sapply(SW_type_2[, 2:7], as.numeric)
-# SW_age_2[, 2:7]    <- sapply(SW_age_2[, 2:7], as.numeric)
 NM_size_TTL[, 2:3]    <- sapply(NM_size_TTL[, 2:3], as.numeric)
 NM_type_TTL[, 2:3]    <- sapply(NM_type_TTL[, 2:3], as.numeric)
 
@@ -166,10 +154,6 @@ colnames(NM_type_2)      <- c("RFG_TYPE",
                            "N_ENG", "MID_ATL", 
                            "EN_CENT", "WN_CENT")
 
-# colnames(NM_age_2)      <- c("RFG_AGE", 
-                           # "N_ENG", "MID_ATL", 
-                           # "EN_CENT", "WN_CENT")
-
 colnames(SW_size_2)      <- c("RFG_SIZE", 
                            "S_ATL", "ES_CENT", "WS_CENT",
                            "MOUNT_N",
@@ -179,12 +163,6 @@ colnames(SW_type_2)      <- c("RFG_TYPE",
                            "S_ATL", "ES_CENT", "WS_CENT",
                            "MOUNT_N",
                            "MOUNT_SOUTH", "PACIF")
-
-# colnames(SW_age_2)      <- c("RFG_AGE", 
-                           # "S_ATL", "ES_CENT", "WS_CENT",
-                            # "MOUNT_N",
-                           # "MOUNT_SOUTH", "PACIF")
-
 ```
 
 ```{r}
@@ -192,10 +170,8 @@ colnames(SW_type_2)      <- c("RFG_TYPE",
 #Melting Data 
 NM_size_3 <- as_tibble(melt(NM_size_2, id = 1))
 NM_type_3 <- as_tibble(melt(NM_type_2, id = 1))
-# NM_age_3 <- as_tibble(melt(NM_age_2, id = 1))
 SW_size_3 <- as_tibble(melt(SW_size_2, id = 1))
 SW_type_3 <- as_tibble(melt(SW_type_2, id = 1))
-# SW_age_3 <- as_tibble(melt(SW_age_2, id = 1))
 NM_size_TTL <- as_tibble(melt(NM_size_TTL, id = 1))
 NM_type_TTL <- as_tibble(melt(NM_type_TTL, id = 1))
 SW_size_TTL <- as_tibble(melt(SW_size_TTL, id = 1))
@@ -207,10 +183,8 @@ SW_type_TTL <- as_tibble(melt(SW_type_TTL, id = 1))
 #Update column's name
 names(NM_size_3)[2]    <- "Region"
 names(NM_type_3)[2]    <- "Region"
-# names(NM_age_3)[2]    <- "Region"
 names(SW_size_3)[2]    <- "Region"
 names(SW_type_3)[2]    <- "Region"
-# names(SW_age_3)[2]    <- "Region"
 names(NM_size_TTL)[2]    <- "Region"
 names(NM_type_TTL)[2]    <- "Region"
 names(SW_size_TTL)[2]    <- "Region"
@@ -220,10 +194,8 @@ names(SW_type_TTL)[2]    <- "Region"
 
 names(NM_size_3)[3]    <- "Number of Unit"
 names(NM_type_3)[3]    <- "Number of Unit"
-# names(NM_age_3)[3]    <- "Number of Unit"
 names(SW_size_3)[3]    <- "Number of Unit"
 names(SW_type_3)[3]    <- "Number of Unit"
-# names(SW_age_3)[3]    <- "Number of Unit"
 names(NM_size_TTL)[3]    <- "Number of Unit"
 names(NM_type_TTL)[3]    <- "Number of Unit"
 names(SW_size_TTL)[3]    <- "Number of Unit"
@@ -244,10 +216,6 @@ NM_type_SUM <- aggregate(NM_type_3$`Number of Unit`,
                            by = list(category = NM_type_3$`Region`),
                            FUN=sum, na.rm = TRUE)
 
-# NM_age_SUM <- aggregate(NM_age_3$`Number of Unit`, 
-                           # by = list(category = NM_age_3$`Region`),
-                           # FUN=sum, na.rm = TRUE)
-
 SW_size_SUM <- aggregate(SW_size_3$`Number of Unit`, 
                            by = list(category = SW_size_3$`Region`),
                            FUN=sum, na.rm = TRUE)
@@ -255,10 +223,6 @@ SW_size_SUM <- aggregate(SW_size_3$`Number of Unit`,
 SW_type_SUM <- aggregate(SW_type_3$`Number of Unit`, 
                            by = list(category = SW_type_3$`Region`),
                            FUN=sum, na.rm = TRUE)
-
-# SW_age_SUM <- aggregate(SW_age_3$`Number of Unit`, 
-                           # by = list(category = SW_age_3$`Region`),
-                           # FUN=sum, na.rm = TRUE)
 ```
 
 ```{r}
@@ -269,17 +233,12 @@ names(NM_size_SUM)[2] <- "Total Number of Unit"
 names(NM_type_SUM)[1] <- "Region"
 names(NM_type_SUM)[2] <- "Total Number of Unit"
 
-# names(NM_age_SUM)[1] <- "Region"
-# names(NM_age_SUM)[2] <- "Total Number of Unit"
-
 names(SW_size_SUM)[1] <- "Region"
 names(SW_size_SUM)[2] <- "Total Number of Unit"
 
 names(SW_type_SUM)[1] <- "Region"
 names(SW_type_SUM)[2] <- "Total Number of Unit"
 
-# names(SW_age_SUM)[1] <- "Region"
-# names(SW_age_SUM)[2] <- "Total Number of Unit"
 ```
 
 ```{r}
@@ -296,12 +255,6 @@ names(TTL_NM_type)[4] <- "Total Number of Unit by Region"
 TTL_NM_type$Percentage <- 100*(TTL_NM_type$`Number of Unit` /TTL_NM_type$`Total Number of Unit by Region`)
 rm(list = ls(pattern = "^T_"))
 
-# TTL_NM_age <- merge(x = NM_age_3, y = NM_age_SUM, by = "Region", all = TRUE)
-# names(TTL_NM_age)[3] <- "Number of Unit"
-# names(TTL_NM_age)[4] <- "Total Number of Unit by Region"
-# TTL_NM_age$Percentage <- 100*(TTL_NM_age$`Number of Unit` /TTL_NM_age$`Total Number of Unit by Region`)
-# rm(list = ls(pattern = "^T_"))
-
 TTL_SW_size <- merge(x = SW_size_3, y = SW_size_SUM, by = "Region", all = TRUE)
 names(TTL_SW_size)[3] <- "Number of Unit"
 names(TTL_SW_size)[4] <- "Total Number of Unit by Region"
@@ -313,12 +266,6 @@ names(TTL_SW_type)[3] <- "Number of Unit"
 names(TTL_SW_type)[4] <- "Total Number of Unit by Region"
 TTL_SW_type$Percentage <- 100*(TTL_SW_type$`Number of Unit` /TTL_SW_type$`Total Number of Unit by Region`)
 rm(list = ls(pattern = "^T_"))
-
-# TTL_SW_age <- merge(x = SW_age_3, y = SW_age_SUM, by = "Region", all = TRUE)
-# names(TTL_SW_age)[3] <- "Number of Unit"
-# names(TTL_SW_age)[4] <- "Total Number of Unit by Region"
-# TTL_SW_age$Percentage <- 100*(TTL_SW_age$`Number of Unit` /TTL_SW_age$`Total Number of Unit by Region`)
-# rm(list = ls(pattern = "^T_"))
 
 TTL_size <- merge(x = NM_size_TTL, y = SW_size_TTL, by = c("RFG_SIZE","Region","Number of Unit"), all = TRUE)
 TTL_type <- merge(x = NM_type_TTL, y = SW_type_TTL, by = c("RFG_TYPE","Region","Number of Unit"), all = TRUE)
@@ -348,16 +295,6 @@ PLOT_NM_TYPE <- ggplot(data = TTL_NM_type, aes(x = `Region`, y = `Number of Unit
              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
              labs(title = "Appliances in homes in the Northeast and Midwest regions, 2015")
 
-# PLOT_NM_AGE_PERC <- ggplot(data = TTL_NM_age, aes(x = `Region`, y = Percentage)) +
-                 # geom_col(aes(fill = `RFG_AGE`)) +
-                 # labs(y = "Percentage") +
-                 # coord_flip()
-
-# PLOT_NM_AGE <- ggplot(data = TTL_NM_age, aes(x = `Region`, y = `Number of Unit`)) +
-             # geom_col(aes(fill = `RFG_AGE`)) +
-             # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-             # labs(title = "Appliances in homes in the Northeast and Midwest regions, 2015")
-
 ###########
 
 PLOT_SW_SIZE_PERC <- ggplot(data = TTL_SW_size, aes(x = `Region`, y = Percentage)) +
@@ -380,16 +317,6 @@ PLOT_SW_TYPE <- ggplot(data = TTL_SW_type, aes(x = `Region`, y = `Number of Unit
              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
              labs(title = "Appliances in homes in the South and West regions, 2015")
 
-# PLOT_SW_AGE_PERC <- ggplot(data = TTL_SW_age, aes(x = `Region`, y = Percentage)) +
-                 # geom_col(aes(fill = `RFG_AGE`)) +
-                 # labs(y = "Percentage") +
-                 # coord_flip()
-
-# PLOT_SW_AGE <- ggplot(data = TTL_SW_age, aes(x = `Region`, y = `Number of Unit`)) +
-             # geom_col(aes(fill = `RFG_AGE`)) +
-             # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-             # labs(title = "Appliances in homes in the South and West regions, 2015")
-
 ######
 
 PLOT_SIZE_TTL <- ggplot(data = TTL_size, aes(x = `Region`, y = `Number of Unit`)) +
@@ -404,26 +331,59 @@ PLOT_TYPE_TTL <- ggplot(data = TTL_type, aes(x = `Region`, y = `Number of Unit`)
 
 ```
 
+First, we compared the appliances of refrigerator size in homes in overall U.S regions by using the ggplot. The refrigerator sizes include small (less than 17.6 cubic feet), medium (17.6 to 22.5 cubic feet), large (22.6 to 29.5 cubic feet) and very large (more than 29.5 cubic feet). The vertical axis is the number of housing unit and the horizontal axis is four regions, total northeast, total Midwest plus Middle Atlantic, Total South and Total West.  It is clearly shown in the ggplot that most household in the U.S. use the medium and large size refrigerator. There is no big difference between different regions in the size of refrigerator used by households. Only a small amount of household uses the small size and approximately none of the household use very large or do not use a refrigerator. 
 
 
 
 ```{r}
-#export result
 PLOT_SIZE_TTL
-PLOT_TYPE_TTL
-
-PLOT_NM_SIZE
-PLOT_NM_SIZE_PERC
-PLOT_NM_TYPE
-PLOT_NM_TYPE_PERC
-
-
-PLOT_SW_SIZE
-PLOT_SW_SIZE_PERC
-PLOT_SW_TYPE
-PLOT_SW_TYPE_PERC
-
 ```
+Next, we focus on the total northeast, total Midwest regions, specifically New England, Middle Atlantic, East North Central and West North Central. We find out that all surveyed households us a refrigerator and none of the surveyed households use half-size or compact refrigerator or very large size refrigerator. Medium and large size refrigerator are more popular in those 4 regions compared to the small size. 
+
+
+```{r}
+PLOT_NM_SIZE
+```
+To find out which size of refrigerator is the most popular one in the each part of the Northeast and Midwest regions, we calculate the percentage of the number of households using specific size by the total number of households in different regions. Then we use the ggplot to compare the difference. We find out there is no difference between West North Central and East North Central that the medium size refrigerator is more popular than the large size one. Large size refrigerator tends to be more dominate in the Middle Atlantic and New England. Therefore, we should market the medium size refrigerator in the West North Central and East North Central, and the large size refrigerator in the Middle Atlantic and New England. 
+```{r}
+PLOT_NM_SIZE_PERC
+```
+Then we focus on the South and West regions, specifically South Atlantic, East South Central, West South Central, Mountain North, Mountain South and Pacific. Only tiny number of households use the half-size or compact, small size or very large size refrigerator. In the South Atlantic and West Central, the large and medium size are both popular. However, in the East South Central and Pacific, medium size refrigerator seems more popular. The ggplot also shows that the distribution of Mountain North and South are similar in which the large size and the medium size refrigerator equally dominate. 
+
+```{r}
+PLOT_SW_SIZE
+```
+To get a more accurate information to confirm the previous observation, we also calculate the percentage of the number of households using specific size by the total number of households in different regions. Then we use the ggplot to compare the difference in the South and West Regions. We find out medium size refrigerator is the most popular in the Pacific, Mountain South, Mountain North and East Central. For West Central and South Atlantic, the medium size and large size refrigerator are equally popular. Therefore, we can market the medium size refrigerator in all South and West regions and the large size refrigerator in West Central and South Atlantic. 
+```{r}
+PLOT_SW_SIZE_PERC
+```
+To better market, we compared the appliances of refrigerator types in homes in overall U.S regions by using the ggplot. The refrigerator types vary in half-size/compact, one door, three or more doors, two doors with bottom freezer, two doors with side by side, two doors with top freezer. The vertical axis is the number of housing unit and the horizontal axis is four regions, total northeast, total Midwest plus Middle Atlantic, Total South and Total West.  It is clearly shown in the ggplot that most household in the U.S. use two doors refrigerators with top freezer and two doors refrigerator with side by side. Only few of the household does not use a refrigerator. There is no big difference between different regions in the types of refrigerator used by households. 
+
+```{r}
+PLOT_TYPE_TTL
+```
+First, we study on the appliances of refrigerator types in the total Northeast and total Midwest regions, consisting of New England, Middle Atlantic, East North Central and West North Central. It is shown that only few households in all region use a one door refrigerator, and none of them does not use a refrigerators and none of them use a half-size or compact refrigerators.  Two doors refrigerators with top freezer and two doors refrigerators with side by side occupy the majority of households’ appliance in all five regions in Northeast and Midwest regions compare to other types.
+```{r}
+PLOT_NM_TYPE
+```
+To make a further conclusion, the percentage of the refrigerator types of each region are calculated dividing each types by the total number of appliance in specific region. Then we use ggplot to more clearly see the distribution of each types in specific regions. It is shown that majority of those households in Northeast and Midwest regions use two doors refrigerators with top freezers. Tiny amount households in Middle Atlantic, East North Central and West North Central uses the three doors refrigerators, and none of those from New England use three doors’.  And there is no big difference in the distribution of different types among all the regions.
+
+```{r}
+PLOT_NM_TYPE_PERC
+```
+Next, we focus on the South and West regions, consisting of 6 sub regions, South Atlantic, East South Central, West South Central, Mountain North, Mountain South and Pacific regions. According to the ggplot, we can see that the most household in South and West prefer the two door refrigerator with top freezer and two doors refrigerators with side by side. Only tiny amount of household in Pacific region does not use a refrigerator. And little amount of the half-size or compact refrigerators are used by all those regions in South and west., and few of the household in all those South and West region use the one door refrigerators.
+
+```{r}
+PLOT_SW_TYPE
+```
+To confirm our analysis, the percentage of each refrigerator types used by households in different regions are calculated by the total number of household in different regions of the South and West.  Ggplot is effectively used to compare the different preference of refrigerator type of all six regions.  We found out that majority of the household of each region use the two doors refrigerators with top freezers and two doors refrigerator with side by side. Thus, we can conclude that two doors refrigerators with top freezers and two doors refrigerators with side by side should be marketed in all South and West regions. 
+
+```{r}
+PLOT_SW_TYPE_PERC
+```
+###Conclusion 
+In general, medium size and two doors refrigerator with top freezers is the most popular size throughout U.S, especially in the West North Central and East North Central, in all South and West regions. Also, the two doors refrigerators with top freezers can also be marketed in all South and West regions. The large size refrigerator can also be the another target for marketing, since it is more popular than the medium size in the Middle Atlantic , New England , West Central and South Atlantic.  
+
 
 
 
@@ -442,8 +402,6 @@ sizeData <- read_excel("INCOME.xlsx", sheet = "data", range = "A108:J113",
 typeData <- read_excel("INCOME.xlsx", sheet = "data", range = "A115:J121",
                           col_names = FALSE, col_types = "text")
 
-ageData <- read_excel("INCOME.xlsx", sheet = "data", range = "A123:J129",
-                          col_names = FALSE, col_types = "text")
 
 ```
 
@@ -453,7 +411,6 @@ sizeData_1 <- sizeData
 
 typeData_1 <- typeData
 
-ageData_1 <- ageData
 
 colnames(sizeData_1)      <- c("RFG_SIZE", "TTL_US", "LESS_20T",
                            "20_39T", "40_59T", "60_79T",
@@ -463,9 +420,6 @@ colnames(typeData_1)      <- c("RFG_TYPE", "TTL_US", "LESS_20T",
                            "20_39T", "40_59T", "60_79T",
                            "80_99T", "100_119T","120_139T","140T_MORE")
 
-colnames(ageData_1)      <- c("RFG_AGE", "TTL_US", "LESS_20T",
-                           "20_39T", "40_59T", "60_79T",
-                           "80_99T", "100_119T","120_139T","140T_MORE")
 
 ```
 
@@ -475,21 +429,18 @@ colnames(ageData_1)      <- c("RFG_AGE", "TTL_US", "LESS_20T",
 
 sizeData_2 <- within(sizeData_1, rm(TTL_US))
 typeData_2 <- within(typeData_1, rm(TTL_US))
-ageData_2 <- within(ageData_1, rm(TTL_US))
 
 
 
 # COERCE FRIDGE TYPE COLUMN TO FACTOR
 sizeData_2$RFG_SIZE    <- as.factor(sizeData_2$RFG_SIZE)
 typeData_2$RFG_TYPE    <- as.factor(typeData_2$RFG_TYPE)
-ageData_2$RFG_AGE    <- as.factor(ageData_2$RFG_AGE)
 
 
 
 #cleaning data, mark unknown data as N/A
 sizeData_2[, 2:9]    <- sapply(sizeData_2[, 2:9], as.numeric)
 typeData_2[, 2:9]    <- sapply(typeData_2[, 2:9], as.numeric)
-ageData_2[, 2:9]    <- sapply(ageData_2[, 2:9], as.numeric)
 
 
 ```
@@ -499,15 +450,12 @@ ageData_2[, 2:9]    <- sapply(ageData_2[, 2:9], as.numeric)
 #Melting Data 
 sizeData_3 <- as_tibble(melt(sizeData_2, id = 1))
 typeData_3 <- as_tibble(melt(typeData_2, id = 1))
-ageData_3 <- as_tibble(melt(ageData_2, id = 1))
 
 #Update column's name
 names(sizeData_3)[2]    <- "Income Range"
 names(sizeData_3)[3]    <- "Number of Unit"
 names(typeData_3)[2]    <- "Income Range"
 names(typeData_3)[3]    <- "Number of Unit"
-names(ageData_3)[2]    <- "Income Range"
-names(ageData_3)[3]    <- "Number of Unit"
 
 ```
 
@@ -522,9 +470,6 @@ typeData_SUM <- aggregate(typeData_3$`Number of Unit`,
                            by = list(category = typeData_3$`Income Range`),
                            FUN=sum, na.rm = TRUE)
 
-ageData_SUM <- aggregate(ageData_3$`Number of Unit`, 
-                           by = list(category = ageData_3$`Income Range`),
-                           FUN=sum, na.rm = TRUE)
 
 
 
@@ -535,8 +480,6 @@ names(sizeData_SUM)[2] <- "Total Number of Unit"
 names(typeData_SUM)[1] <- "Income Range"
 names(typeData_SUM)[2] <- "Total Number of Unit"
 
-names(ageData_SUM)[1] <- "Income Range"
-names(ageData_SUM)[2] <- "Total Number of Unit"
 
 
 #Merge Sum with Original Data
@@ -550,10 +493,6 @@ names(typeDataWithTotal)[4] <- "Total Number of Unit by Income Range"
 typeDataWithTotal$Percentage <- 100*(typeDataWithTotal$`Number of Unit` /typeDataWithTotal$`Total Number of Unit by Income Range`)
 rm(list = ls(pattern = "^T_"))
 
-ageDataWithTotal <- merge(x = ageData_3, y = ageData_SUM, by = "Income Range", all = TRUE)
-names(ageDataWithTotal)[4] <- "Total Number of Unit by Income Range"
-ageDataWithTotal$Percentage <- 100*(ageDataWithTotal$`Number of Unit` /ageDataWithTotal$`Total Number of Unit by Income Range`)
-rm(list = ls(pattern = "^T_"))
 
 
 ```
@@ -580,15 +519,7 @@ PLOT_TYPE <- ggplot(data = typeDataWithTotal, aes(x = `Income Range`, y = `Numbe
              theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
              labs(title = "Refrigerator Type Histogram by Income Range, 2015")
 
-PLOT_AGE_PERC <- ggplot(data = ageDataWithTotal, aes(x = `Income Range`, y = Percentage)) +
-                 geom_col(aes(fill = `RFG_AGE`)) +
-                 labs(title = "Refrigerator Age Percentage") +
-                 coord_flip()
 
-PLOT_AGE <- ggplot(data = ageDataWithTotal, aes(x = `Income Range`, y = `Number of Unit`)) +
-             geom_col(aes(fill = `RFG_AGE`)) +
-             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-             labs(title = "Refrigerator Age Histogram by Income Range, 2015")
 ```
 
 
@@ -603,9 +534,6 @@ PLOT_SIZE
 PLOT_TYPE_PERC
 PLOT_TYPE
 
-
-PLOT_AGE_PERC
-PLOT_AGE
 
 ```
 
