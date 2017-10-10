@@ -1,0 +1,38 @@
+---
+title: "Untitled"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+library(ggplot2)
+
+```
+## Examine the data
+
+```{r }
+
+head(mpg)
+
+dim(mpg)
+
+mpg.2008<-mpg[mpg$year==2008,]
+
+head(mpg.2008)
+
+levels(as.factor(mpg$year))
+```
+
+
+## is there a relationship between engine displacement and highway mileage?
+
+```{r}
+
+cor(mpg.2008$hwy,mpg.2008$displ)
+
+m1 <- lm(hwy~displ,data=mpg.2008)
+
+summary(m1)
+```
