@@ -66,15 +66,15 @@ SW_type_1 <- SW_type
 
 #rename column's names
 colnames(NM_size_1)      <- c("RFG_SIZE", "TTL_US", "TTL_NE",
-                           "N_ENG", "MID_ATL_NE", "TTL_MID_WEST",
+                           "N_ENG", "MID_ATL", "TTL_MID_WEST",
                            "EN_CENT", "WN_CENT")
 
 colnames(NM_type_1)      <- c("RFG_TYPE", "TTL_US", "TTL_NE",
-                           "N_ENG", "MID_ATL_NE", "TTL_MID_WEST",
+                           "N_ENG", "MID_ATL", "TTL_MID_WEST",
                            "EN_CENT", "WN_CENT")
 
 # colnames(NM_age_1)      <- c("RFG_AGE", "TTL_US", "TTL_NE",
-                           # "N_ENG", "MID_ATL_NE", "TTL_MID_WEST",
+                           # "N_ENG", "MID_ATL", "TTL_MID_WEST",
                            # "EN_CENT", "WN_CENT")
 
 colnames(SW_size_1)      <- c("RFG_SIZE", "TTL_US", "TTL_SOUTH",
@@ -93,8 +93,8 @@ colnames(SW_type_1)      <- c("RFG_TYPE", "TTL_US", "TTL_SOUTH",
                            # "MOUNT_SOUTH", "PACIF")
 
 #Saving total column for future use
-NM_size_TTL <- within(NM_size_1,rm(TTL_US,N_ENG,MID_ATL_NE,EN_CENT,WN_CENT))
-NM_type_TTL <- within(NM_type_1,rm(TTL_US,N_ENG,MID_ATL_NE,EN_CENT,WN_CENT))
+NM_size_TTL <- within(NM_size_1,rm(TTL_US,N_ENG,MID_ATL,EN_CENT,WN_CENT))
+NM_type_TTL <- within(NM_type_1,rm(TTL_US,N_ENG,MID_ATL,EN_CENT,WN_CENT))
 
 SW_size_TTL <- within(SW_size_1,rm(TTL_US,S_ATL,ES_CENT,WS_CENT,TTL_MOUNT,MOUNT_N,MOUNT_SOUTH,PACIF))
 SW_type_TTL <- within(SW_type_1,rm(TTL_US,S_ATL,ES_CENT,WS_CENT,TTL_MOUNT,MOUNT_N,MOUNT_SOUTH,PACIF))
@@ -143,15 +143,15 @@ SW_type_TTL[, 2:3]    <- sapply(SW_type_TTL[, 2:3], as.numeric)
 
 #rename columns
 colnames(NM_size_2)      <- c("RFG_SIZE",
-                           "N_ENG", "MID_ATL_NE",
+                           "N_ENG", "MID_ATL",
                            "EN_CENT", "WN_CENT")
 
 colnames(NM_type_2)      <- c("RFG_TYPE", 
-                           "N_ENG", "MID_ATL_NE", 
+                           "N_ENG", "MID_ATL", 
                            "EN_CENT", "WN_CENT")
 
 # colnames(NM_age_2)      <- c("RFG_AGE", 
-                           # "N_ENG", "MID_ATL_NE", 
+                           # "N_ENG", "MID_ATL", 
                            # "EN_CENT", "WN_CENT")
 
 colnames(SW_size_2)      <- c("RFG_SIZE", 
