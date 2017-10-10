@@ -400,9 +400,189 @@ PLOT_SW_SIZE_PERC
 PLOT_SW_TYPE
 PLOT_SW_TYPE_PERC
 
+```
 
 
 
+```{r}
+#Income Analysis Part
+#downloading data
+
+download.file(
+  "https://www.eia.gov/consumption/residential/data/2015/hc/hc3.5.xlsx",
+  "INCOME.xlsx", quiet = TRUE, mode = "wb")
+
+#selecting data 
+sizeData <- read_excel("INCOME.xlsx", sheet = "data", range = "A108:J113",
+                          col_names = FALSE, col_types = "text")
+
+typeData <- read_excel("INCOME.xlsx", sheet = "data", range = "A115:J121",
+                          col_names = FALSE, col_types = "text")
+
+ageData <- read_excel("INCOME.xlsx", sheet = "data", range = "A123:J129",
+                          col_names = FALSE, col_types = "text")
+
+```
+
+```{r}
+#create duplicate data for future use
+sizeData_1 <- sizeData
+
+typeData_1 <- typeData
+
+ageData_1 <- ageData
+
+colnames(sizeData_1)      <- c("RFG_SIZE", "TTL_US", "LESS_20T",
+                           "20_39T", "40_59T", "60_79T",
+                           "80_99T", "100_119T","120_139T","140T_MORE")
+
+colnames(typeData_1)      <- c("RFG_TYPE", "TTL_US", "LESS_20T",
+                           "20_39T", "40_59T", "60_79T",
+                           "80_99T", "100_119T","120_139T","140T_MORE")
+
+colnames(ageData_1)      <- c("RFG_AGE", "TTL_US", "LESS_20T",
+                           "20_39T", "40_59T", "60_79T",
+                           "80_99T", "100_119T","120_139T","140T_MORE")
+
+```
+
+```{r}
+
+#Drop the Unnecessary Column
+
+sizeData_2 <- within(sizeData_1, rm(TTL_US))
+typeData_2 <- within(typeData_1, rm(TTL_US))
+ageData_2 <- within(ageData_1, rm(TTL_US))
+
+
+
+# COERCE FRIDGE TYPE COLUMN TO FACTOR
+sizeData_2$RFG_SIZE    <- as.factor(sizeData_2$RFG_SIZE)
+typeData_2$RFG_TYPE    <- as.factor(typeData_2$RFG_TYPE)
+ageData_2$RFG_AGE    <- as.factor(ageData_2$RFG_AGE)
+
+
+
+#cleaning data, mark unknown data as N/A
+sizeData_2[, 2:9]    <- sapply(sizeData_2[, 2:9], as.numeric)
+typeData_2[, 2:9]    <- sapply(typeData_2[, 2:9], as.numeric)
+ageData_2[, 2:9]    <- sapply(ageData_2[, 2:9], as.numeric)
+
+
+```
+
+```{r}
+
+#Melting Data 
+sizeData_3 <- as_tibble(melt(sizeData_2, id = 1))
+typeData_3 <- as_tibble(melt(typeData_2, id = 1))
+ageData_3 <- as_tibble(melt(ageData_2, id = 1))
+
+#Update column's name
+names(sizeData_3)[2]    <- "Income Range"
+names(sizeData_3)[3]    <- "Number of Unit"
+names(typeData_3)[2]    <- "Income Range"
+names(typeData_3)[3]    <- "Number of Unit"
+names(ageData_3)[2]    <- "Income Range"
+names(ageData_3)[3]    <- "Number of Unit"
+
+```
+
+```{r}
+
+#getting sumn of data
+sizeData_SUM <- aggregate(sizeData_3$`Number of Unit`, 
+                           by = list(category = sizeData_3$`Income Range`),
+                           FUN=sum, na.rm = TRUE)
+
+typeData_SUM <- aggregate(typeData_3$`Number of Unit`, 
+                           by = list(category = typeData_3$`Income Range`),
+                           FUN=sum, na.rm = TRUE)
+
+ageData_SUM <- aggregate(ageData_3$`Number of Unit`, 
+                           by = list(category = ageData_3$`Income Range`),
+                           FUN=sum, na.rm = TRUE)
+
+
+
+#Rename Columns
+names(sizeData_SUM)[1] <- "Income Range"
+names(sizeData_SUM)[2] <- "Total Number of Unit"
+
+names(typeData_SUM)[1] <- "Income Range"
+names(typeData_SUM)[2] <- "Total Number of Unit"
+
+names(ageData_SUM)[1] <- "Income Range"
+names(ageData_SUM)[2] <- "Total Number of Unit"
+
+
+#Merge Sum with Original Data
+sizeDataWithTotal <- merge(x = sizeData_3, y = sizeData_SUM, by = "Income Range", all = TRUE)
+names(sizeDataWithTotal)[4] <- "Total Number of Unit by Income Range"
+sizeDataWithTotal$Percentage <- 100*(sizeDataWithTotal$`Number of Unit` /sizeDataWithTotal$`Total Number of Unit by Income Range`)
+rm(list = ls(pattern = "^T_"))
+
+typeDataWithTotal <- merge(x = typeData_3, y = typeData_SUM, by = "Income Range", all = TRUE)
+names(typeDataWithTotal)[4] <- "Total Number of Unit by Income Range"
+typeDataWithTotal$Percentage <- 100*(typeDataWithTotal$`Number of Unit` /typeDataWithTotal$`Total Number of Unit by Income Range`)
+rm(list = ls(pattern = "^T_"))
+
+ageDataWithTotal <- merge(x = ageData_3, y = ageData_SUM, by = "Income Range", all = TRUE)
+names(ageDataWithTotal)[4] <- "Total Number of Unit by Income Range"
+ageDataWithTotal$Percentage <- 100*(ageDataWithTotal$`Number of Unit` /ageDataWithTotal$`Total Number of Unit by Income Range`)
+rm(list = ls(pattern = "^T_"))
+
+
+```
+
+```{r}
+#Start plotting
+PLOT_SIZE_PERC <- ggplot(data = sizeDataWithTotal, aes(x = `Income Range`, y = Percentage)) +
+                 geom_col(aes(fill = `RFG_SIZE`)) +
+                 labs(title = "Refrigerator Size Percentage") +
+                 coord_flip()
+
+PLOT_SIZE <- ggplot(data = sizeDataWithTotal, aes(x = `Income Range`, y = `Number of Unit`)) +
+             geom_col(aes(fill = `RFG_SIZE`)) +
+             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+             labs(title = "Refrigerator Size Histogram by Income Range, 2015")
+
+PLOT_TYPE_PERC <- ggplot(data = typeDataWithTotal, aes(x = `Income Range`, y = Percentage)) +
+                 geom_col(aes(fill = `RFG_TYPE`)) +
+                 labs(title = "Refrigerator Type Percentage") +
+                 coord_flip()
+
+PLOT_TYPE <- ggplot(data = typeDataWithTotal, aes(x = `Income Range`, y = `Number of Unit`)) +
+             geom_col(aes(fill = `RFG_TYPE`)) +
+             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+             labs(title = "Refrigerator Type Histogram by Income Range, 2015")
+
+PLOT_AGE_PERC <- ggplot(data = ageDataWithTotal, aes(x = `Income Range`, y = Percentage)) +
+                 geom_col(aes(fill = `RFG_AGE`)) +
+                 labs(title = "Refrigerator Age Percentage") +
+                 coord_flip()
+
+PLOT_AGE <- ggplot(data = ageDataWithTotal, aes(x = `Income Range`, y = `Number of Unit`)) +
+             geom_col(aes(fill = `RFG_AGE`)) +
+             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+             labs(title = "Refrigerator Age Histogram by Income Range, 2015")
+```
+
+
+
+
+```{r}
+#export result
+
+PLOT_SIZE_PERC
+PLOT_SIZE
+
+PLOT_TYPE_PERC
+PLOT_TYPE
+
+
+PLOT_AGE_PERC
+PLOT_AGE
 
 ```
 
