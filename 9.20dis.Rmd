@@ -1,9 +1,0 @@
----
-title: "9.20dis"
-output: pdf_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
