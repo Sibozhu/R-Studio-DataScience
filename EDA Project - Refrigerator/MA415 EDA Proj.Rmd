@@ -1,5 +1,5 @@
 ---
-title: "MA415/615 EDA Project"
+title: "MA415/615 EDA Project - Refrigerator"
 author: "Xiaoqian Xue, Sibo Zhu,  Li Liu,  Yufei Lin,  Danni Fu"
 date: "2017/10/10"
 output: html_document
