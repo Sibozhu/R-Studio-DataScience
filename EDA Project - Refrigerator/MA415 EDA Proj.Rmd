@@ -338,49 +338,61 @@ First, we compared the appliances of refrigerator size in homes in overall U.S r
 ```{r}
 PLOT_SIZE_TTL
 ```
+
 Next, we focus on the total northeast, total Midwest regions, specifically New England, Middle Atlantic, East North Central and West North Central. We find out that all surveyed households us a refrigerator and none of the surveyed households use half-size or compact refrigerator or very large size refrigerator. Medium and large size refrigerator are more popular in those 4 regions compared to the small size. 
 
 
 ```{r}
 PLOT_NM_SIZE
 ```
+
 To find out which size of refrigerator is the most popular one in the each part of the Northeast and Midwest regions, we calculate the percentage of the number of households using specific size by the total number of households in different regions. Then we use the ggplot to compare the difference. We find out there is no difference between West North Central and East North Central that the medium size refrigerator is more popular than the large size one. Large size refrigerator tends to be more dominate in the Middle Atlantic and New England. Therefore, we should market the medium size refrigerator in the West North Central and East North Central, and the large size refrigerator in the Middle Atlantic and New England. 
 ```{r}
 PLOT_NM_SIZE_PERC
 ```
+
 Then we focus on the South and West regions, specifically South Atlantic, East South Central, West South Central, Mountain North, Mountain South and Pacific. Only tiny number of households use the half-size or compact, small size or very large size refrigerator. In the South Atlantic and West Central, the large and medium size are both popular. However, in the East South Central and Pacific, medium size refrigerator seems more popular. The ggplot also shows that the distribution of Mountain North and South are similar in which the large size and the medium size refrigerator equally dominate. 
 
 ```{r}
 PLOT_SW_SIZE
 ```
+
 To get a more accurate information to confirm the previous observation, we also calculate the percentage of the number of households using specific size by the total number of households in different regions. Then we use the ggplot to compare the difference in the South and West Regions. We find out medium size refrigerator is the most popular in the Pacific, Mountain South, Mountain North and East Central. For West Central and South Atlantic, the medium size and large size refrigerator are equally popular. Therefore, we can market the medium size refrigerator in all South and West regions and the large size refrigerator in West Central and South Atlantic. 
+
 ```{r}
 PLOT_SW_SIZE_PERC
 ```
+
 To better market, we compared the appliances of refrigerator types in homes in overall U.S regions by using the ggplot. The refrigerator types vary in half-size/compact, one door, three or more doors, two doors with bottom freezer, two doors with side by side, two doors with top freezer. The vertical axis is the number of housing unit and the horizontal axis is four regions, total northeast, total Midwest plus Middle Atlantic, Total South and Total West.  It is clearly shown in the ggplot that most household in the U.S. use two doors refrigerators with top freezer and two doors refrigerator with side by side. Only few of the household does not use a refrigerator. There is no big difference between different regions in the types of refrigerator used by households. 
 
 ```{r}
 PLOT_TYPE_TTL
 ```
+
 First, we study on the appliances of refrigerator types in the total Northeast and total Midwest regions, consisting of New England, Middle Atlantic, East North Central and West North Central. It is shown that only few households in all region use a one door refrigerator, and none of them does not use a refrigerators and none of them use a half-size or compact refrigerators.  Two doors refrigerators with top freezer and two doors refrigerators with side by side occupy the majority of households’ appliance in all five regions in Northeast and Midwest regions compare to other types.
+
 ```{r}
 PLOT_NM_TYPE
 ```
+
 To make a further conclusion, the percentage of the refrigerator types of each region are calculated dividing each types by the total number of appliance in specific region. Then we use ggplot to more clearly see the distribution of each types in specific regions. It is shown that majority of those households in Northeast and Midwest regions use two doors refrigerators with top freezers. Tiny amount households in Middle Atlantic, East North Central and West North Central uses the three doors refrigerators, and none of those from New England use three doors’.  And there is no big difference in the distribution of different types among all the regions.
 
 ```{r}
 PLOT_NM_TYPE_PERC
 ```
+
 Next, we focus on the South and West regions, consisting of 6 sub regions, South Atlantic, East South Central, West South Central, Mountain North, Mountain South and Pacific regions. According to the ggplot, we can see that the most household in South and West prefer the two door refrigerator with top freezer and two doors refrigerators with side by side. Only tiny amount of household in Pacific region does not use a refrigerator. And little amount of the half-size or compact refrigerators are used by all those regions in South and west., and few of the household in all those South and West region use the one door refrigerators.
 
 ```{r}
 PLOT_SW_TYPE
 ```
+
 To confirm our analysis, the percentage of each refrigerator types used by households in different regions are calculated by the total number of household in different regions of the South and West.  Ggplot is effectively used to compare the different preference of refrigerator type of all six regions.  We found out that majority of the household of each region use the two doors refrigerators with top freezers and two doors refrigerator with side by side. Thus, we can conclude that two doors refrigerators with top freezers and two doors refrigerators with side by side should be marketed in all South and West regions. 
 
 ```{r}
 PLOT_SW_TYPE_PERC
 ```
+
 ###Conclusion 
 In general, medium size and two doors refrigerator with top freezers is the most popular size throughout U.S, especially in the West North Central and East North Central, in all South and West regions. Also, the two doors refrigerators with top freezers can also be marketed in all South and West regions. The large size refrigerator can also be the another target for marketing, since it is more popular than the medium size in the Middle Atlantic , New England , West Central and South Atlantic.  
 
