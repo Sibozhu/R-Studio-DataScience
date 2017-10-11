@@ -2,7 +2,7 @@
 title: "MA415/615 EDA Project - Refrigerator"
 author: "Xiaoqian Xue, Sibo Zhu,  Li Liu,  Yufei Lin,  Danni Fu"
 date: "2017/10/10"
-output: html_document
+output: pdf_document
 ---
 #Introduction 
 In order to find the best plan for marketing the refrigerators in U.S, we explore the EIA data in 2015 RECS Survey. In this project, we focus on the Appliance by Household income (HC 3.5), and the Refrigerator’s size and type in the Northeast and Midwest regions (HC 3.7) and in the South and West regions (HC 3.8). 
