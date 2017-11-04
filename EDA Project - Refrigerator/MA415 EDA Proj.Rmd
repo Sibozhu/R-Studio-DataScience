@@ -400,9 +400,6 @@ To confirm our analysis, the percentage of each refrigerator types used by house
 PLOT_SW_TYPE_PERC
 ```
 
-###Conclusion 
-In general, medium size and two doors refrigerator with top freezers is the most popular size throughout U.S, especially in the West North Central and East North Central, in all South and West regions. Also, the two doors refrigerators with top freezers can also be marketed in all South and West regions. The large size refrigerator can also be the another target for marketing, since it is more popular than the medium size in the Middle Atlantic , New England , West Central and South Atlantic.  
-
 
 ##Exploring for different Income Levels
 
