@@ -5,26 +5,874 @@ date: "2017/11/4"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+#2001
+
+```{r}
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_jan_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jan2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jan2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_feb_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.feb2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.feb2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_mar_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.mar2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.mar2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_apr_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.apr2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.apr2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_may_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.may2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.may2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_jun_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jun2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jun2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_jul_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jul2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jul2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_aug_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.aug2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.aug2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_sep_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.sep2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.sep2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_oct_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.oct2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.oct2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_nov_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.nov2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.nov2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_dec_2001.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.dec2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.dec2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+data.2001 <- rbind(data.clean.jan2001, data.clean.feb2001, data.clean.mar2001, data.clean.apr2001, data.clean.may2001, data.clean.jun2001, data.clean.jul2001, data.clean.aug2001, data.clean.sep2001, data.clean.oct2001, data.clean.nov2001, data.clean.dec2001)
+``` 
+
+
+
+
+
+#2002
+
+```{r}
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_jan_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jan2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jan2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+ 
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_feb_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.feb2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.feb2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_mar_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.mar2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.mar2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_apr_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.apr2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.apr2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_may_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.may2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.may2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_jun_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jun2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jun2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_jul_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jul2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jul2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_aug_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.aug2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.aug2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_sep_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.sep2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.sep2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_oct_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.oct2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.oct2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_nov_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.nov2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.nov2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_dec_2002.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.dec2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.dec2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+data.2002 <- rbind(data.clean.jan2002, data.clean.feb2002, data.clean.mar2002, data.clean.apr2002, data.clean.may2002, data.clean.jun2002, data.clean.jul2002, data.clean.aug2002, data.clean.sep2002, data.clean.oct2002, data.clean.nov2002, data.clean.dec2002)
+``` 
+
+
+
+
+#2003
+
+```{r}
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_jan_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jan2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jan2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_feb_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.feb2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.feb2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_mar_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.mar2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.mar2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_apr_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.apr2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.apr2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+#data.clean.apr2003 <- rbind(data.clean.apr2003.1, data.clean.apr2003.2, data.clean.apr2003.3)
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_may_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.may2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.may2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_jun_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jun2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jun2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_jul_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jul2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jul2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_aug_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.aug2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.aug2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_sep_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.sep2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.sep2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_oct_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.oct2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.oct2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_nov_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.nov2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.nov2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_dec_2003.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.dec2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.dec2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+data.2003 <- rbind(data.clean.jan2003, data.clean.feb2003, data.clean.mar2003, data.clean.apr2003, data.clean.may2003, data.clean.jun2003, data.clean.jul2003, data.clean.aug2003, data.clean.sep2003, data.clean.oct2003, data.clean.nov2003, data.clean.dec2003)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+#2004
+```{r}
 
-```{r cars}
-summary(cars)
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_jan_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jan2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jan2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_feb_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.feb2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.feb2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_mar_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.mar2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.mar2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_apr_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.apr2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.apr2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_may_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.may2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.may2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_jun_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jun2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jun2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_jul_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.jul2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.jul2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_aug_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.aug2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.aug2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_sep_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.sep2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.sep2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_oct_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.oct2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.oct2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_nov_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.nov2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.nov2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+
+data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_dec_2004.txt")
+
+df <- NULL
+for (i in 1:length(data)) {
+  tmp <- data[i]
+  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
+  df <- rbind(df, subtmp)
+}
+
+data.clean.dec2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
+names(data.clean.dec2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
+
+
+
+
+
+
+data.2004 <- rbind(data.clean.jan2004, data.clean.feb2004, data.clean.mar2004, data.clean.apr2004, data.clean.may2004, data.clean.jun2004, data.clean.jul2004, data.clean.aug2004, data.clean.sep2004, data.clean.oct2004, data.clean.nov2004, data.clean.dec2004)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+
+# combined 2001-2004 (and Jan 1 of 2005)
+
+data.upto.2004 <- rbind(data.2001, data.2002, data.2003, data.2004)
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+
+# get rid of non numerics in LON
+data.upto.2004$LON=as.numeric(data.upto.2004$LON)
+
+# narrow down to latitudes/longitudes of southeast asia
+data.upto.2004 <- subset(data.upto.2004, LAT >= -600 & LAT <= 1800)
+data.upto.2004 <- subset(data.upto.2004, LON >= 108 & LON <= 136)
+
+```
+
+
+
