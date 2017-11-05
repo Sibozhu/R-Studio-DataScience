@@ -13,6 +13,8 @@ library(ggplot2)
 library(ggrepel)
 args = commandArgs(trailingOnly=TRUE)
 
+dir.create("Cleaned_Data")
+
 if (length(args) >= 4) {
   START = as.numeric(args[1])
   END = as.numeric(args[2])
@@ -25,10 +27,6 @@ if (length(args) >= 4) {
   SAVE_DIR = "cleaned_data"   # name of directory to save the clean data
 }
 
-```
-
-
-```{r}
 # info to save the clean data
 FILENAME = "df"
 SAVE_EXT = ".Rdata"
@@ -41,10 +39,6 @@ MONTHS = c("jan", "feb", "mar",
 EXT = ".txt"
 DATA_PATH = './data/'
 
-
-```
-
-```{r}
 # cleans the data for a specific year == YEAR
 cleanAllMonthsOfYear <- function(YEAR) {
   # start constructing the file path 
@@ -186,7 +180,7 @@ cleanAllMonthsOfYear <- function(YEAR) {
   #xlim and ylim can be manipulated to zoom in or out of the map
   final <-  gg1 +
     geom_point(data=df2, aes(long, lat), colour="red", size=1) +
-    ggtitle(paste("Subcontinent East", YEAR, sep=" ")) +
+    ggtitle(paste("Subcontinent West", YEAR, sep=" ")) +
     geom_text_repel(data=df2, aes(long, lat, label="")) + xlim(60,110) + ylim(0,40)
 
   ggsave(paste("map", YEAR, ".png", sep=""))
@@ -208,9 +202,6 @@ cleanAllMonthsOfYear <- function(YEAR) {
 
 }
 
-```
-
-```{r}
 
 # cleans all data for years 2001 - 2016
 cleanAllData <- function(start, end) {
@@ -219,9 +210,8 @@ cleanAllData <- function(start, end) {
     cleanAllMonthsOfYear(str_frm)  # calls the function for current year
   }
 }
-```
 
-```{r}
 # comment in the line below to clean all data from 2001-2016
-cleanAllData(2001, 2016)
+cleanAllData(START, END)
+
 ```
