@@ -5,874 +5,210 @@ date: "2017/11/4"
 output: pdf_document
 ---
 
-
-#2001
-
 ```{r}
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_jan_2001.txt")
+#!/usr/bin/env Rscript
+require(maps)
+require(mapdata)
+library(ggplot2)
+library(ggrepel)
+args = commandArgs(trailingOnly=TRUE)
 
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
+if (length(args) >= 4) {
+  START = as.numeric(args[1])
+  END = as.numeric(args[2])
+  SAVE_PATH = args[3]
+  SAVE_DIR = args[4]
+} else {
+  START = 2001
+  END = 2016
+  SAVE_PATH = "./"               # path for saving and opening data files
+  SAVE_DIR = "cleaned_data"   # name of directory to save the clean data
 }
 
-data.clean.jan2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jan2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_feb_2001.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.feb2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.feb2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_mar_2001.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.mar2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.mar2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_apr_2001.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.apr2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.apr2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_may_2001.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.may2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.may2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_jun_2001.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.jun2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jun2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_jul_2001.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.jul2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jul2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_aug_2001.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.aug2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.aug2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_sep_2001.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.sep2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.sep2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_oct_2001.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.oct2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.oct2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_nov_2001.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.nov2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.nov2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/VOSClim_GTS_dec_2001.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.dec2001 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.dec2001) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-data.2001 <- rbind(data.clean.jan2001, data.clean.feb2001, data.clean.mar2001, data.clean.apr2001, data.clean.may2001, data.clean.jun2001, data.clean.jul2001, data.clean.aug2001, data.clean.sep2001, data.clean.oct2001, data.clean.nov2001, data.clean.dec2001)
-``` 
-
-
-
-
-
-#2002
-
-```{r}
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_jan_2002.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.jan2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jan2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
+# info to save the clean data
+FILENAME = "df"
+SAVE_EXT = ".Rdata"
+
+# info to construct the filenames
+MONTHS = c("jan", "feb", "mar",
+           "apr", "may", "jun",
+           "jul", "aug", "sep",
+           "oct", "nov", "dec")
+EXT = ".txt"
+DATA_PATH = './data/'
+
+# cleans the data for a specific year == YEAR
+cleanAllMonthsOfYear <- function(YEAR) {
+  # start constructing the file path 
+  FILES_PATH = paste(DATA_PATH, YEAR, "/VOSClim_GTS_", sep ='')
+  
+  # data fram variable of YEAR
+  df.year <- NULL
+  EDA.year = NULL
+  # for every month
+  for (i in 1:length(MONTHS)) {
+    # construct the filename
+    filename <- paste(FILES_PATH, MONTHS[i], "_", YEAR, EXT, sep = "")
+    
+    # read the file
+    print(filename)
+    current <- readLines(filename)
+    
+    # temporary dataframe for current month months[i]
+    df <- NULL
+    EDA.Month = NULL
+    total_sea_temp = 0
+    total_air_temp = 0
+    total_rows = 0
+    # for every row in the file
+    for (j in 1:length(current)) {
+      # get the row, and deparate the columns
+      tmp <- current[j]
+      subtmp <- paste0("SubEast10", "Ship", "tm", substr(tmp, 1, 21), substr(tmp, 86, 89), substr(tmp, 70, 73))
+
+      # isolate the Latitude and Longitude values to check if there are in our sub-region ranges
+      # since as.numeric() gives warnings if it finds NA, we need to temporarily suprress warnings
+      # source: https://stackoverflow.com/questions/16194212/how-to-suppress-warnings-globally-in-an-r-script
+      oldw <- getOption("warn")
+      options(warn = -1)
+      LAT = as.numeric(substr(tmp, 13, 17))   # slices the row and converts to a number
+      LON = as.numeric(substr(tmp, 18, 21))
+      HOUR = as.numeric(substr(tmp, 9, 12))
+      temp_air = as.numeric(substr(tmp, 70, 73))
+      temp_sea = as.numeric(substr(tmp, 86, 89))
+      options(warn = oldw)
  
+      # checks if LAT and LON are in the range 
+      # also checks if time when data is collected (hour) is within 6 hours of noon 
+      # FIX: --> error in feb 2010 w/ && (HOUR %in% 600:1800)
+      if ((LAT %in% 600:2000) && (LON %in% 80:100)) {
+        # add to the temporary data frame
+          if (HOUR == 1200) {
+            substr(subtmp, 14, 15) <- "+0"
+            df <- rbind(df, subtmp)
+          }
+          else if ((HOUR %in% 600:1199)) {
+            substr(subtmp, 14, 15) <- paste0("-", toString(1200-HOUR))
+            df <- rbind(df, subtmp)
+          }
+         else if ((HOUR %in% 1201:1800)) {
+          substr(subtmp, 14, 15) <- paste0("+", toString(HOUR-1200))
+          df <- rbind(df, subtmp)
+         }
+          else {
+            substr(subtmp, 14, 15) <- "A "
+            df <- rbind(df, subtmp)
+          }
 
+	total_air_temp = sum(total_air_temp, temp_air, na.rm = TRUE)
+        total_sea_temp = sum(total_sea_temp, temp_sea, na.rm = TRUE)
+        total_rows = total_rows + 1
+      }
+    }
+ 
+    # averege tem of each month 
+    total_rows = total_rows*10
+    AVE.AIR.TEMP = total_air_temp/total_rows
+    AVE.SEA.TEMP = total_sea_temp/total_rows
+    EDA.MONTH = cbind(MONTHS[i], AVE.SEA.TEMP, AVE.AIR.TEMP)
+    EDA.year = rbind(EDA.year, EDA.MONTH)
 
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_feb_2002.txt")
+    # generate the columns with given sizes
+    data.clean.month <-
+      read.fwf(textConnection(df), widths = c(9, 4, 2, 12, 5, 4, 4, 4))
+    
+    # name the columns
+    names(data.clean.month) <-
+      c("REGION","TYP","DIFF", "LOCALTIME", "LAT", "LON", "SST", "AT")
+  
+    # omit all rows with "NA" values in any column
+    data.clean.month <- na.omit(data.clean.month)
+    
+    #(Formatting) Fix Range of lat and AT and SST
+    if (nrow(data.clean.month) >= 1) {
+      for(i in 1:nrow(data.clean.month)){
+        data.clean.month$AT[i] <- toString(as.numeric(data.clean.month$AT[i])/10)
+        data.clean.month$SST[i] <- toString(as.numeric(data.clean.month$SST[i])/10)
+        data.clean.month$LAT[i] <- toString(floor(as.numeric(data.clean.month$LAT[i])/100))
+      }
+    }
+    
+    # add all the temporary data frame of the month to the data frame of the year
+    df.year <- rbind(df.year, data.clean.month)
 
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
+  }
+  
+  #removing the quantile in AT
+  #removing the quantile in SST
+  df.year.with.extremes = df.year
+  
+  A = quantile(as.numeric(df.year$SST), prob = c(0.99))
+  B = quantile(as.numeric(df.year$SST), prob = c(0.01))
+  x = quantile(as.numeric(df.year$AT), prob = c(0.99))
+  y = quantile(as.numeric(df.year$AT), prob = c(0.01))
+  
+  df.year = df.year[df.year$AT < x,]
+  df.year = df.year[df.year$AT > y,]
+  df.year = df.year[df.year$SST < A,]
+  df.year = df.year[df.year$SST > B,]
+  
+  #global map
+  global <- map_data("world")
+  ggplot() + geom_polygon(data = global, aes(x=long, y = lat, group = group)) +
+    coord_fixed(1.3)
+  
+  #add borders
+  ggplot() +
+    geom_polygon(data = global, aes(x=long, y = lat, group = group), fill = NA, color = "red") +
+    coord_fixed(1.3)
+  
+  #fill in 
+  gg1 <- ggplot() +
+    geom_polygon(data = global, aes(x=long, y = lat, group = group), fill = "green", color = "black") +
+    coord_fixed(1.3)
+  gg1
+  
+  #specific latitude/longitude (of year)
+  df2 <- data.frame(
+    long = as.numeric(df.year$LON),
+    lat = as.numeric(df.year$LAT),
+    stringsAsFactors = FALSE
+  )
+  
+  #xlim and ylim can be manipulated to zoom in or out of the map
+  final <-  gg1 +
+    geom_point(data=df2, aes(long, lat), colour="red", size=1) +
+    ggtitle(paste("Subcontinent East", YEAR, sep=" ")) +
+    geom_text_repel(data=df2, aes(long, lat, label="")) + xlim(60,110) + ylim(0,40)
+
+  ggsave(paste("map", YEAR, ".png", sep=""))
+
+  # create the save path for the clean data ans save it
+  SAVE_PATH_ALL = paste(SAVE_PATH, SAVE_DIR, "/", FILENAME, "_", YEAR, SAVE_EXT, sep = "")
+  print(SAVE_PATH)
+  save(df.year, file = SAVE_PATH_ALL)
+  final
+
+  names(EDA.year) = c("month","ave.sea.temp","ave.air.temp")
+  SAVE_PATH_AVE = paste(SAVE_PATH, SAVE_DIR, "/", "ave_temp", "_", YEAR, SAVE_EXT, sep = "")
+  print(SAVE_PATH)
+  save(EDA.year, file = SAVE_PATH_AVE)
+
+  SAVE_PATH_EXTEREMES = paste(SAVE_PATH, SAVE_DIR, "/", "data_with_extremes", "_", YEAR, SAVE_EXT, sep = "")
+  print(SAVE_PATH_EXTEREMES)
+  save(df.year.with.extremes, file = SAVE_PATH_EXTEREMES)
+
 }
 
-data.clean.feb2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.feb2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
 
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_mar_2002.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
+# cleans all data for years 2001 - 2016
+cleanAllData <- function(start, end) {
+  for (k in start:end) {
+    str_frm = toString(k)          # converts year to a string in preparation to call the function
+    cleanAllMonthsOfYear(str_frm)  # calls the function for current year
+  }
 }
 
-data.clean.mar2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.mar2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_apr_2002.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.apr2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.apr2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_may_2002.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.may2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.may2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_jun_2002.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.jun2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jun2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_jul_2002.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.jul2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jul2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_aug_2002.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.aug2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.aug2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_sep_2002.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.sep2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.sep2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_oct_2002.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.oct2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.oct2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_nov_2002.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.nov2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.nov2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/VOSClim_GTS_dec_2002.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.dec2002 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.dec2002) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-data.2002 <- rbind(data.clean.jan2002, data.clean.feb2002, data.clean.mar2002, data.clean.apr2002, data.clean.may2002, data.clean.jun2002, data.clean.jul2002, data.clean.aug2002, data.clean.sep2002, data.clean.oct2002, data.clean.nov2002, data.clean.dec2002)
-``` 
-
-
-
-
-#2003
-
-```{r}
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_jan_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.jan2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jan2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_feb_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.feb2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.feb2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_mar_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.mar2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.mar2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_apr_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.apr2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.apr2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-#data.clean.apr2003 <- rbind(data.clean.apr2003.1, data.clean.apr2003.2, data.clean.apr2003.3)
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_may_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.may2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.may2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_jun_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.jun2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jun2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_jul_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.jul2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jul2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_aug_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.aug2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.aug2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_sep_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.sep2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.sep2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_oct_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.oct2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.oct2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_nov_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.nov2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.nov2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/VOSClim_GTS_dec_2003.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.dec2003 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.dec2003) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-data.2003 <- rbind(data.clean.jan2003, data.clean.feb2003, data.clean.mar2003, data.clean.apr2003, data.clean.may2003, data.clean.jun2003, data.clean.jul2003, data.clean.aug2003, data.clean.sep2003, data.clean.oct2003, data.clean.nov2003, data.clean.dec2003)
+# comment in the line below to clean all data from 2001-2016
+cleanAllData(2001, 2016)
 ```
-
-
-
-#2004
-```{r}
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_jan_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.jan2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jan2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_feb_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.feb2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.feb2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_mar_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.mar2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.mar2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_apr_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.apr2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.apr2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_may_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.may2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.may2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_jun_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.jun2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jun2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_jul_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.jul2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.jul2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_aug_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.aug2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.aug2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_sep_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.sep2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.sep2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_oct_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.oct2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.oct2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_nov_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.nov2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.nov2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-
-data <- readLines("https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/VOSClim_GTS_dec_2004.txt")
-
-df <- NULL
-for (i in 1:length(data)) {
-  tmp <- data[i]
-  subtmp <- paste0(substr(tmp, 1, 21), substr(tmp, 69, 73), substr(tmp, 84, 89))
-  df <- rbind(df, subtmp)
-}
-
-data.clean.dec2004 <- read.fwf(textConnection(df), widths=c(4,2,2,4,5,4,1,4,2,4))
-names(data.clean.dec2004) <- c("YR", "MO", "DY", "HR", "LAT", "LON", "IT", "AT", "SI", "SST")
-
-
-
-
-
-
-data.2004 <- rbind(data.clean.jan2004, data.clean.feb2004, data.clean.mar2004, data.clean.apr2004, data.clean.may2004, data.clean.jun2004, data.clean.jul2004, data.clean.aug2004, data.clean.sep2004, data.clean.oct2004, data.clean.nov2004, data.clean.dec2004)
-```
-
-
-
-```{r}
-
-# combined 2001-2004 (and Jan 1 of 2005)
-
-data.upto.2004 <- rbind(data.2001, data.2002, data.2003, data.2004)
-
-```
-
-```{r}
-
-# get rid of non numerics in LON
-data.upto.2004$LON=as.numeric(data.upto.2004$LON)
-
-# narrow down to latitudes/longitudes of southeast asia
-data.upto.2004 <- subset(data.upto.2004, LAT >= -600 & LAT <= 1800)
-data.upto.2004 <- subset(data.upto.2004, LON >= 108 & LON <= 136)
-
-```
-
-
-
