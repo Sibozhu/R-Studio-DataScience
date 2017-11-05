@@ -13,7 +13,7 @@ library(ggplot2)
 library(ggrepel)
 args = commandArgs(trailingOnly=TRUE)
 
-dir.create("cleaned_data")
+dir.create("Cleaned_Data")
 dir.create("Maps")
 
 if (length(args) >= 4) {
@@ -22,8 +22,6 @@ if (length(args) >= 4) {
   SAVE_PATH = args[3]
   SAVE_DIR = args[4]
 } else {
-  START = 2001
-  END = 2016
   SAVE_PATH = "./"               # path for saving and opening data files
   SAVE_DIR = "cleaned_data"   # name of directory to save the clean data
 }
@@ -162,12 +160,12 @@ cleanAllMonthsOfYear <- function(YEAR) {
   
   #add borders
   ggplot() +
-    geom_polygon(data = global, aes(x=long, y = lat, group = group), fill = NA, color = "red") +
+    geom_polygon(data = global, aes(x=long, y = lat, group = group), fill = NA, color = "blue") +
     coord_fixed(1.3)
   
   #fill in 
   gg1 <- ggplot() +
-    geom_polygon(data = global, aes(x=long, y = lat, group = group), fill = "green", color = "black") +
+    geom_polygon(data = global, aes(x=long, y = lat, group = group), fill = "white", color = "grey") +
     coord_fixed(1.3)
   gg1
   
@@ -180,8 +178,9 @@ cleanAllMonthsOfYear <- function(YEAR) {
   
   #xlim and ylim can be manipulated to zoom in or out of the map
   final <-  gg1 +
-    geom_point(data=df2, aes(long, lat), colour="red", size=1) +
+    geom_point(data=df2, aes(long, lat), colour="blue", size=1) +
     ggtitle(paste("Subcontinent West", YEAR, sep=" ")) +
+    theme(plot.title = element_text(hjust = 0.5)) +
     geom_text_repel(data=df2, aes(long, lat, label="")) + xlim(60,110) + ylim(0,40)
 
   ggsave(paste("map_of_", YEAR, ".png", sep=""),path="./Maps")
@@ -213,6 +212,6 @@ cleanAllData <- function(start, end) {
 }
 
 # comment in the line below to clean all data from 2001-2016
-cleanAllData(START, END)
+cleanAllData(2001, 2016)
 
 ```
