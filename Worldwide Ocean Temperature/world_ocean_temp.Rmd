@@ -189,17 +189,14 @@ cleanAllMonthsOfYear <- function(YEAR) {
 
   # create the save path for the clean data ans save it
   SAVE_PATH_ALL = paste(SAVE_PATH, SAVE_DIR, "/", FILENAME, "_", YEAR, SAVE_EXT, sep = "")
-  print(SAVE_PATH)
   save(df.year, file = SAVE_PATH_ALL)
   final
 
   names(EDA.year) = c("month","ave.sea.temp","ave.air.temp")
   SAVE_PATH_AVE = paste(SAVE_PATH, SAVE_DIR, "/", "ave_temp", "_", YEAR, SAVE_EXT, sep = "")
-  print(SAVE_PATH)
   save(EDA.year, file = SAVE_PATH_AVE)
 
   SAVE_PATH_EXTEREMES = paste(SAVE_PATH, SAVE_DIR, "/", "data_with_extremes", "_", YEAR, SAVE_EXT, sep = "")
-  print(SAVE_PATH_EXTEREMES)
   save(df.year.with.extremes, file = SAVE_PATH_EXTEREMES)
 
 }
@@ -217,4 +214,48 @@ cleanAllData <- function(start, end) {
 cleanAllData(2001, 2016)
 ```
 
+```{r}
+matrix.jan.temp = NULL
+matrix.jul.temp  = NULL
+
+#### the following loop will generate the graphs 
+##### and it will build two matrices to track the average temprtures of two months through out the 16 years. 
+for (k in 2001:2016) {
+  YEAR = k
+  
+  load(paste0("./cleaned_data/ave_temp_",YEAR,".Rdata"))
+  plot(EDA.year[,2], type = "l",  main = paste("Average Sea Tempreture in", YEAR, sep = " ") , xlab = "month", ylab =    "Temperature", col = "blue")
+  
+  plot(EDA.year[,3], type = "l",  main = paste("Average Air Tempreture in", YEAR, sep = " ") , xlab = "month", ylab =    "Temperature", col = "red")
+  
+  jan.temp = EDA.year[1,2:3 ]
+  jul.temp = EDA.year[7,2:3]
+  #jan.temp = cbind(YEAR, jan.temp)
+  matrix.jul.temp = rbind(matrix.jul.temp , jul.temp)
+  matrix.jan.temp = rbind(matrix.jan.temp , jan.temp)
+}
+
+colnames(matrix.jan.temp) = c("SEA" , "AIR")
+rownames(matrix.jan.temp) = c("2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016")
+
+colnames(matrix.jul.temp) = c("SEA" , "AIR")
+rownames(matrix.jul.temp) = c("2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016")
+
+
+```
+
+
+
+```{r}
+
+###### graphing the average tempruturs of JAN AND JUL across 16 years in a gragh. 
+
+#lines(matrix.jan.temp[,1])
+plot(matrix.jan.temp[,1], type = "l",  main = "Average Sea Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red")
+plot(matrix.jan.temp[,2], type = "l",  main = "Average Air Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "blue")
+
+plot(matrix.jul.temp[,2], type = "l",  main = "Average Air Tempreture of July" , xlab = "Year", ylab = "Temperature", col = "red")
+
+plot(matrix.jul.temp[,1], type = "l",  main = "Average Sea Tempreture of July" , xlab = "Year", ylab = "Temperature", col = "blue")
+```
 
