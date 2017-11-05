@@ -215,5 +215,6 @@ cleanAllData <- function(start, end) {
 
 # comment in the line below to clean all data from 2001-2016
 cleanAllData(2001, 2016)
-
 ```
+
+
