@@ -25,6 +25,9 @@ if (length(args) >= 4) {
   SAVE_DIR = "cleaned_data"   # name of directory to save the clean data
 }
 
+```
+
+```{r}
 # info to save the clean data
 FILENAME = "df"
 SAVE_EXT = ".Rdata"
@@ -37,6 +40,10 @@ MONTHS = c("jan", "feb", "mar",
 EXT = ".txt"
 DATA_PATH = './data/'
 
+
+```
+
+```{r}
 # cleans the data for a specific year == YEAR
 cleanAllMonthsOfYear <- function(YEAR) {
   # start constructing the file path 
@@ -200,6 +207,9 @@ cleanAllMonthsOfYear <- function(YEAR) {
 
 }
 
+```
+
+```{r}
 
 # cleans all data for years 2001 - 2016
 cleanAllData <- function(start, end) {
@@ -208,7 +218,9 @@ cleanAllData <- function(start, end) {
     cleanAllMonthsOfYear(str_frm)  # calls the function for current year
   }
 }
+```
 
+```{r}
 # comment in the line below to clean all data from 2001-2016
 cleanAllData(2001, 2016)
 ```
