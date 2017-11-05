@@ -13,7 +13,8 @@ library(ggplot2)
 library(ggrepel)
 args = commandArgs(trailingOnly=TRUE)
 
-dir.create("Cleaned_Data")
+dir.create("cleaned_data")
+dir.create("Maps")
 
 if (length(args) >= 4) {
   START = as.numeric(args[1])
@@ -66,7 +67,7 @@ cleanAllMonthsOfYear <- function(YEAR) {
     for (j in 1:length(current)) {
       # get the row, and deparate the columns
       tmp <- current[j]
-      subtmp <- paste0("SubEast10", "Ship", "tm", substr(tmp, 1, 21), substr(tmp, 86, 89), substr(tmp, 70, 73))
+      subtmp <- paste0("SubWest10", "Ship", "tm", substr(tmp, 1, 21), substr(tmp, 86, 89), substr(tmp, 70, 73))
 
       # isolate the Latitude and Longitude values to check if there are in our sub-region ranges
       # since as.numeric() gives warnings if it finds NA, we need to temporarily suprress warnings
@@ -83,7 +84,7 @@ cleanAllMonthsOfYear <- function(YEAR) {
       # checks if LAT and LON are in the range 
       # also checks if time when data is collected (hour) is within 6 hours of noon 
       # FIX: --> error in feb 2010 w/ && (HOUR %in% 600:1800)
-      if ((LAT %in% 600:2000) && (LON %in% 80:100)) {
+      if ((LAT %in% 600:2000) && (LON %in% 60:80)) {
         # add to the temporary data frame
           if (HOUR == 1200) {
             substr(subtmp, 14, 15) <- "+0"
@@ -183,7 +184,7 @@ cleanAllMonthsOfYear <- function(YEAR) {
     ggtitle(paste("Subcontinent West", YEAR, sep=" ")) +
     geom_text_repel(data=df2, aes(long, lat, label="")) + xlim(60,110) + ylim(0,40)
 
-  ggsave(paste("map", YEAR, ".png", sep=""))
+  ggsave(paste("map_of_", YEAR, ".png", sep=""),path="./Maps")
 
   # create the save path for the clean data ans save it
   SAVE_PATH_ALL = paste(SAVE_PATH, SAVE_DIR, "/", FILENAME, "_", YEAR, SAVE_EXT, sep = "")
