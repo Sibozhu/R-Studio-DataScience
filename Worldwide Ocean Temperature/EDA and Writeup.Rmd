@@ -1,24 +1,67 @@
 ---
-title: "“Worldwide Ocean Temperature EDA""
+title: "Worldwide Ocean Temperature EDA and Writeup"
 author: "Xiaoqian Xue, Sibo Zhu,  Li Liu,  Danni Fu"
 date: "2017/11/6"
 output: pdf_document
 ---
 
-#EDA Part
+#Region name : Subcontinent West
+
+
+#Summary and EDA of reported data.
+
+##The Condition of the Data and Interesting Detail 
+
+\indent Without considering the location, lowest temperature is usually between December and January, while the highest temperatures around August. According to the geography, subcontinent west is close to equator so the temperature difference through the year should not be noticeable.  Since water has bigger specific heat capacity, from the equation $\Delta$T=Q/mc ($\Delta$=temperature change, Q=heat, m=mass, c=specific heat capacity), we can predict that the sea temperature change has a smaller range than that of air temperature, which is consistence with our plots.  Also, in our plots, there’s no pattern showing increase or decrease of temperature from 2001 to 2016.\par
+
+
+
+##The Data Acquisition and Density of Data.
+
+\indent  For our analysis purpose, ship data is used instead of buoy data, since buoy data only contains the measurement of water depth. Ship data is dependent on the fact that ships needed to be passing through our assigned area. Data from VOS website is divided per month from 2001 to 2016. we make sure the range is in sub-continent west by limit the range of latitude from 6 to 20 and longitude from 60 to 80. In order to make data fit into preferred region while remaining consistent through years, we measure our data within a 6-hour range of noon. We dropped all the data with "NA" value in order to keep our data logically and easy for analysis. By dropping extreme measurement that out of range between (0.01,0.99), we kept the consistency of our data.\par
+
+
+#List of sources with URLs 
+2001 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/ \par
+2002 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2002/ \par
+2003 data : https://www1.ncdc.noaa.gov/pub/data/vosclim/2003/ \par
+2004 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2004/ \par
+2005 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2005/ \par
+2006 data : https://www1.ncdc.noaa.gov/pub/data/vosclim/2006/ \par
+2007 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2007/ \par
+2008 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2008/ \par
+2009 data : https://www1.ncdc.noaa.gov/pub/data/vosclim/2009/ \par
+2010 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2010/ \par
+2011 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2011/ \par
+2012 data : https://www1.ncdc.noaa.gov/pub/data/vosclim/2012/ \par
+2013 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2013/ \par
+2014 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2014/ \par
+2015 data : https://www1.ncdc.noaa.gov/pub/data/vosclim/2015/ \par
+2016 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2016/ \par
+
+
+#Maps
+
+\indent We created maps per year which show the data of Sub-Continent West region from 2001 to 2016. As we can see, when times goes on, records showing that there are more and more ship lanes are travel through this area and more data is collected in Sub-Continent West.
+
+![Caption for the picture.](./Maps/map_of_2001.png)
+![Caption for the picture.](./Maps/map_of_2016.png)
+
 ```{r}
 matrix.jan.temp = NULL
 matrix.aug.temp  = NULL
 
 #### the following loop will generate the graphs 
 ##### and it will build two matrices to track the average temprtures of two months through out the 16 years. 
-for (k in 2001:2016) {
-  YEAR = k
+for (i in 2001:2016) {
+  YEAR = i
   
   load(paste0("./cleaned_data/ave_temp_",YEAR,".Rdata"))
-  plot(EDA.year[,2], type = "l",  main = paste("Average Sea Tempreture of", YEAR, sep = " ") , xlab = "Month", ylab =    "Temperature(C)", col = "blue")
+  Temp_Sea <- plot(EDA.year[,2], type = "l",  main = paste("Average Sea Tempreture of", YEAR, sep = " ") , xlab = "Month", ylab =    "Temperature(C)", col = "blue")
+  ggsave(paste("Average Sea Tempreture of ", YEAR, ".png", sep=""),path="./EDA_PIC")
   
-  plot(EDA.year[,3], type = "l",  main = paste("Average Air Tempreture of", YEAR, sep = " ") , xlab = "Month", ylab =    "Temperature(C)", col = "red")
+  Temp_Air <- plot(EDA.year[,3], type = "l",  main = paste("Average Air Tempreture of", YEAR, sep = " ") , xlab = "Month", ylab =    "Temperature(C)", col = "red")
+  ggsave(paste("Average Air Tempreture of ", YEAR, ".png", sep=""),path="./EDA_PIC")
   
   jan.temp = EDA.year[1,2:3]
   aug.temp = EDA.year[8,2:3]
@@ -38,6 +81,7 @@ rownames(matrix.aug.temp) = c("2001","2002","2003","2004","2005","2006","2007","
 
 
 
+
 ```{r}
 
 ###### graphing the average tempruturs of JAN AND JUL across 16 years in a gragh. 
@@ -52,6 +96,21 @@ plot(matrix.aug.temp[,1], type = "l",  main = "Average Sea Tempreture of August"
 
 ```
 
-```{r}
+#All Maps generated from 2001 to 2016
 
-```
+![Caption for the picture.](./Maps/map_of_2001.png)
+![Caption for the picture.](./Maps/map_of_2002.png)
+![Caption for the picture.](./Maps/map_of_2003.png)
+![Caption for the picture.](./Maps/map_of_2004.png)
+![Caption for the picture.](./Maps/map_of_2005.png)
+![Caption for the picture.](./Maps/map_of_2006.png)
+![Caption for the picture.](./Maps/map_of_2007.png)
+![Caption for the picture.](./Maps/map_of_2008.png)
+![Caption for the picture.](./Maps/map_of_2009.png)
+![Caption for the picture.](./Maps/map_of_2010.png)
+![Caption for the picture.](./Maps/map_of_2011.png)
+![Caption for the picture.](./Maps/map_of_2012.png)
+![Caption for the picture.](./Maps/map_of_2013.png)
+![Caption for the picture.](./Maps/map_of_2014.png)
+![Caption for the picture.](./Maps/map_of_2015.png)
+![Caption for the picture.](./Maps/map_of_2016.png)

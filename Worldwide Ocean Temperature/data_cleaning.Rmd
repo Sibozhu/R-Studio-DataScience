@@ -17,6 +17,7 @@ args = commandArgs(trailingOnly=TRUE)
 
 dir.create("Cleaned_Data")
 dir.create("Maps")
+dir.create("EDA_PIC")
 
 if (length(args) >= 4) {
   START = as.numeric(args[1])
