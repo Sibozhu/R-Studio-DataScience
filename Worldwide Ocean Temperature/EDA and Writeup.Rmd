@@ -5,7 +5,13 @@ date: "2017/11/6"
 output: pdf_document
 ---
 
-#Region name : Subcontinent West
+##Region name : Subcontinent West
+
+##To Run the Code
+\indent Create a directory called "data" in this project folder \par
+\indent Download the data text files from the URL we will be provided below. Save the data in the "data" directory" \par
+\indent Open and run "data_cleaning.Rmd", all the cleaned data will be stored in an automatically created directory called "Cleaned_Data" \par
+\indent Open and run "EDA and Writeup.Rmd", here stores all the codes for EDA analysis and our discussions about the data. \par
 
 
 #Summary and EDA of reported data.
@@ -18,7 +24,7 @@ output: pdf_document
 
 ##The Data Acquisition and Density of Data.
 
-\indent  For our analysis purpose, ship data is used instead of buoy data, since buoy data only contains the measurement of water depth. Ship data is dependent on the fact that ships needed to be passing through our assigned area. Data from VOS website is divided per month from 2001 to 2016. we make sure the range is in sub-continent west by limit the range of latitude from 6 to 20 and longitude from 60 to 80. In order to make data fit into preferred region while remaining consistent through years, we measure our data within a 6-hour range of noon. We dropped all the data with "NA" value in order to keep our data logically and easy for analysis. By dropping extreme measurement that out of range between (0.01,0.99), we kept the consistency of our data.\par
+\indent For our analysis purpose, ship data is used instead of buoy data, since buoy data only contains the measurement of water depth. Ship data is dependent on the fact that ships needed to be passing through our assigned area. Data from VOS website is divided per month from 2001 to 2016. we make sure the range is in sub-continent west by limit the range of latitude from 6 to 20 and longitude from 60 to 80. In order to make data fit into preferred region while remaining consistent through years, we measure our data within a 6-hour range of noon. We dropped all the data with "NA" value in order to keep our data logically and easy for analysis. By dropping extreme measurement that out of range between (0.01,0.99), we kept the consistency of our data.\par
 
 
 #List of sources with URLs 
@@ -50,7 +56,7 @@ output: pdf_document
 #Discussion
 
 \indent In subcontinent west, the average sea temperature has raised significantly from 2001 (around 10 degrees) to 2016 (around 27 degrees). The biggest change occurs during the period of 2001 – 2003 and after 2003 the average sea temperatures are mainly around 25 degrees. \par
-\indent Therefore, we expect that there could be some significant climate change or human-caused change happened during that period. 
+\indent Therefore, we expect that there could be some significant climate change or human-caused change happened during that period. \par
 ![Caption for the picture.](./EDA_PIC/SEA_2001.png)
 ![Caption for the picture.](./EDA_PIC/SEA_2003.png)
 ![Caption for the picture.](./EDA_PIC/SEA_2010.png)
@@ -64,14 +70,13 @@ output: pdf_document
 ![Caption for the picture.](./EDA_PIC/AIR_2016.png)
 
 \indent To further confirm our previous findings, we plot the average air and sea temperature for the same month (January and August) across 16 years.  The overall trend of average sea temperature is the same across those 16 years with a sharp increase in the first five years and then remain almost the same in the next ten years. On the other hand, the trends of average air temperature are different for the January and August. The sharp increase in the air temperature occurs in 2002 of January but in 2003, 2006, 2008 and 2014 of August. 
-```{r}
-#####graphing the recors of average tempruturs of January and August in 16 years. 
-plot(matrix.jan.temp[,1], type = "l",  main = "Average Sea Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red")
-plot(matrix.aug.temp[,1], type = "l",  main = "Average Sea Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "blue")
-plot(matrix.jan.temp[,2], type = "l",  main = "Average Air Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red")
-plot(matrix.aug.temp[,2], type = "l",  main = "Average Air Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "blue")
-```
+![Caption for the picture.](./EDA_PIC/SEA_JAN.png)
+![Caption for the picture.](./EDA_PIC/SEA_AUG.png)
+![Caption for the picture.](./EDA_PIC/AIR_JAN.png)
+![Caption for the picture.](./EDA_PIC/AIR_AUG.png)
+\newpage
 
+#EDA Codes
 
 ```{r}
 matrix.jan.temp = NULL
@@ -102,6 +107,15 @@ colnames(matrix.aug.temp) = c("Sea Temp" , "Air Temp")
 rownames(matrix.aug.temp) = c("2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016")
 
 
+```
+#Graphing the recors of average tempruturs of January and August in 16 years.
+
+```{r}
+#####graphing the recors of average tempruturs of January and August in 16 years. 
+plot(matrix.jan.temp[,1], type = "l",  main = "Average Sea Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red")
+plot(matrix.aug.temp[,1], type = "l",  main = "Average Sea Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "blue")
+plot(matrix.jan.temp[,2], type = "l",  main = "Average Air Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red")
+plot(matrix.aug.temp[,2], type = "l",  main = "Average Air Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "blue")
 ```
 
 
