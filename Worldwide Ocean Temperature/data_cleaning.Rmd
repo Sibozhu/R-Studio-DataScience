@@ -20,116 +20,109 @@ dir.create("Cleaned_Data")
 dir.create("Maps")
 dir.create("EDA_PIC")
 
+#setting path for opening data files and saving cleaned data
 if (length(args) >= 4) {
-  START = as.numeric(args[1])
-  END = as.numeric(args[2])
   SAVE_PATH = args[3]
   SAVE_DIR = args[4]
 } else {
-  SAVE_PATH = "./"               # path for saving and opening data files
-  SAVE_DIR = "cleaned_data"   # name of directory to save the clean data
+  SAVE_PATH = "./"               
+  SAVE_DIR = "cleaned_data"   
 }
 
-# info to save the clean data
-FILENAME = "df"
-SAVE_EXT = ".Rdata"
+# set defualt cleaned data's name
+FILENAME = "cleaned"
+SAVE_TYPE = ".Rdata"
 
-# info to construct the filenames
+# pre-construct file's names
 MONTHS = c("jan", "feb", "mar",
            "apr", "may", "jun",
            "jul", "aug", "sep",
            "oct", "nov", "dec")
-EXT = ".txt"
-DATA_PATH = './data/'
 
-# cleans the data for a specific year == YEAR
+EXT = ".txt"
+DATA_DIR = './data/'
+
+# cleans the data by year
 cleanAllMonthsOfYear <- function(YEAR) {
-  # start constructing the file path 
-  FILES_PATH = paste(DATA_PATH, YEAR, "/VOSClim_GTS_", sep ='')
+  FILES_PATH = paste(DATA_DIR, YEAR, "/VOSClim_GTS_", sep ='')
   
   # data fram variable of YEAR
-  df.year <- NULL
+  cleaned.year <- NULL
   EDA.year = NULL
-  # for every month
+  #loop through months
   for (i in 1:length(MONTHS)) {
     # construct the filename
     filename <- paste(FILES_PATH, MONTHS[i], "_", YEAR, EXT, sep = "")
-    
-    # read the file
     print(filename)
-    current <- readLines(filename)
+    flag <- readLines(filename)
     
-    # temporary dataframe for current month months[i]
-    df <- NULL
+    ## pre-set data frame
+    clean <- NULL
     EDA.Month = NULL
-    total_sea_temp = 0
-    total_air_temp = 0
-    total_rows = 0
+    TTL_SEA_TEMP = 0
+    TTL_AIR_TEMP = 0
+    TTL_ROW = 0
     # for every row in the file
-    for (j in 1:length(current)) {
+    for (j in 1:length(flag)) {
       # get the row, and deparate the columns
-      tmp <- current[j]
+      tmp <- flag[j]
       subtmp <- paste0("SubWest10", "Ship", "tm", substr(tmp, 1, 21), substr(tmp, 86, 89), substr(tmp, 70, 73))
 
-      # isolate the Latitude and Longitude values to check if there are in our sub-region ranges
-      # since as.numeric() gives warnings if it finds NA, we need to temporarily suprress warnings
-      # source: https://stackoverflow.com/questions/16194212/how-to-suppress-warnings-globally-in-an-r-script
-      oldw <- getOption("warn")
+      # Get out latitude and longitude for future check if the latitude and longitude is in sub-Continent West ranges
+      supp <- getOption("warn")
       options(warn = -1)
-      LAT = as.numeric(substr(tmp, 13, 17))   # slices the row and converts to a number
+      # slicing the row, then we convert them to a number
+      LAT = as.numeric(substr(tmp, 13, 17))   
       LON = as.numeric(substr(tmp, 18, 21))
       HOUR = as.numeric(substr(tmp, 9, 12))
-      temp_air = as.numeric(substr(tmp, 70, 73))
-      temp_sea = as.numeric(substr(tmp, 86, 89))
-      options(warn = oldw)
+      AIR_TEMP = as.numeric(substr(tmp, 70, 73))
+      SEA_TEMP = as.numeric(substr(tmp, 86, 89))
+      options(warn = supp)
  
-      # checks if LAT and LON are in the range 
-      # also checks if time when data is collected (hour) is within 6 hours of noon 
-      # FIX: --> error in feb 2010 w/ && (HOUR %in% 600:1800)
+      # Check if the latitude and longitude is in sub-Continent West ranges, and if time period is within 6 hours of noon 
       if ((LAT %in% 600:2000) && (LON %in% 60:80)) {
-        # add to the temporary data frame
           if (HOUR == 1200) {
             substr(subtmp, 14, 15) <- "+0"
-            df <- rbind(df, subtmp)
+            clean <- rbind(clean, subtmp)
           }
           else if ((HOUR %in% 600:1199)) {
             substr(subtmp, 14, 15) <- paste0("-", toString(1200-HOUR))
-            df <- rbind(df, subtmp)
+            clean <- rbind(clean, subtmp)
           }
          else if ((HOUR %in% 1201:1800)) {
           substr(subtmp, 14, 15) <- paste0("+", toString(HOUR-1200))
-          df <- rbind(df, subtmp)
+          clean <- rbind(clean, subtmp)
          }
           else {
             substr(subtmp, 14, 15) <- "A "
-            df <- rbind(df, subtmp)
+            clean <- rbind(clean, subtmp)
           }
 
-	total_air_temp = sum(total_air_temp, temp_air, na.rm = TRUE)
-        total_sea_temp = sum(total_sea_temp, temp_sea, na.rm = TRUE)
-        total_rows = total_rows + 1
+	TTL_AIR_TEMP = sum(TTL_AIR_TEMP, AIR_TEMP, na.rm = TRUE)
+        TTL_SEA_TEMP = sum(TTL_SEA_TEMP, SEA_TEMP, na.rm = TRUE)
+        TTL_ROW = TTL_ROW + 1
       }
     }
  
     # averege tem of each month 
-    total_rows = total_rows*10
-    AVE.AIR.TEMP = total_air_temp/total_rows
-    AVE.SEA.TEMP = total_sea_temp/total_rows
+    TTL_ROW = TTL_ROW*10
+    AVE.AIR.TEMP = TTL_AIR_TEMP/TTL_ROW
+    AVE.SEA.TEMP = TTL_SEA_TEMP/TTL_ROW
     EDA.MONTH = cbind(MONTHS[i], AVE.SEA.TEMP, AVE.AIR.TEMP)
     EDA.year = rbind(EDA.year, EDA.MONTH)
 
     # generate the columns with given sizes
     data.clean.month <-
-      read.fwf(textConnection(df), widths = c(9, 4, 2, 12, 5, 4, 4, 4))
+      read.fwf(textConnection(clean), widths = c(9, 4, 2, 12, 5, 4, 4, 4))
     
-    # name the columns
+    # rename the columns
     names(data.clean.month) <-
       c("REGION","TYP","DIFF", "LOCALTIME", "LAT", "LON", "SST", "AT")
   
-    # omit all rows with "NA" values in any column
+    # drop all the "NA" values
     data.clean.month <- na.omit(data.clean.month)
     
-    #(Formatting) Fix Range of lat and AT and SST
+    #Fixing the range of lat and air temperature and sea temperature
     if (nrow(data.clean.month) >= 1) {
       for(i in 1:nrow(data.clean.month)){
         data.clean.month$AT[i] <- toString(as.numeric(data.clean.month$AT[i])/10)
@@ -139,75 +132,75 @@ cleanAllMonthsOfYear <- function(YEAR) {
     }
     
     # add all the temporary data frame of the month to the data frame of the year
-    df.year <- rbind(df.year, data.clean.month)
+    cleaned.year <- rbind(cleaned.year, data.clean.month)
 
   }
   
-  #removing the quantile in AT
-  #removing the quantile in SST
-  df.year.with.extremes = df.year
+
+  #removing the extreme values
+  cleaned.year.with.extremes = cleaned.year
   
-  A = quantile(as.numeric(df.year$SST), prob = c(0.99))
-  B = quantile(as.numeric(df.year$SST), prob = c(0.01))
-  x = quantile(as.numeric(df.year$AT), prob = c(0.99))
-  y = quantile(as.numeric(df.year$AT), prob = c(0.01))
+  A = quantile(as.numeric(cleaned.year$SST), prob = c(0.99))
+  cleaned.year = cleaned.year[cleaned.year$SST < A,]
+
+  B = quantile(as.numeric(cleaned.year$SST), prob = c(0.01))
+  cleaned.year = cleaned.year[cleaned.year$SST > B,]
   
-  df.year = df.year[df.year$AT < x,]
-  df.year = df.year[df.year$AT > y,]
-  df.year = df.year[df.year$SST < A,]
-  df.year = df.year[df.year$SST > B,]
+  C = quantile(as.numeric(cleaned.year$AT), prob = c(0.99))
+  cleaned.year = cleaned.year[cleaned.year$AT < C,]
+
+  D = quantile(as.numeric(cleaned.year$AT), prob = c(0.01))
+  cleaned.year = cleaned.year[cleaned.year$AT > D,]
+
   
-  #global map
+  #initializing global map
   global <- map_data("world")
   ggplot() + geom_polygon(data = global, aes(x=long, y = lat, group = group)) +
     coord_fixed(1.3)
   
-  #add borders
+  #add borders for map
   ggplot() +
     geom_polygon(data = global, aes(x=long, y = lat, group = group), fill = NA, color = "blue") +
     coord_fixed(1.3)
   
-  #fill in 
+  #ggplot
   gg1 <- ggplot() +
     geom_polygon(data = global, aes(x=long, y = lat, group = group), fill = "white", color = "grey") +
     coord_fixed(1.3)
-  gg1
+  
   
   #specific latitude/longitude (of year)
-  df2 <- data.frame(
-    long = as.numeric(df.year$LON),
-    lat = as.numeric(df.year$LAT),
+  cleaned_flag <- data.frame(
+    long = as.numeric(cleaned.year$LON),
+    lat = as.numeric(cleaned.year$LAT),
     stringsAsFactors = FALSE
   )
   
-  #xlim and ylim can be manipulated to zoom in or out of the map
+  #graphing the plotted map
   final <-  gg1 +
-    geom_point(data=df2, aes(long, lat), colour="blue", size=1) +
+    geom_point(data=cleaned_flag, aes(long, lat), colour="blue", size=1) +
     ggtitle(paste("Subcontinent West", YEAR, sep=" ")) +
     theme(plot.title = element_text(hjust = 0.5)) +
-    geom_text_repel(data=df2, aes(long, lat, label="")) + xlim(60,110) + ylim(0,40)
+    geom_text_repel(data=cleaned_flag, aes(long, lat, label="")) + xlim(60,110) + ylim(0,40)
 
   ggsave(paste("map_of_", YEAR, ".png", sep=""),path="./Maps")
 
   # create the save path for the clean data ans save it
-  SAVE_PATH_ALL = paste(SAVE_PATH, SAVE_DIR, "/", FILENAME, "_", YEAR, SAVE_EXT, sep = "")
-  save(df.year, file = SAVE_PATH_ALL)
+  SAVE_PATH_ALL = paste(SAVE_PATH, SAVE_DIR, "/", FILENAME, "_", YEAR, SAVE_TYPE, sep = "")
+  save(cleaned.year, file = SAVE_PATH_ALL)
   final
 
   names(EDA.year) = c("month","ave.sea.temp","ave.air.temp")
-  SAVE_PATH_AVE = paste(SAVE_PATH, SAVE_DIR, "/", "ave_temp", "_", YEAR, SAVE_EXT, sep = "")
+  SAVE_PATH_AVE = paste(SAVE_PATH, SAVE_DIR, "/", "ave_temp", "_", YEAR, SAVE_TYPE, sep = "")
   save(EDA.year, file = SAVE_PATH_AVE)
   print(SAVE_PATH)
-  
-  #SAVE_PATH_EXTEREMES = paste(SAVE_PATH, SAVE_DIR, "/", "data_with_extremes", "_", YEAR, SAVE_EXT, sep = "")
-  #save(df.year.with.extremes, file = SAVE_PATH_EXTEREMES)
 
 }
 
 # cleans all data for years 2001 - 2016
 for (k in 2001:2016) {
-    str_frm = toString(k)          # converts year to a string in preparation to call the function
-    cleanAllMonthsOfYear(str_frm)  # calls the function for current year
+    str_frm = toString(k)          
+    cleanAllMonthsOfYear(str_frm)  
 }
 
 ```
