@@ -196,9 +196,10 @@ cleanAllMonthsOfYear <- function(YEAR) {
   names(EDA.year) = c("month","ave.sea.temp","ave.air.temp")
   SAVE_PATH_AVE = paste(SAVE_PATH, SAVE_DIR, "/", "ave_temp", "_", YEAR, SAVE_EXT, sep = "")
   save(EDA.year, file = SAVE_PATH_AVE)
-
-  SAVE_PATH_EXTEREMES = paste(SAVE_PATH, SAVE_DIR, "/", "data_with_extremes", "_", YEAR, SAVE_EXT, sep = "")
-  save(df.year.with.extremes, file = SAVE_PATH_EXTEREMES)
+  print(SAVE_PATH)
+  
+  #SAVE_PATH_EXTEREMES = paste(SAVE_PATH, SAVE_DIR, "/", "data_with_extremes", "_", YEAR, SAVE_EXT, sep = "")
+  #save(df.year.with.extremes, file = SAVE_PATH_EXTEREMES)
 
 }
 
