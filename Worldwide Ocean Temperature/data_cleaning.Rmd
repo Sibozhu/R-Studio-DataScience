@@ -8,11 +8,12 @@ output: pdf_document
 #Code Part
 
 ```{r}
-#!/usr/bin/env Rscript
 require(maps)
 require(mapdata)
 library(ggplot2)
 library(ggrepel)
+library(openxlsx)
+
 args = commandArgs(trailingOnly=TRUE)
 
 dir.create("Cleaned_Data")
@@ -203,18 +204,16 @@ cleanAllMonthsOfYear <- function(YEAR) {
 
 }
 
-
 # cleans all data for years 2001 - 2016
-cleanAllData <- function(start, end) {
-  for (k in start:end) {
+for (k in 2001:2016) {
     str_frm = toString(k)          # converts year to a string in preparation to call the function
     cleanAllMonthsOfYear(str_frm)  # calls the function for current year
-  }
 }
 
-# comment in the line below to clean all data from 2001-2016
-cleanAllData(2001, 2016)
 ```
+
+
+
 
 
 
