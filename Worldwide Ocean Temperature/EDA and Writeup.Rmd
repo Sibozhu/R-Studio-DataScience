@@ -57,12 +57,11 @@ for (i in 2001:2016) {
   YEAR = i
   
   load(paste0("./cleaned_data/ave_temp_",YEAR,".Rdata"))
+  
   Temp_Sea <- plot(EDA.year[,2], type = "l",  main = paste("Average Sea Tempreture of", YEAR, sep = " ") , xlab = "Month", ylab =    "Temperature(C)", col = "blue")
-  ggsave(paste("Average Sea Tempreture of ", YEAR, ".png", sep=""),path="./EDA_PIC")
   
   Temp_Air <- plot(EDA.year[,3], type = "l",  main = paste("Average Air Tempreture of", YEAR, sep = " ") , xlab = "Month", ylab =    "Temperature(C)", col = "red")
-  ggsave(paste("Average Air Tempreture of ", YEAR, ".png", sep=""),path="./EDA_PIC")
-  
+
   jan.temp = EDA.year[1,2:3]
   aug.temp = EDA.year[8,2:3]
   #jan.temp = cbind(YEAR, jan.temp)
@@ -96,7 +95,7 @@ plot(matrix.aug.temp[,1], type = "l",  main = "Average Sea Tempreture of August"
 
 ```
 
-#All Maps generated from 2001 to 2016
+#All Maps of Subcontinent West with data collection locations (marked as blue spot) in year 2001 - 2016
 
 ![Caption for the picture.](./Maps/map_of_2001.png)
 ![Caption for the picture.](./Maps/map_of_2002.png)
