@@ -52,4 +52,6 @@ plot(matrix.aug.temp[,1], type = "l",  main = "Average Sea Tempreture of August"
 
 ```
 
+```{r}
 
+```
