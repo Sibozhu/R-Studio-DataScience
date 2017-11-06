@@ -1,5 +1,5 @@
 ---
-title: "Worldwide Ocean Temperature"
+title: "Worldwide Ocean Temperature Data Cleaning"
 author: "Xiaoqian Xue, Sibo Zhu,  Li Liu,  Danni Fu"
 date: "2017/11/4"
 output: pdf_document
