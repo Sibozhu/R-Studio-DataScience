@@ -47,6 +47,32 @@ output: pdf_document
 ![Caption for the picture.](./Maps/map_of_2001.png)
 ![Caption for the picture.](./Maps/map_of_2016.png)
 
+#Discussion
+
+\indent In subcontinent west, the average sea temperature has raised significantly from 2001 (around 10 degrees) to 2016 (around 27 degrees). The biggest change occurs during the period of 2001 – 2003 and after 2003 the average sea temperatures are mainly around 25 degrees. \par
+\indent Therefore, we expect that there could be some significant climate change or human-caused change happened during that period. 
+![Caption for the picture.](./EDA_PIC/SEA_2001.png)
+![Caption for the picture.](./EDA_PIC/SEA_2003.png)
+![Caption for the picture.](./EDA_PIC/SEA_2010.png)
+![Caption for the picture.](./EDA_PIC/SEA_2016.png)
+
+\indent There is not so much difference between average air temperatures from 2001 to 2016 (mainly around 28 degrees). Clearly, the difference between average sea and air temperature has decreased a lot from 2001, 18 degrees’ difference to 2016, approximately no difference. \par
+\indent Therefore, further investigation can be done to find out the main reason for the increase in sea temperature.
+![Caption for the picture.](./EDA_PIC/AIR_2001.png)
+![Caption for the picture.](./EDA_PIC/AIR_2002.png)
+![Caption for the picture.](./EDA_PIC/AIR_2010.png)
+![Caption for the picture.](./EDA_PIC/AIR_2016.png)
+
+\indent To further confirm our previous findings, we plot the average air and sea temperature for the same month (January and August) across 16 years.  The overall trend of average sea temperature is the same across those 16 years with a sharp increase in the first five years and then remain almost the same in the next ten years. On the other hand, the trends of average air temperature are different for the January and August. The sharp increase in the air temperature occurs in 2002 of January but in 2003, 2006, 2008 and 2014 of August. 
+```{r}
+#####graphing the recors of average tempruturs of January and August in 16 years. 
+plot(matrix.jan.temp[,1], type = "l",  main = "Average Sea Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red")
+plot(matrix.aug.temp[,1], type = "l",  main = "Average Sea Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "blue")
+plot(matrix.jan.temp[,2], type = "l",  main = "Average Air Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red")
+plot(matrix.aug.temp[,2], type = "l",  main = "Average Air Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "blue")
+```
+
+
 ```{r}
 matrix.jan.temp = NULL
 matrix.aug.temp  = NULL
@@ -78,22 +104,6 @@ rownames(matrix.aug.temp) = c("2001","2002","2003","2004","2005","2006","2007","
 
 ```
 
-
-
-
-```{r}
-
-###### graphing the average tempruturs of JAN AND JUL across 16 years in a gragh. 
-
-#lines(matrix.jan.temp[,1])
-plot(matrix.jan.temp[,1], type = "l",  main = "Average Sea Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red")
-plot(matrix.jan.temp[,2], type = "l",  main = "Average Air Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "blue")
-
-plot(matrix.aug.temp[,2], type = "l",  main = "Average Air Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "red")
-
-plot(matrix.aug.temp[,1], type = "l",  main = "Average Sea Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "blue")
-
-```
 
 #All Maps of Subcontinent West with data collection locations (marked as blue spot) in year 2001 - 2016
 
