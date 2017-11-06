@@ -26,6 +26,7 @@ output: pdf_document
 
 \indent For our analysis purpose, ship data is used instead of buoy data, since buoy data only contains the measurement of water depth. Ship data is dependent on the fact that ships needed to be passing through our assigned area. Data from VOS website is divided per month from 2001 to 2016. we make sure the range is in sub-continent west by limit the range of latitude from 6 to 20 and longitude from 60 to 80. In order to make data fit into preferred region while remaining consistent through years, we measure our data within a 6-hour range of noon. We dropped all the data with "NA" value in order to keep our data logically and easy for analysis. By dropping extreme measurement that out of range between (0.01,0.99), we kept the consistency of our data.\par
 
+\newpage
 
 #List of sources with URLs 
 2001 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2001/ \par
@@ -45,6 +46,7 @@ output: pdf_document
 2015 data : https://www1.ncdc.noaa.gov/pub/data/vosclim/2015/ \par
 2016 data: https://www1.ncdc.noaa.gov/pub/data/vosclim/2016/ \par
 
+\newpage
 
 #Maps
 
