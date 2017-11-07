@@ -9,7 +9,7 @@ output: pdf_document
 
 ##To Run the Code
 \indent Create a directory called "data" in this project folder \par
-\indent Download the data text files from the URL we will be provided below. Save the data in the "data" directory" \par
+\indent Download the data text files from the URL we will be provided below. Save the data in the "data" directory. In this project, I have already included the data, so no need for further downloading. \par
 \indent Open and run "data_cleaning.Rmd", all the cleaned data will be stored in an automatically created directory called "Cleaned_Data" \par
 \indent Open and run "Report and EDA.Rmd", here stores all the codes for EDA analysis and our discussions about the data. \par
 
