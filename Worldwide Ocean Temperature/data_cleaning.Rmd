@@ -185,7 +185,10 @@ cleanAllMonthsOfYear <- function(YEAR) {
 
   # create the save path for the clean data ans save it
   SAVE_PATH_ALL = paste(SAVE_PATH, SAVE_DIR, "/", FILENAME, "_", YEAR, SAVE_TYPE, sep = "")
+  SAVE_PATH_XLSX = paste(SAVE_PATH, "XLSX", "/", FILENAME, "_", YEAR, ".xlsx", sep = "")
   save(cleaned.year, file = SAVE_PATH_ALL)
+  write.xlsx(cleaned.year,file =SAVE_PATH_XLSX,sheetName="cleaned",colnames=TRUE,row.names=FALSE,append=FALSE,showNA=TRUE)
+
   final
 
   names(EDA.year) = c("month","ave.sea.temp","ave.air.temp")
