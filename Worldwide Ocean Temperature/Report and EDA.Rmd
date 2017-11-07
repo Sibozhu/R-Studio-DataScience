@@ -57,14 +57,14 @@ output: pdf_document
 
 #Discussion
 
-\indent In subcontinent west, the average sea temperature has raised significantly from 2001 (around 10 degrees) to 2016 (around 27 degrees). The biggest change occurs during the period of 2001 ??? 2003 and after 2003 the average sea temperatures are mainly around 25 degrees. \par
+\indent In subcontinent west, the average sea temperature has raised significantly from 2001 (around 10 degrees) to 2016 (around 27 degrees). The biggest change occurs during the period of 2001-2003 and after 2003 the average sea temperatures are mainly around 25 degrees. \par
 \indent Therefore, we expect that there could be some significant climate change or human-caused change happened during that period. \par
 ![Caption for the picture.](./EDA_PIC/SEA_2001.png)
 ![Caption for the picture.](./EDA_PIC/SEA_2003.png)
 ![Caption for the picture.](./EDA_PIC/SEA_2010.png)
 ![Caption for the picture.](./EDA_PIC/SEA_2016.png)
 
-\indent There is not so much difference between average air temperatures from 2001 to 2016 (mainly around 28 degrees). Clearly, the difference between average sea and air temperature has decreased a lot from 2001, 18 degrees??? difference to 2016, approximately no difference. \par
+\indent There is not so much difference between average air temperatures from 2001 to 2016 (mainly around 28 degrees). Clearly, the difference between average sea and air temperature has decreased a lot from 2001, 18 degrees' difference to 2016, approximately no difference. \par
 \indent Therefore, further investigation can be done to find out the main reason for the increase in sea temperature.
 ![Caption for the picture.](./EDA_PIC/AIR_2001.png)
 ![Caption for the picture.](./EDA_PIC/AIR_2002.png)
@@ -138,3 +138,9 @@ plot(matrix.aug.temp[,2], type = "l",  main = "Average Air Tempreture of August"
 ![Caption for the picture.](./Maps/map_of_2014.png)
 ![Caption for the picture.](./Maps/map_of_2015.png)
 ![Caption for the picture.](./Maps/map_of_2016.png)
+
+\newpage
+
+#Collaboration
+
+\indent Sibo Zhu and Li Liu are in charge of all coding parts and data cleaning. While Xiaoqian Xue and Danni Fu are in charge of all analysis of data and EDA.
