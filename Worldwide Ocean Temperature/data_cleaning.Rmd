@@ -8,6 +8,7 @@ output: pdf_document
 #Code Part
 
 ```{r}
+#import libraries
 require(maps)
 require(mapdata)
 library(ggplot2)
@@ -16,6 +17,7 @@ library(openxlsx)
 
 args = commandArgs(trailingOnly=TRUE)
 
+#create directories for later use
 dir.create("Cleaned_Data")
 dir.create("Maps")
 dir.create("EDA_PIC")
@@ -30,8 +32,8 @@ if (length(args) >= 4) {
 }
 
 # set defualt cleaned data's name
-FILENAME = "cleaned"
-SAVE_TYPE = ".Rdata"
+FILENAME = "cleaned" #default cleaned data's name
+SAVE_TYPE = ".Rdata" #saving data as ".Rdata" file
 
 # pre-construct file's names
 MONTHS = c("jan", "feb", "mar",
@@ -39,12 +41,12 @@ MONTHS = c("jan", "feb", "mar",
            "jul", "aug", "sep",
            "oct", "nov", "dec")
 
-EXT = ".txt"
-DATA_DIR = './data/'
+EXT = ".txt" #reading data from txt file
+DATA_DIR = './data/' #reading data from directory called "data"
 
 # cleans the data by year
 cleanAllMonthsOfYear <- function(YEAR) {
-  FILES_PATH = paste(DATA_DIR, YEAR, "/VOSClim_GTS_", sep ='')
+  FILES_PATH = paste(DATA_DIR, YEAR, "/VOSClim_GTS_", sep ='') #reading data with the filename start with "/VOSClim_GTS_"
   
   # data fram variable of YEAR
   cleaned.year <- NULL
@@ -52,7 +54,7 @@ cleanAllMonthsOfYear <- function(YEAR) {
   #loop through months
   for (i in 1:length(MONTHS)) {
     # construct the filename
-    filename <- paste(FILES_PATH, MONTHS[i], "_", YEAR, EXT, sep = "")
+    filename <- paste(FILES_PATH, MONTHS[i], "_", YEAR, EXT, sep = "") 
     print(filename)
     flag <- readLines(filename)
     
@@ -66,30 +68,30 @@ cleanAllMonthsOfYear <- function(YEAR) {
     for (j in 1:length(flag)) {
       # get the row, and deparate the columns
       tmp <- flag[j]
-      subtmp <- paste0("SubWest10", "Ship", "tm", substr(tmp, 1, 21), substr(tmp, 86, 89), substr(tmp, 70, 73))
+      subtmp <- paste0("SubWest10", "Ship", "tm", substr(tmp, 1, 21), substr(tmp, 86, 89), substr(tmp, 70, 73)) #seperating each value
 
       # Get out latitude and longitude for future check if the latitude and longitude is in sub-Continent West ranges
       supp <- getOption("warn")
       options(warn = -1)
       # slicing the row, then we convert them to a number
-      LAT = as.numeric(substr(tmp, 13, 17))   
-      LON = as.numeric(substr(tmp, 18, 21))
-      HOUR = as.numeric(substr(tmp, 9, 12))
-      AIR_TEMP = as.numeric(substr(tmp, 70, 73))
-      SEA_TEMP = as.numeric(substr(tmp, 86, 89))
+      LAT = as.numeric(substr(tmp, 13, 17))   #latitude
+      LON = as.numeric(substr(tmp, 18, 21))   #longitude
+      HOUR = as.numeric(substr(tmp, 9, 12))   #hours
+      AIR_TEMP = as.numeric(substr(tmp, 70, 73))   #air temperature
+      SEA_TEMP = as.numeric(substr(tmp, 86, 89))   #sea temperature
       options(warn = supp)
  
       # Check if the latitude and longitude is in sub-Continent West ranges, and if time period is within 6 hours of noon 
-      if ((LAT %in% 600:2000) && (LON %in% 60:80)) {
+      if ((LAT %in% 600:2000) && (LON %in% 60:80)) { #check region range
           if (HOUR == 1200) {
             substr(subtmp, 14, 15) <- "+0"
             clean <- rbind(clean, subtmp)
           }
-          else if ((HOUR %in% 600:1199)) {
+          else if ((HOUR %in% 600:1199)) {  #check time before noon
             substr(subtmp, 14, 15) <- paste0("-", toString(1200-HOUR))
             clean <- rbind(clean, subtmp)
           }
-         else if ((HOUR %in% 1201:1800)) {
+         else if ((HOUR %in% 1201:1800)) {  #check time after noon
           substr(subtmp, 14, 15) <- paste0("+", toString(HOUR-1200))
           clean <- rbind(clean, subtmp)
          }
@@ -98,16 +100,16 @@ cleanAllMonthsOfYear <- function(YEAR) {
             clean <- rbind(clean, subtmp)
           }
 
-	TTL_AIR_TEMP = sum(TTL_AIR_TEMP, AIR_TEMP, na.rm = TRUE)
-        TTL_SEA_TEMP = sum(TTL_SEA_TEMP, SEA_TEMP, na.rm = TRUE)
+	TTL_AIR_TEMP = sum(TTL_AIR_TEMP, AIR_TEMP, na.rm = TRUE) #take summation of air temperature
+        TTL_SEA_TEMP = sum(TTL_SEA_TEMP, SEA_TEMP, na.rm = TRUE) #get summation of sea temperature
         TTL_ROW = TTL_ROW + 1
       }
     }
  
     # averege tem of each month 
     TTL_ROW = TTL_ROW*10
-    AVE.AIR.TEMP = TTL_AIR_TEMP/TTL_ROW
-    AVE.SEA.TEMP = TTL_SEA_TEMP/TTL_ROW
+    AVE.AIR.TEMP = TTL_AIR_TEMP/TTL_ROW #get average air temperature
+    AVE.SEA.TEMP = TTL_SEA_TEMP/TTL_ROW #get average sea temperature
     EDA.MONTH = cbind(MONTHS[i], AVE.SEA.TEMP, AVE.AIR.TEMP)
     EDA.year = rbind(EDA.year, EDA.MONTH)
 
@@ -137,7 +139,7 @@ cleanAllMonthsOfYear <- function(YEAR) {
   }
   
 
-  #removing the extreme values
+  #removing the extreme values that is bigget than 0.99 and smaller than 0.01
   cleaned.year.with.extremes = cleaned.year
   
   A = quantile(as.numeric(cleaned.year$SST), prob = c(0.99))
@@ -175,7 +177,7 @@ cleanAllMonthsOfYear <- function(YEAR) {
   )
   
   #graphing the plotted map
-  final <-  gg1 +
+  Res <-  gg1 +
     geom_point(data=cleaned_flag, aes(long, lat), colour="blue", size=1) +
     ggtitle(paste("Subcontinent West", YEAR, sep=" ")) +
     theme(plot.title = element_text(hjust = 0.5)) +
@@ -186,11 +188,12 @@ cleanAllMonthsOfYear <- function(YEAR) {
   # create the save path for the clean data ans save it
   SAVE_PATH_ALL = paste(SAVE_PATH, SAVE_DIR, "/", FILENAME, "_", YEAR, SAVE_TYPE, sep = "")
   SAVE_PATH_XLSX = paste(SAVE_PATH, "XLSX", "/", FILENAME, "_", YEAR, ".xlsx", sep = "")
-  save(cleaned.year, file = SAVE_PATH_ALL)
-  write.xlsx(cleaned.year,file =SAVE_PATH_XLSX,sheetName="cleaned",colnames=TRUE,row.names=FALSE,append=FALSE,showNA=TRUE)
+  save(cleaned.year, file = SAVE_PATH_ALL) #save cleaned data into .Rdata file
+  write.xlsx(cleaned.year,file =SAVE_PATH_XLSX,sheetName="cleaned",colnames=TRUE,row.names=FALSE,append=FALSE,showNA=TRUE) #save cleaned data into .xlsx file
 
-  final
-
+  Res
+  
+  #save average temperature data into .Rdata file
   names(EDA.year) = c("month","ave.sea.temp","ave.air.temp")
   SAVE_PATH_AVE = paste(SAVE_PATH, SAVE_DIR, "/", "ave_temp", "_", YEAR, SAVE_TYPE, sep = "")
   save(EDA.year, file = SAVE_PATH_AVE)
