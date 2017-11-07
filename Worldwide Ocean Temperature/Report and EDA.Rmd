@@ -18,7 +18,7 @@ output: pdf_document
 
 ##The Condition of the Data and Interesting Detail 
 
-\indent Without considering the location, lowest temperature is usually between December and January, while the highest temperatures around August. According to the geography, subcontinent west is close to equator so the temperature difference through the year should not be noticeable.  Since water has bigger specific heat capacity, from the equation $\Delta$T=Q/mc ($\Delta$=temperature change, Q=heat, m=mass, c=specific heat capacity), we can predict that the sea temperature change has a smaller range than that of air temperature, which is consistence with our plots.  Also, in our plots, there’s no pattern showing increase or decrease of temperature from 2001 to 2016.\par
+\indent Without considering the location, lowest temperature is usually between December and January, while the highest temperatures around August. According to the geography, subcontinent west is close to equator so the temperature difference through the year should not be noticeable.  Since water has bigger specific heat capacity, from the equation $\Delta$T=Q/mc ($\Delta$=temperature change, Q=heat, m=mass, c=specific heat capacity), we can predict that the sea temperature change has a smaller range than that of air temperature, which is consistence with our plots.  Also, in our plots, there???s no pattern showing increase or decrease of temperature from 2001 to 2016.\par
 
 
 
@@ -57,14 +57,14 @@ output: pdf_document
 
 #Discussion
 
-\indent In subcontinent west, the average sea temperature has raised significantly from 2001 (around 10 degrees) to 2016 (around 27 degrees). The biggest change occurs during the period of 2001 – 2003 and after 2003 the average sea temperatures are mainly around 25 degrees. \par
+\indent In subcontinent west, the average sea temperature has raised significantly from 2001 (around 10 degrees) to 2016 (around 27 degrees). The biggest change occurs during the period of 2001 ??? 2003 and after 2003 the average sea temperatures are mainly around 25 degrees. \par
 \indent Therefore, we expect that there could be some significant climate change or human-caused change happened during that period. \par
 ![Caption for the picture.](./EDA_PIC/SEA_2001.png)
 ![Caption for the picture.](./EDA_PIC/SEA_2003.png)
 ![Caption for the picture.](./EDA_PIC/SEA_2010.png)
 ![Caption for the picture.](./EDA_PIC/SEA_2016.png)
 
-\indent There is not so much difference between average air temperatures from 2001 to 2016 (mainly around 28 degrees). Clearly, the difference between average sea and air temperature has decreased a lot from 2001, 18 degrees’ difference to 2016, approximately no difference. \par
+\indent There is not so much difference between average air temperatures from 2001 to 2016 (mainly around 28 degrees). Clearly, the difference between average sea and air temperature has decreased a lot from 2001, 18 degrees??? difference to 2016, approximately no difference. \par
 \indent Therefore, further investigation can be done to find out the main reason for the increase in sea temperature.
 ![Caption for the picture.](./EDA_PIC/AIR_2001.png)
 ![Caption for the picture.](./EDA_PIC/AIR_2002.png)
@@ -84,29 +84,28 @@ output: pdf_document
 matrix.jan.temp = NULL
 matrix.aug.temp  = NULL
 
-#### the following loop will generate the graphs 
-##### and it will build two matrices to track the average temprtures of two months through out the 16 years. 
-for (i in 2001:2016) {
+#Graphing
+for (i in 2001:2016) { #function used for graphing
   YEAR = i
   
-  load(paste0("./cleaned_data/ave_temp_",YEAR,".Rdata"))
+  load(paste0("./cleaned_data/ave_temp_",YEAR,".Rdata")) #loading data by loop
   
-  Temp_Sea <- plot(EDA.year[,2], type = "l",  main = paste("Average Sea Tempreture of", YEAR, sep = " ") , xlab = "Month", ylab =    "Temperature(C)", col = "blue")
+  Temp_Sea <- plot(EDA.year[,2], type = "l",  main = paste("Average Sea Tempreture of", YEAR, sep = " ") , xlab = "Month", ylab =    "Temperature(C)", col = "blue") #graph of average sea temperature of each year
   
-  Temp_Air <- plot(EDA.year[,3], type = "l",  main = paste("Average Air Tempreture of", YEAR, sep = " ") , xlab = "Month", ylab =    "Temperature(C)", col = "red")
+  Temp_Air <- plot(EDA.year[,3], type = "l",  main = paste("Average Air Tempreture of", YEAR, sep = " ") , xlab = "Month", ylab =    "Temperature(C)", col = "red") #graph of average air temeprature of each year
 
-  jan.temp = EDA.year[1,2:3]
-  aug.temp = EDA.year[8,2:3]
-  #jan.temp = cbind(YEAR, jan.temp)
-  matrix.aug.temp = rbind(matrix.aug.temp , aug.temp)
-  matrix.jan.temp = rbind(matrix.jan.temp , jan.temp)
+  jan.temp = EDA.year[1,2:3] #take out the record of Januaray of each year
+  aug.temp = EDA.year[8,2:3] #take out the record of August of each year 
+
+  matrix.aug.temp = rbind(matrix.aug.temp , aug.temp) #build matrix to track average temperature of August from 2001 to 2016
+  matrix.jan.temp = rbind(matrix.jan.temp , jan.temp) #build matrix to track average temperature of January from 2001 to 2016
 }
 
-colnames(matrix.jan.temp) = c("Sea Temp" , "Air Temp")
-rownames(matrix.jan.temp) = c("2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016")
+colnames(matrix.jan.temp) = c("Sea Temp" , "Air Temp") #rename each column
+rownames(matrix.jan.temp) = c("2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016") #name each row
 
-colnames(matrix.aug.temp) = c("Sea Temp" , "Air Temp")
-rownames(matrix.aug.temp) = c("2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016")
+colnames(matrix.aug.temp) = c("Sea Temp" , "Air Temp") #rename each column
+rownames(matrix.aug.temp) = c("2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016") #rename each row
 
 
 ```
@@ -114,10 +113,10 @@ rownames(matrix.aug.temp) = c("2001","2002","2003","2004","2005","2006","2007","
 
 ```{r}
 #####graphing the recors of average tempruturs of January and August in 16 years. 
-plot(matrix.jan.temp[,1], type = "l",  main = "Average Sea Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red")
-plot(matrix.aug.temp[,1], type = "l",  main = "Average Sea Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "blue")
-plot(matrix.jan.temp[,2], type = "l",  main = "Average Air Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red")
-plot(matrix.aug.temp[,2], type = "l",  main = "Average Air Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "blue")
+plot(matrix.jan.temp[,1], type = "l",  main = "Average Sea Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red") #Plot January's average sea temperature
+plot(matrix.aug.temp[,1], type = "l",  main = "Average Sea Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "blue") #Plot August's average sea temperature
+plot(matrix.jan.temp[,2], type = "l",  main = "Average Air Tempreture of Jaunuary" , xlab = "Year", ylab = "Temperature", col = "red") #Plot January's average air temperature
+plot(matrix.aug.temp[,2], type = "l",  main = "Average Air Tempreture of August" , xlab = "Year", ylab = "Temperature", col = "blue") #Plot August's average air temperature
 ```
 
 
