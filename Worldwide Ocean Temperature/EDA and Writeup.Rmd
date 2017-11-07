@@ -1,5 +1,5 @@
 ---
-title: "Worldwide Ocean Temperature EDA and Writeup"
+title: "Worldwide Ocean Temperature Report and EDA"
 author: "Xiaoqian Xue, Sibo Zhu,  Li Liu,  Danni Fu"
 date: "2017/11/6"
 output: pdf_document
