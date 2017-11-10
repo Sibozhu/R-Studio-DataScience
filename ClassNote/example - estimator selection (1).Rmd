@@ -1,0 +1,120 @@
+---
+title: "Evaluating estimators the number of serialized objects"
+author: "Haviland Wright"
+date: "October 12, 2017"
+output: pdf_document
+---
+
+\vspace{.2in}
+
+#![Serialized Widgets](widgets2.png)
+
+\vspace{.2in}
+
+So for the serialized objects with serial numbers $1, 2, ... , N$ for which we have $n$ sample points $X_1, X_2, ... , X_n$, drawn without replacement, we have constructed two unbiased estimators, $T_1$ and $T_2$.  
+
+$T_1$ is based on the sample mean:
+
+>    $T_1 = 2\bar{X_n}-1$
+
+\vspace{.1in}
+
+$T_2$ is based on the sample maximum:
+
+>    $T_2 = \frac{n+1}{n}M_n - 1$
+
+\vspace{.1in}
+To compare these estimators, simulate their distributions.  Following the example in DKLM, use serial numbers 1 through 1000 and simulate 2000 replicates from each distribution.  
+
+\vspace{.4 in}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height=3.0, fig.width=6.0, fig.align='center', fig.lp=""  }
+library(tidyverse)
+library(gridExtra)
+
+options(scipen = 999)
+options(digits = 1)
+
+set.seed(1700)
+
+S <- 1:1000
+
+T1 <- NULL
+T2 <- NULL
+VT1 <- NULL
+VT2 <- NULL
+MEANX <- NULL
+
+for(i in 1:2000){
+x = sample(x = S, size = 10, replace = FALSE)
+meanx = mean(x)
+t1 = 2*mean(x) - 1
+t2 = (((10 + 1)/10)* max(x)) - 1
+MEANX[i] = meanx
+
+T1[i] = t1
+T2[i] = t2
+
+}
+
+T.df <- tibble(T1,t2)
+
+
+plot1 <- ggplot(data=T.df) + 
+  geom_histogram(aes(T1, color="powderblue"), binwidth = 100, 
+                 fill = "powderblue" ) +
+  theme(legend.position="none")
+
+plot2 <- ggplot(data=T.df) + 
+  geom_histogram(aes(T2, color="powderblue"), binwidth = 50, 
+                 fill = "powderblue" ) + 
+  theme(legend.position="none")
+
+grid.arrange(plot1, plot2, ncol=2)
+
+var.t1 <- var(T1)
+var.t2 <- var(T2)
+```
+
+### Which estimator should you use?  
+
+The efficiency of an estimator is measured by mean squared error MSE which is the sum of the suared differences between the estimator and the true value of the estimated parameter.  The MSE equals the sum of the estimator's squared bias and its variance.  That is:
+
+>    $MSE(T) = E[(T-\theta)^2] = Var(T) + (E[T]-\theta)^2$
+
+Of course, $MSE(T) = Var(T)$ when the estimator is unbiased.
+
+It is easy to see from the plots and the estimators that T2 will always have the lowest variance.
+
+In DKLM, the two estimators for N have variances that are calculated as:
+
+>    $Var(T1) = 4Var(\overline{X_n}) = \frac{(N+1)(N-n)}{3n}$
+
+>    $Var(T2) = Var[\frac{n+1}{n}M_n - 1] = \frac{(n+1)^2}{n^2}Var(M_n) = \frac{(N+1)(N-n)}{n(n+2)}$
+
+Note that $Var(T2)< Var(T1)$ and that the relative efficiency, defined as that ratio of the variances is 4 when n = 10 and increases with n.
+
+>    $\textit{Relative Efficiency} = \frac{Var(T1)}{Var(T2)} = \frac{n+2}{3}$
+
+Using the parameters from the simulation, N = 1000 and n = 10
+
+>    $Var(\widehat{T1}) = \frac{(1000+1)(1000-10)}{3(10)} = 33033$
+
+>    $Var(\widehat{T2}) = \frac{(1000+1)(1000-10)}{10(10+2)} = 8258$
+
+>    $\textit{Relative efficiency} = 4.0$
+
+
+The varinces calculated in the simulation are consistent with these results.
+
+
+>    $\widehat{Var(T2)} = `r var.t1`$
+
+>    $\widehat{Var(T2)} = `r var.t2`$
+
+> 
+
+
+
+
+

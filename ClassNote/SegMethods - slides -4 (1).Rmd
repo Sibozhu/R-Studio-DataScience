@@ -1,0 +1,1156 @@
+
+---
+title: "Clustering with Marketing Applications"
+author: "Haviland Wright"
+date: "June 20, 2017"
+style: test1
+output: ioslides_presentation
+css: hw.css
+logo: images/seg-logo.jpg
+incremental: true
+---
+
+```{r setup, include=FALSE} 
+ knitr::opts_chunk$set(echo = FALSE, warning = FALSE) 
+```
+
+
+## This presentation: 
+
+**Describes and illustrates** selected techniques used to identify market segments and classify customers as segment members.  
+
+**Demonstrates** measurements used to evaluate segmentation analysis and classification model performance.  
+
+
+
+
+    
+
+
+
+
+
+# Data used for Illustrations
+
+## Segmentation Data: subscribers {.smaller}
+
+Throughout this presentation two data sets are used: Subscribers and Target.
+Both are relatively small with only a few variables and less than a thousand observations each, which simplifies illustrations of clustering and classification methods.
+
+The Subscribers dataset is a small dataset of 300 simulated observations. Each observation consists of demographic data for a single household plus a binary variable that indicates if a subscription to an information service has been purchased by the household.
+
+```{r Setup_and_functions, echo=FALSE, message=FALSE}
+
+
+############################################################
+############# Functions, Parameters, Libraries #############
+############################################################
+
+library(knitr)
+library(kableExtra)
+library(magrittr)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(mvtnorm)
+
+opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+options(knitr.table.format = "html")
+options(scipen = 999, digits=2)
+
+############  FUNCTIONS ######################################
+
+##############################################################
+##############  describe()           #########################
+#############an improved summary function  ###################
+##############################################################
+
+
+describe <- function(df,...)
+{
+  
+  if(!is.data.frame(df))
+    stop("First argument must be a data frame")
+  # df <- df[!sapply(df, is.character)]
+  ischar <- sapply(df, is.character)
+  if (nargs() > 1)
+      df <- df %>% select(...)
+  varType <- sapply(df, function(x)str_c("(",type_sum(x),")") )
+  if(any(ischar))
+    df <- mutate_each_(df, funs(str_length), names(df)[ischar])
+  # Create a string var with factor levels
+  factorLevels <- sapply(df, function(x)ifelse(is.factor(x),
+    ifelse(str_length(fd <- str_c(levels(x), collapse = '/')) < 10, fd, str_c(length(levels(x)), "  levels") ),''))
+  hasFactors <- any(sapply(df, is.factor))
+  dfout <- df %>% mutate_each(funs(as.numeric))
+  dfout <- sapply(c(
+    mean=mean,
+    sd=sd,
+    min=min,
+    max=max,
+    n=function(x,...)sum(1-is.na(x))),
+    function(x){sapply(dfout, x, na.rm=TRUE)})
+  # Handle strange behavior of sapply when there is only one variable
+  if(length(df) == 1) {
+    dfout <- t(as.matrix(dfout))
+    colnames(dfout) <- c("mean","sd","min","max","n")
+  }
+  dfout <- as.data.frame(dfout)
+  dfout <- bind_cols(data_frame(vars=names(df),type=varType),dfout)
+ # format(dfout$mean, digits=3, scientific = FALSE, nsmall = 0) 
+  formatC(dfout$min) 
+  
+  if(hasFactors)
+    dfout$factor <- factorLevels
+#  format(dfout, digits=3, scientific = FALSE, nsmall = 0) 
+  as.data.frame(dfout)
+}
+
+
+#############################################################
+################ seg.summ                             #######
+################ a function to report means by group  #######
+################ seg.summ(seg.df, seg.raw$Segment)    #######
+#############################################################
+ 
+seg.summ <- function(data, groups) {
+   aggregate(data, list(groups), function(x) mean(as.numeric(x)))  
+ }
+
+```
+
+
+
+```{r data_reading_and_simulation}
+
+##########################################################
+###################### DATA DATA DATA  ###################
+##########################################################
+
+####### Data Set 1  seg.df
+ 
+subscriber.raw <- readRDS("seg_data.rds")
+subscriber.df  <- subscriber.raw[ , -7]     # a copy without the known segment assignments
+
+####################################################
+################# Data Set 2   target  #############
+####################################################
+## This is a dataset constructed to be difficult ###
+##                                               ###
+####################################################
+
+####################################################
+########## This function produces a random circle ##
+####################################################
+```
+
+
+```{r}
+seg.orig = as.numeric(subscriber.raw$Segment)
+
+# 2,4,3,1
+# 100, 50, 80, 70
+# 100, 150, 230, 300
+
+
+ts <- table(seg.orig)
+bb <- sort(seg.orig)
+fi <- findInterval(1:4,bb)
+
+# t1 <- table(subscriber.hc.segment[1:100])
+# t2 <- table(subscriber.hc.segment[101:150])
+# t3 <- table(subscriber.hc.segment[151:230])
+# t4 <- table(subscriber.hc.segment[231:300])
+
+
+```
+
+
+```{r}
+rand.circle <- function(xcenter, ycenter, radius, sd, pts){
+  xcir = NULL
+  ycir = NULL
+  
+  # upper half
+  for(n in 1:(pts/2)){
+  x = runif(1,min = xcenter-radius, max = xcenter+radius)
+  xcir = c(xcir, x)
+  ycir = c(ycir,rnorm(1, mean = sqrt(radius^2 - (x - xcenter)^2) + ycenter))
+  }
+  
+  #lower half
+  for(n in 1:(pts-pts/2)){
+    x = runif(1,min = xcenter-radius, max = xcenter+radius)
+    xcir = c(xcir, x)
+    ycir = c(ycir,-1*(rnorm(1, mean = sqrt(radius^2 - (x - xcenter)^2) + ycenter)) + (2*ycenter))
+  }
+
+  return(as.data.frame(cbind(xcir,ycir)))
+}
+  
+
+not_in_target <- rand.circle(50,50,10,10,300)
+
+not_in_target <- cbind(not_in_target, 
+                       rep("not_in_target", dim(not_in_target)[1]))
+
+colnames(not_in_target) =c("Age", "Income", "position")
+
+
+in_target <- as.data.frame(rmvnorm(300, mean=c(50,50), sigma=diag(10,2)))
+
+
+in_target <- cbind(in_target, rep("in_target",dim(in_target)[1]))
+
+colnames(in_target) <- c("Age", "Income", "position")
+
+
+target <- rbind(not_in_target,in_target)
+
+rm(not_in_target, in_target)
+
+
+```
+
+
+```{r display_data, echo=FALSE, message=FALSE}
+
+
+######## create a table for the slide presentation that summarizes the data
+
+## Use describe() to start the table
+
+s <- describe(subscriber.df)
+
+rownames(s) <- c("Age", "Gender", "Income", "Kids", "Home Owner", "Subscriber")
+
+
+k <- kable(s[,c(-1, -2)], align="rrrrcl", caption = "Summary of the Subscriber Dataset", digits=2) %>% 
+  kable_styling(full_width=T, position= "left", font_size = 34)
+
+
+k1 <- column_spec(k, 6,  width = "20mm", bold = FALSE, italic = FALSE)
+
+k2 <- column_spec(k1, 7,  width = "20mm", bold = FALSE, italic = FALSE)
+
+k3 <- column_spec(k2, 1,  width = "5mm", bold = FALSE, italic = FALSE)
+
+k4 <- column_spec(k3, 5,  width = "20mm", bold = FALSE, italic = FALSE)
+
+k5 <- column_spec(k4, 2,  width = "20mm", bold = FALSE, italic = FALSE)
+
+k6 <- column_spec(k5, 3,  width = "20mm", bold = FALSE, italic = FALSE)
+
+column_spec(k6, 4,  width = "20mm", bold = FALSE, italic = FALSE)
+
+rm(k, k1, k2, k3, k4, k5, k6, s)
+
+```
+## Segmentation Data: target {.smaller}
+
+The Target data set has been constructed as a difficult case for the methods in this presentation.  This data suggests a product or service which appeals to a specific demograpic defined by age and income.
+
+```{r fig.height=3.7}
+ggplot(target, aes(Age,Income,color=position))+geom_point()
+
+```
+
+
+ 
+
+# Distance-based clustering
+
+
+## Euclidean Distance {.smaller}
+
+Cluster analysis is a traditional approach to finding segments through data exploration.  In the next section two methods are presented both of which are based based on Euclidean distance as a measure of observation similarity.  Consider this example:  
+
+If we ask Sam, Alice, and Ted how they like milk and cookies on a scale from 1 to 10 where 10 means "like a lot", we might get data like this:
+
+```{r}
+
+People <- c("Sam", "Alice", "Ted")
+Cookies <- c(10,5,2)
+Milk <- c(8, 3, 10)
+
+snack <- as.data.frame(cbind(Cookies, Milk))
+
+rownames(snack) <- People
+```
+
+<div class="col-left">
+
+```{r}
+kable(snack, align="cc",caption = "Snack (data frame)" ,digits=0) %>% 
+  kable_styling(full_width=F, position= "left", font_size = 48)  
+
+```
+</div>
+
+<div class="col-right">
+
+
+To measure the difference between these opinions you might use the R daisy() function to product these measured differences:  
+```{r echo=TRUE}
+dist(snack)  
+```
+
+```{r}
+rm(Cookies, Milk, People, snack)
+```
+</div>  
+<br>  
+
+<div class="col-left">  
+<br>  
+You can easily verify:   
+</div>  
+
+$\small distance(Sam(10,8), Alice(5,3)) =$  
+ 
+$\small \sqrt{(10-5)^{2}+(8-3)^{2}}= 7.1$
+
+
+
+## Distance-based clustering {.smaller}
+
+
+### Two Approaches 
+
+
+#### K Means Clustering
+
+With n obervations, the K-means algorithm will produce any number of clusters from 2 to n.  Clustering splits the total sum of squares between the sum of squares within clusters and the sum of squares between clusters. As the number of clusters increases, the sum of squares within custers decreases. 
+
+
+#### Hierarchical Clustering
+
+Hierarcical clustering begins by building a full tree that begins with each observation, called leaves, as singleton clusters and agglomerates the leaves into clusters based on distance calculations recorded in a single matrix.
+
+
+   
+## K-means Clustering Algorithm {.smaller}
+
+Produce K clusters from n observations.  Each observation contains p features. Each observation is assigned to only one cluster. Before using the kmeans() function, seed the random number generator with set.seed().  This will make your clusters reproducible.  
+
+Step 1. Randomly assign a cluster number to each observations.  These are the initial clusters. Be sure to set the random number generator so that your clusters can be reproduced.
+
+Step 2: Calculate each cluster centroid as the vector of feature means calculated over the feature vectors for the observations in the cluster.
+
+Now calculate the distance from each observations to each centroid and assign the observations to the closest centroid using the Euclidean notion of distance.  Repeat Step 2 until there are no more reassignments being made.
+
+**Caution**: The algorithm can converge on local minima.  Running the function multiple times with a variety of seeds and initial number clusters is recommended. 
+
+```{r K_means}
+# convert factor variables to numeric (kmeans requires). OK b/c all are binary.
+subscriber.df.num <- subscriber.df
+subscriber.df.num$gender    <- ifelse(subscriber.df$gender=="Male", 0, 1)
+subscriber.df.num$ownHome   <- ifelse(subscriber.df$ownHome=="ownNo", 0, 1)
+subscriber.df.num$subscribe <- ifelse(subscriber.df$subscribe=="subNo", 0, 1)
+```
+
+    
+## K-means
+
+By running the kmeans() function iteratively, values are generated for a scree plot which shows how the sum of squares within clusters falls as the number of clusters increases. This allows the analyst to see where the incremental reduction in within cluster sum of squares levels off.
+
+```{r K-means_2, fig.height=3.5}
+
+outtab <- matrix(rep(0,56), ncol = 4)
+
+for(i in 2:15){
+  set.seed(2017)
+  km = kmeans(subscriber.df.num,i, nstart=20)
+  
+  datClust <- cbind(subscriber.df.num,as.factor(km$cluster))
+
+  outtab[i-1,]= c(i, km$totss, km$betweenss, sum(km$withinss))
+}
+
+
+sk <- as.data.frame(outtab)
+
+colnames(sk) <- c("nClust", "totalSS", "betweenss", "sumWithinss")
+
+
+
+plot(sk$nClust, sk$sumWithinss/1000000, type = "b", main = "Scree for Subscriber Clusters", xlab="Number of Clusters", ylab = "SS within Clusters (mm)")
+
+```
+
+
+## K means: 4 Clusters
+
+Based on the scree plot, 4 clusters seems to be a reasonable selection. The values for the centroids of the four clusters are shown in the table.  
+
+Clusters produced by K Means, do not necessarily make sense.  It is possible to cluster noise. If the clusters are meaningful, differences by cluster in at least some variable means should be visible.
+
+```{r kmeans_4Clusters}
+
+set.seed(2017)
+subscriber.k <- kmeans(subscriber.df.num, centers=4)
+
+# Inspect the 4 cluster case
+
+tab15 <- seg.summ(subscriber.df, subscriber.k$cluster)
+colnames(tab15) <- c("Cluster", "Age","Gender", "Income", "Kids", "Own_Home", "Subscriber")
+
+
+kable(tab15,"html") %>% kable_styling( position = "center", font_size = 18)
+
+rm(i)
+```
+
+
+## K means: 4 Clusters {.smaller}
+
+Clusters produced by K Means, do not necessarily make sense.  It is possible to cluster noise. If the clusters are meaningful, differences by cluster in at least some variable means should be visible.
+
+<div class="col-left">
+
+```{r box_plot1, fig.width = 4, fig.height=4}
+## plot one of the variables
+boxplot(subscriber.df.num$income ~ subscriber.k$cluster, main="Income", xlab="Some differences")
+```
+
+
+</div>
+
+
+<div class="col-right">
+
+
+```{r box_plot2, fig.width=4, fig.height=4}
+
+boxplot(subscriber.df.num$age ~ subscriber.k$cluster, main ="Age", xlab = "Inadequate difference")
+
+```
+
+
+</div>
+
+
+
+## K-means:  Cluster Plot {.smaller}
+
+Plots of clusters are made on the first two principle components from a PCA, so that the axes cover as much of the variability in the data as possible.
+
+This plot confirms the box plots.  The substantial overlap between the 4 clusters suggests that they may not be sufficiently differentiated.
+
+
+```{r kmeans_4, fig.height = 4, fig.width = 5.5, fig.align='center'}
+# plot the result
+library(cluster)
+clusplot(subscriber.df, subscriber.k$cluster, color=TRUE, shade=TRUE, 
+         labels=4, lines=0, main="Subscription Data: 4 clusters", )
+```
+
+
+
+## K means analysis of the Target data.
+
+The Scree Plot for clustering of the target data does not have a well-defined elbow.   
+
+
+```{r}
+########################-- Target Data
+#########################################
+######################################
+
+#allPts <- rbind(circle,mid)
+
+set.seed(2017)
+
+target$position   <- ifelse(target$position=="not_in_target", 0, 1)
+
+
+for(n in 1:(dim(target)[1])){
+if(target$position[n] == "not_in_target"){
+  targets$position[n] = 0}
+  else
+    {target$position[n]=1
+  }
+}
+
+outtab.p <- matrix(rep(0,56), ncol = 4)  ## a 14X4 matrix of 0's
+p.clusters <- matrix(rep(0,9000),ncol = 15)
+for(i in 2:15){
+  kmp = kmeans(target,i, nstart=20)
+  
+  datClust <- cbind(target,as.factor(kmp$cluster))
+  
+  outtab.p[i-1,]= c(i, kmp$totss, kmp$betweenss, sum(kmp$withinss))
+  p.clusters[,i]= kmp$cluster
+  
+  }
+
+
+skp <- as.data.frame(outtab.p)
+
+colnames(skp) <- c("nClust", "totalSS", "betweenss", "sumWithinss")
+
+
+## fix the y axis
+
+plot(skp$nClust,skp$sumWithinss, type = "b", main = "Target Scree", xlab="Number of Clusters", ylab = "SS within Clusters")
+
+```
+
+##  Target Clusters {.smaller}
+
+The plots below show how clusters fit the data as the number clusters progresses from 2 to 6. While the circle is not reproduced, the plot for 5 clusters shows both the specificity of the center group and symmetry for the 4 groups that consitute the circle.
+
+```{r fig.height =4}
+
+##############
+plotter <- function(maxclus){
+  allclus = NULL
+  for(i in 2:maxclus){
+  plot.t <- cbind(target,p.clusters[,i],rep(i,dim(target)[1]))
+  colnames(plot.t) <- c(colnames(target),"clust","i")
+    if(i==2){
+      allclus=plot.t}
+    else{
+      allclus=rbind(allclus,plot.t)
+     }
+  }
+  allclus$clust <- as.factor(allclus$clust)
+  return(allclus)
+}
+
+plot.dat <- plotter(6)
+t <- ggplot(plot.dat, aes(Age,Income,color=clust))+geom_point()
+t+facet_wrap(~i)
+
+
+
+```
+
+
+## Reviewing K-means Cluster Analysis {.smaller}
+
+- A scree plot helps understand how the analyst selected the number of clusters to consider.  
+
+- Keep in mind that the K-means algorithm will find clusters NO MATTER WHAT.  The key question is whether or not the identified clusters are meaningful.
+
+- Look for visible differences between clusters
+
+    + A cluster plot provides a two dimensional view of the clusters on the first two principal components from a PCA.  Overlapping clusters is a sign of possible trouble.
+    
+    + Looking at individual variables, are there variables whose values are clearly difference between the clusters?  
+    
+- Does the cluster analysis make sense?  Does it fit into your understanding of the market from which the data was drawn?    
+
+
+
+
+## Hierarchical clustering {.smaller}
+
+Starting with individual observations and a matrix of distance measures between observations, hierarchical clustering produces a dendrogram like this one.  This is the starting point for hierarchical cluster analysis.  
+
+
+```{r hc, fig.width=8, fig.align='center'}
+library(cluster)
+subscriber.dist <- daisy(subscriber.df)
+subscriber.hc <- hclust(subscriber.dist, method="complete")
+cophenetic <- cor(cophenetic(subscriber.hc), subscriber.dist)
+
+c <- signif(cophenetic, digits = 2)
+
+title <- paste("Dendrogram for Subscriber  CPCC: ", c)
+```
+
+```{r hc-subscriber, fig.width=8.5, fig.align= 'center'}
+
+plot(subscriber.hc, main = title, xlab="",sub = "", labels = FALSE)
+
+rm(c, title)
+```
+
+## Linkage: measuring distance {.smaller}  
+
+The left axis of the dendrogram shows the distance between clusters. The method used to calculate distance between clusters is called "linkage." 
+<br>  
+
+<div class = "center">  
+<img src="Images/linkage2.png" width="600">  
+</div>  
+
+<div class = "font-smaller";>
+Linkage is potentially distorting.  *Cophenetic correlation*, CPCC, measures the strength of association between distances on the dendrogram and distances in the distance matrix.
+</div>
+<hr>
+
+<div>
+
+<div class="col-right";>  
+
+
+```{r CPCC}
+
+
+d.complete <- hclust(subscriber.dist, method="complete")
+c.complete <-  cor(cophenetic(d.complete), subscriber.dist)
+
+d.single <- hclust(subscriber.dist, method="single")
+c.single <-  cor(cophenetic(d.single), subscriber.dist)
+
+d.average <- hclust(subscriber.dist, method="average")
+c.average <-  cor(cophenetic(d.average), subscriber.dist)
+
+d.centroid <- hclust(subscriber.dist, method="centroid")
+c.centroid <-  cor(cophenetic(d.centroid), subscriber.dist)
+
+
+cor <- as.data.frame(t(c(c.complete, c.single, c.average, c.centroid)))
+colnames(cor) <- c("Complete", "Single", "Average", "Centroid")
+rownames(cor) <- c("CPCC")
+
+kable(cor, format = "html", digits = 3, align = 'c', caption = "CPCC for Subscription") %>% kable_styling( position = "center")
+
+
+```
+</div>  
+
+<div class="col-left";>
+
+CPCCs for the Subscription data clustered with different linkage show that the CPCC measures are similar for the four linkage methods listed above. 
+
+</div>
+
+</div>
+
+
+## Linkage example {.smaller}
+
+To demonstrate how the distance matrix and linkage work to produce a dendrogram, consider this example using the first five rows of the segmentation data and the corresponding distance matrix:
+
+
+```{r}
+sp <- subscriber.df[1:5,]
+
+sp1 <- kable(sp, digits=2, padding=10 , row.names=TRUE, 
+             booktabs=TRUE, format="html", align='c', 
+             caption= "First five rows subscriber data") %>%  kable_styling(full_width=TRUE, position= "center", font_size = 18 )
+
+sp2 <- column_spec(sp1, 1,  width = "5mm", bold = FALSE, italic = FALSE)
+sp3 <- column_spec(sp2, 2,  width = "15mm", bold = FALSE, italic = FALSE)
+sp4 <- column_spec(sp3, 3,  width = "15mm", bold = FALSE, italic = FALSE)
+sp5 <- column_spec(sp4, 4,  width = "15mm", bold = FALSE, italic = FALSE)
+sp6 <- column_spec(sp5, 5,  width = "15mm", bold = FALSE, italic = FALSE)
+column_spec(sp6, 6,  width = "15mm", bold = FALSE, italic = FALSE)
+
+rm(sp1,sp2,sp3,sp4,sp5,sp6)
+```
+<br>  
+
+```{r}
+
+sp.d <- daisy(sp)
+sp.dm <- as.matrix(sp.d)
+
+spd1 <- kable(sp.dm, digits=2, padding=10 , row.names=TRUE, 
+             booktabs=TRUE, format="html", align='c', 
+             caption= "Pairwise distance measures") %>%  kable_styling(full_width=TRUE, position= "center", font_size = 18 )
+
+spd2 <- column_spec(spd1, 1,  width = "5mm", bold = FALSE, italic = FALSE)
+spd3 <- column_spec(spd2, 2,  width = "15mm", bold = FALSE, italic = FALSE)
+spd4 <- column_spec(spd3, 3,  width = "15mm", bold = FALSE, italic = FALSE)
+spd5 <- column_spec(spd4, 4,  width = "15mm", bold = FALSE, italic = FALSE)
+spd6 <- column_spec(spd5, 5,  width = "15mm", bold = FALSE, italic = FALSE)
+column_spec(spd6, 6,  width = "15mm", bold = FALSE, italic = FALSE)
+
+rm(spd1,spd2,spd3,spd4,spd5,spd6)
+
+```
+<br>
+Now we can build two dendrograms to compare complete and single linkage.
+
+
+## Linkage example: complete {.smaller}
+
+<div>
+
+<div class="col-left";>
+
+```{r fig.width=4, fig.pos="left"}
+
+sp.hc <- hclust(sp.d, method="complete")
+
+
+plot(sp.hc, xlab="", sub="", main = "Example: complete linkage")
+
+```
+
+</div>
+
+
+<div class = "col-right"";>
+
+With complet linkage the distance between clusters is the maximum pairwise distance between elements in a cluster.
+
+The distance from cluster(1) to cluster(2,3) is  
+$$max(dist(1,2), dist(1,3)) = $$
+$$max(0.44, 0.34) = 0.44$$
+and the distance between Cluster(4,5) and cluster(1,2,3) is 0.59.
+
+These distances are clearly shown on the left-hand axis of the dendrogram.
+</div
+
+</div>
+
+
+## Linkage example: single {.smaller}
+
+<div>
+
+<div class="col-left";>
+
+```{r fig.width=4, fig.pos="left"}
+
+sp1.hc <- hclust(sp.d, method="single" )
+
+plot(sp1.hc, xlab="", sub="", main = "Example: single linkage")
+
+```
+
+</div>
+
+<div class="col-right";>
+
+With single linkage the distance between clusters is the minimum pairwise distance between clusters.
+
+Now, therefore,
+$$min(dist(1,2), dist(1,3)) = $$
+$$min(0.44, 0.34) = 0.34$$
+
+and the distance between Cluster(4,5) and cluster(1,2,3) is 0.44.
+
+These distances are clearly shown on the left-hand axis of the dendrogram.
+</div>
+
+</div>
+
+
+
+
+##  Selecting Clusters from the Tree {.smaller}
+
+
+A horizontal line crossing the dendrogram defines a complete set of mutually exclusive clusters.
+
+```{r hclust_6a}
+
+# see hclust's proposal for 4 groups
+plot(subscriber.hc, xlab = "" , sub = "", labels = FALSE, main="Subscriber: 4 clusters")
+rect.hclust(subscriber.hc, k=4, border="red")
+
+```
+
+## cluster plot - 4 clusters
+
+```{r}
+subscriber.hc.clusters <- cutree(subscriber.hc, k=4) 
+
+
+clusplot(subscriber.df, subscriber.hc.clusters, color=TRUE, shade=TRUE, 
+         labels=4, lines=0, main="Subscription Data: 4 clusters")
+
+
+```
+
+## 3 clusters
+
+Here is the dendrogram cut to form three clusters.  
+
+```{r}
+# see hclust's proposal for 3 groups
+plot(subscriber.hc, xlab = "" , sub = "", labels = FALSE, main="Subscriber: 3 clusters")
+rect.hclust(subscriber.hc, k=3, border="red")
+
+```
+
+## cluster plot - 3 clusters
+
+But they are still overlapped
+
+```{r}
+subscriber.hc.clusters <- cutree(subscriber.hc, k=3) 
+
+
+clusplot(subscriber.df, subscriber.hc.clusters, color=TRUE, shade=TRUE, 
+         labels=4, lines=0, main="Subscription Data: 3 clusters")
+
+
+```
+
+
+
+
+```{r}
+# 
+# prod <- subscriber.df$age * subscriber.df$income
+# 
+# prod.s <- scale(prod)
+# 
+# hist(prod)
+# hist(prod.s)
+# subscriber.df.plot <- cbind(as.factor(subscriber.hc.segment), subscriber.df )
+# 
+# colnames(subscriber.df.plot) <- c("cluster",colnames(subscriber.df))
+# 
+# subscriber.df.plot <- cbind(subscriber.df.plot, prod.s)
+# 
+# 
+# ggplot(subscriber.df.plot, aes(cluster, income)) + geom_violin(fill="sky blue")
+# 
+# ggplot(subscriber.df.plot, aes(cluster, prod.s)) + geom_violin(fill="sky blue")
+# 
+# # ggplot(subscriber.df.plot, aes(cluster, prod)) + geom_violin(fill="sky blue")
+# 
+# ggplot(subscriber.df.plot, aes(cluster, prod)) + geom_boxplot()
+# 
+# ggplot()
+
+```
+
+
+## Hierarchical Clustering: target data {.smaller}
+
+K-means analysis of the target data did well, identdifying a central cluster 
+surrounded by four clusters in the quadrants surrounding the center.  
+
+Here is hierarchical clustering with 5 clusters as a point of comparison.
+
+
+```{r}
+distm = daisy(target)
+
+target.hc <- hclust(distm, method="complete")
+
+cophenetic <- cor(cophenetic(target.hc), distm)
+
+c <- signif(cophenetic, digits = 2)
+
+title <- paste("Dendrogram for target (method: complete, CPCC: ", c, ")")
+
+
+
+
+plot(target.hc, main = title, xlab="",sub = "", labels = FALSE)
+rect.hclust(target.hc, k=5, border="red")
+
+```
+
+
+
+
+```{r}
+# actually get 5 groups
+target.hc.clusters <- cutree(target.hc, k=6)     # cluster vector for 5 groups
+# table(target.hc.clusters)
+
+# seg.summ(target, target.hc.clusters)
+
+```
+
+
+
+
+
+## Hierarchical Results: target data
+
+For this data, the results from hierarchical clustering fall way short of the results from K means.  It simply doesn't find the central area.
+
+
+```{r}
+dat1 <- cbind(target, as.factor(target.hc.clusters))
+colnames(dat1) <- c(colnames(target),"clust")
+
+ggplot(dat1, aes(Age,Income,color=clust))+geom_point()
+
+```
+
+
+
+
+# Model Based Clustering
+
+
+
+## Models for Model Based Clustering
+
+Model based cluster analysis uses finite mixture models, which are based on the assumption that observed data are drawn from multiple distributions.
+The focus of the analyis is to find distributions that are assigned to observed data points to achieve maximum likelihood.
+
+The fit of the model to the data is evaluated in terms of maximum likelihood and the Bayesian information criterion. The best fiting model among alternative models is generally the model with the highest BIC. 
+
+## Two Methods {.smaller}
+
+### GMM: Gaussian Mixture Models
+
+Guassian Finite Mixture Models assume that the data are independent draws from Normal distributions. Thus, like K-Means, Gaussian Finite Mixture models require numberic data.  Models are constructed to maximize likelihood, making BIC scores a good indicator for model selection. The package being used for clustering is Mclust, which will produce density estimates and classifiction estimates as well as clusters.
+
+### LCA: Latent Class Analysis
+
+In Latent Class Analysis, the data are assumed to be mutually independent categorical variables. The distributions are assumed to be multi-way cross-classification tables.  LCA classifies observations according to their maximum likelihood cluster membership, making BIC scores a lead indicator for model selection. As with MCC, the poLCA package used for LCA has capabilities that go much farther than cluster analysis, which maybe the first step in building a classification model.
+
+
+
+
+
+
+
+
+## GMM: Analysis of Subscriber Data {.smaller}
+
+When mclust() is run in its simplest mode, it produces a cluster analysis for the optimal BIC value.  For the subscriber data, mclust() returns a 3-cluster model.
+
+
+```{r mixture_1}
+
+# do mclust for segments
+library(mclust)
+
+
+# fit the model
+subscriber.mc <- Mclust(subscriber.df.num, verbose = FALSE)
+summary(subscriber.mc)
+
+# examine the 3-cluster model
+seg.summ(subscriber.df, subscriber.mc$class)
+
+```
+
+
+
+## Cluster Plot: Subscriber 3-cluster model {.smaller}
+
+The cluster plot is clearly superior to any of the distance-based cluster analyses.
+
+```{r mixture_3}
+
+
+clusplot(subscriber.df, subscriber.mc$class, color=TRUE, shade=TRUE, 
+         labels=4, lines=0, main="Model-based cluster plot: 3 clusters")
+
+
+```
+
+
+
+## GMM: Subscriber 4-cluster analyses {.smaller}
+
+As a point of comparison, here is the output of a 4-cluster model.
+
+
+```{r mixture_4clust}
+
+# what if we estimate 4 clusters?
+subscriber.mc4 <- Mclust(subscriber.df.num, G=4, verbose = FALSE)
+summary(subscriber.mc4)
+
+# examine the 3-cluster model
+seg.summ(subscriber.df, subscriber.mc4$class)
+
+
+```
+
+
+
+## Cluster plot: Subscriber 4-cluster model
+
+
+```{r mixture_4}
+
+
+clusplot(subscriber.df, subscriber.mc4$class, color=TRUE, shade=TRUE, 
+         labels=4, lines=0, main="Model-based cluster plot: 4 clusters")
+
+
+```
+
+
+
+## Comparing GMM Cluster Models {.smaller}
+
+Although the cluster plots for the 3-cluster and 4-cluster models are difficult to differentiate by eye, the difference if 182 in BIC scores indicates that the 3-cluster model is superior.
+
+<br>
+
+```{r compare}
+
+m3 <- c(subscriber.mc$loglik, subscriber.mc$n, subscriber.mc$df, subscriber.mc$bic)
+
+m4 <- c(subscriber.mc4$loglik, subscriber.mc4$n, subscriber.mc4$df, subscriber.mc4$bic)
+
+compare34 <- rbind.data.frame(m3,m4)
+
+colnames(compare34) <- c("log.likelihood", "n", "df", "BIC")
+rownames(compare34) <- c("3-clusters:", "4-clusters:")
+
+c <- kable(compare34, digits=2, padding=10 , row.names=TRUE, 
+             booktabs=TRUE, format="html", align='c', 
+             caption= "Subscriber: Compare 3-cluster and 4-cluster Models") %>%  kable_styling(full_width=TRUE, position= "center", font_size = 42 )
+
+c
+
+
+```
+
+
+
+## Latent Class Analysis {.smaller}
+
+Latent class analysis uses categorical data. This table shows the subscriber data with the continuous variables converted to categories.  the first category contains observations less than the median for the variable.  In the second the values are equal to or greater than the median. 
+
+The table shows the two categories for each subscriber variable and the number of observation in each.
+
+```{r LCA_1}
+
+#### poLCA
+library(poLCA)
+### prepare data  
+
+subscriber.df.cut <- subscriber.df
+subscriber.df.cut$age    <- factor(ifelse(subscriber.df$age < median(subscriber.df$age), 1, 2))
+subscriber.df.cut$income <- factor(ifelse(subscriber.df$income < median(subscriber.df$income),1, 2))
+subscriber.df.cut$kids   <- factor(ifelse(subscriber.df$kids < median(subscriber.df$kids), 1, 2))
+summary(subscriber.df.cut)
+```
+
+<div class = "font-smaller";>
+The poLCA package uses formulas to specify the model to be estimated.  Cluster estimation is the simplest poLCA formula:
+</div>
+
+```{r}
+# create a model formula
+subscriber.f <- with(subscriber.df.cut, 
+              cbind(age, gender, income, kids, ownHome, subscribe)~1)
+pr.form <- subscriber.f
+
+attributes(pr.form) <- NULL
+
+pr.form
+
+
+```
+
+
+
+## LCA: Subscriber 3-clusters  {.smaller}
+
+```{r LCA_3, fig.height=4.2, fig.width=5.5, fig.align='center'}
+
+
+set.seed(02807)
+subscriber.LCA3 <- poLCA(subscriber.f, data=subscriber.df.cut, nclass=3, verbose=FALSE)
+
+# examine the solutions
+# 3 clusters
+tt <-  seg.summ(subscriber.df, subscriber.LCA3$predclass)
+count <- as.numeric( t(table(subscriber.LCA3$predclass)))
+tt <- cbind(count,tt)
+
+tt <- tt[c(2,1,3,4,5,6,7,8)]
+
+colnames(tt) <- c("Cluster", "Freq", "Age", "Gender", "Income", "Kids", "Home_Owner", "Subscriber")
+
+
+k <- kable(tt, align="c", caption = "Model and Cluster Plot (K=3)") %>% 
+  kable_styling(full_width=T, position= "center", font_size = 14)
+
+k
+
+clusplot(subscriber.df, subscriber.LCA3$predclass, color=TRUE, shade=TRUE, 
+         labels=4, lines=0, main="", xlab="", ylab="")
+
+
+```
+
+## LCA: Subscriber 4-clusters  {.smaller}
+
+
+```{r LCA_4, fig.height=4.2, fig.width=5.5, fig.align='center'}
+# 4 clusters
+#seg.summ(subscriber.df, subscriber.LCA4$predclass)
+#table(subscriber.LCA4$predclass)
+
+subscriber.LCA4 <- poLCA(subscriber.f, data=subscriber.df.cut, nclass=4, verbose=FALSE)
+
+
+tt <-  seg.summ(subscriber.df, subscriber.LCA4$predclass)
+count <- as.numeric( t(table(subscriber.LCA4$predclass)))
+tt <- cbind(count,tt)
+
+tt <- tt[c(2,1,3,4,5,6,7,8)]
+
+colnames(tt) <- c("Cluster", "Freq", "Age", "Gender", "Income", "Kids", "Home_Owner", "Subscriber")
+
+
+k <- kable(tt, align="c", caption = "Model and Cluster Plot (K=4)") %>% 
+  kable_styling(full_width=T, position= "center", font_size = 14)
+
+k
+
+clusplot(subscriber.df, subscriber.LCA4$predclass, color=TRUE, shade=TRUE, 
+         labels=4, lines=0, main="", xlab="", ylab="")
+
+
+```
+
+
+## LCA subscriber model selection {.smaller}
+
+```{r LCA_2a}
+
+rpt3 <- c(subscriber.LCA3$Nobs, subscriber.LCA3$llik, subscriber.LCA3$bic)
+rpt3 <- as.data.frame(t(rpt3))
+
+rpt4 <- c(subscriber.LCA4$Nobs, subscriber.LCA4$llik, subscriber.LCA4$bic)
+rpt4 <- as.data.frame(t(rpt4))
+
+rpt <- rbind(rpt3, rpt4)
+
+colnames(rpt) <- c("N", "Log.likelihood", "BIC")
+rownames(rpt) <- c("3-clusters:  ", "4-clusters:  ")
+
+kable(rpt, align="c", caption = "3-cluster and 4-cluster model statistics") %>% 
+  kable_styling(full_width=T, position= "center", font_size = 14)
+
+```
+<br>
+<br>
+The cluster plots for the LCA models show a clearer difference than the cluster plots did for the GMM models. The 4-cluster model includes an additional cluster that looks extraneous.  The BIC score for the 3-cluster model is smaller by 31 than the BIC score for the 4-cluster model, indicating a better fit.
+
+
+## References  {.smaller}
+
+<div class="font-xsmall";>
+
+Yoram (Jerry) Wind and David R. Bell,  
+*Market segmentation*, 2012  
+https://faculty.wharton.upenn.edu/wp-content/uploads/2012/04/0702_Market_Segmentation.pdf
+
+
+Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani,  
+*An Introduction to Statistical Learning* (ISLR), 2015 (updated edition)   
+http://www-bcf.usc.edu/~gareth/ISL/
+
+
+See also WRT ISLR for links to associated materials for ISLR:
+Kevin Markham,  
+"In-depth introduction to machine learning in 15 hours of expert videos",   
+*R-Bloggers*, September 23, 2014    
+https://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-of-expert-videos/
+
+
+Chapman, Christopher N.; McDonnell Feit, Elea. R,  
+*Marketing Research and Analytics (Use R!)*,   
+Springer International Publishing, 2015
+
+</div>
+
+## 
+

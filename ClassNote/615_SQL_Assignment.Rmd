@@ -1,0 +1,249 @@
+---
+title: "Using SQL from R"
+date: "Due Sunday November 12, 11:30pm"
+output: pdf_document
+---
+
+In yesterday's class, you learned how to access a postgres database running on the Amazon cloud. You're going to use the skills you gained yesterday as well as your prior knowledge of R in this assignment.
+
+Please note that if you get an error along the following lines, you should reconnect to the database. All you would need to do is establish the connection again.
+
+```
+> Error in postgresqlExecStatement(conn, statement, ...) : 
+  RS-DBI driver: (could not Retrieve the result : server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+)
+```
+
+Now, let's connect to the postgres database with R.
+
+To get started, set up the connection parameters you will need. These are the same parameters you used yesterday, however, we will be connecting to a different database.
+
+```{r, warning=FALSE, message=FALSE}
+library(RPostgreSQL)
+
+host <- "analyticsga-east2.c20gkj5cvu3l.us-east-1.rds.amazonaws.com"
+port <- "5432"
+username <- "analytics_student"
+password <- "analyticsga"
+dbname <- "nyc_taxi_trips_database"
+drv <- dbDriver("PostgreSQL")
+
+#  establish the connection
+con <- dbConnect(drv, user = username, password = password,
+                 dbname = dbname, port = port, host = host)
+```
+
+Test the connection with some simple commands. 
+
+```{r}
+# explore tables in the database
+dbListTables(con)
+
+# explore column names in each table
+dbListFields(con, "trip_data")
+dbListFields(con, "trip_fares")
+```
+
+The tables in the NYC taxi trips database are: "trip_data" and "trip_fares". 
+
+Now, you're ready to use SQL on the NYC taxi trips database. Start by exploring the data.
+
+```{r}
+# explore trip_data
+dbGetQuery(con, statement = "
+           SELECT * 
+           FROM trip_data LIMIT 5")
+
+# how many rows are we dealing with? this may take 10+ seconds...
+dbGetQuery(con, statement = "
+           SELECT COUNT(*) 
+           FROM trip_data")
+```
+
+We are dealing with 14.78 million rows! This is also the case for trip_fares table. Depending on the queries you do moving forward, add a LIMIT statement, to limit the number of rows in the output. 
+
+Now let's do some statistical exploration. Look at trip_distance data. That should be easy, right? It's just a single number from each record in the trip_data table. We'll add a limit of 20000 so that we're just dealing with the first 20K rows. Feel free to adjust this number and query as you see fit [ex: you may want to remove null values and/or adjust the LIMIT]. 
+
+```{r}
+trip_distance <- dbGetQuery(con, statement = "
+                 SELECT trip_distance 
+                 FROM trip_data
+                 LIMIT 20000")
+```
+
+You can see that trip_distance is a data frame:
+
+```{r}
+str(trip_distance)
+```
+
+```
+Explore the trip_distance data by...
+- creating a histogram in ggplot2
+- calculate summary statistics
+    - mean
+    - median
+    - min
+    - max
+    - anything else you think could be interesting
+    
+Note any meaningful insights you find.
+```    
+
+```{r}
+library(ggplot2)
+
+# add ggplot code + summary stats + insights in this chunk!
+
+
+```
+
+There may be variables in trip_data that can help explain the trip_distance data, like *passenger_count* and *trip_time_in_secs*. 
+
+Rework our original query for _trip_distance_ to add passenger_count and trip_time_in_secs in our dataframe. HINT: you just need to adjust the SELECT statement. Don't forget to add a LIMIT!
+
+If you'd like, you can convert trip_time_in_secs to minutes within the query. 
+
+Example: _SELECT trip_time_in_secs/60 AS trip_time_in_mins FROM trip_data LIMIT 20000_
+
+```{r}
+trip_distance <- dbGetQuery(con, statement = "
+                            
+                            ")
+
+```
+
+Visually explore the relationship between *trip_distance* and *passenger_count*. Also, visualize the relationship between *trip_distance* and *trip_time_in_secs* [or trip_time_in_mins]. Use whatever graph style you think is best.
+
+One would expect that a high distance value would likely be associated with a high time value. Is this the case? Note any insights you find.
+
+```{r}
+# add ggplot code + insights in this chunk!
+
+
+```
+
+
+Awesome! Now let's check out the trip_fares data.
+
+```{r}
+# explore trip_fares
+dbGetQuery(con, statement = "
+           SELECT * 
+           FROM trip_fares LIMIT 5")
+```
+
+Now, let's get the number of transactions/trips (essentially the number of rows) for each payment type. You could order by payment_type in descending order.
+
+You will need a COUNT(*) in the SELECT statement. You will also need a GROUP BY statement. If you get stuck, go back to the 615_SQL_starter script and look for the question "how many vendors are there per county" -- use that query as a template!
+
+Note: you do not need to use a LIMIT for this query. 
+
+```
+Info on the payment types
+- "CRD" -- card, debit or credit
+- "CSH" -- cash
+- "DIS" -- disputed fare 
+- "NOC" -- no charge
+- "UNK" -- unknown
+```
+
+```{r}
+dbGetQuery(con, statement = "
+           
+           ")
+
+# what does the query output tell us?
+```
+
+
+What's the average (AVG) total_amount by payment_type? You will need a GROUP BY statement. An ORDER BY statement may be helpful too. Don't use a LIMIT this time. 
+
+What does the output tell us? Are there any insights you can draw?
+
+```{r}
+dbGetQuery(con, statement = "
+                            
+                            ")
+
+# what does the query output tell us?
+
+```
+
+
+How about the average (AVG) tip_amount by payment_type? You will need a GROUP BY statement. An ORDER BY statement may be helpful too. Don't use a LIMIT this time. 
+
+What does the output tell us? Are there any insights you can draw?
+
+```{r}
+dbGetQuery(con, statement = "
+                            
+                            ")
+
+# what does the query output tell us?
+
+```
+
+Create a chart or two for payment_type. 
+
+Ideas: visualize any of the queries you just ran. The charts can be as simple or complex as you'd like. Perhaps you want to compare _just_ cash with card data points? If yes, you'd need to manipulate the query with a WHERE statement. 
+
+Example of a WHERE statement query from the Iowa Liquors Database: _SELECT county, FROM sales WHERE county = 'Polk' or county = 'Linn'_
+
+Please note the chart(s) you create tell us. Note any meaningful insights.
+
+```{r}
+data_for_chart <- dbGetQuery(con, statement = "
+                             
+                             ")
+
+
+# add ggplot code + insights here!
+
+
+```
+
+
+Let's revisit the trip_data table. 
+
+```{r}
+dbGetQuery(con, statement = "
+           SELECT * 
+           FROM trip_data LIMIT 5")
+```
+
+As a bonus, try your best to create a map! You can either visualize pickup_longitude & pickup_latitude OR dropoff_longitude & dropoff_latitude. Although, if you'd like to, feel free to create more than 1 map.
+
+Here's a sample query you can run to get the data you need. You will need to add a LIMIT statement.  
+
+```{r}
+map_data <- dbGetQuery(con, statement = "
+                       SELECT pickup_longitude, pickup_latitude
+                       FROM trip_data
+                       LIMIT 5000")
+```
+
+Now to actually visualize your data... I suggest looking into *ggmap*. Some example code can be found here: https://blog.dominodatalab.com/geographic-visualization-with-rs-ggmaps/
+
+What does your map tell us? Are there any insights you can draw from your map?
+
+```{r}
+# install.packages("ggmap")
+library(ggmap)
+
+# add ggmap code + insights in this chunk!
+
+
+```
+
+
+Congrats! :) 
+
+You just used SQL to access data in the cloud AND used R to generate summary stats and create visualizations. Hopefully you were able to translate the data into insights too. 
+
+These are highly valued skills in the data science realm, which is why I would add this assignment to your GitHub! To take this assignment to the next level for your GitHub, you can expand and organize the analysis to create a story, as well as draw conclusions / make suggestions based on the analysis. 
+
+We weren't able to use joins in this assignment, because it would take some time. If you'd like to expand your analysis and try to join the tables but aren't sure where to start (there are multiple common fields you'd have to join on), get in touch. I can send you some sample queries.
+
