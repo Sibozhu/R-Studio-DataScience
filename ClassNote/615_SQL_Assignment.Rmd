@@ -103,14 +103,22 @@ c <- ggplot(data = trip_distance, aes(trip_distance)) +
   labs (title = "Trip Distance") +
   labs (x = "Distance", y = "Count")+
   theme(plot.title = element_text(hjust = 0.5))
-c
+
+#printing the graph
+print(c)
 
 #Summarize states with igonring the NA values
 analysis <- data.matrix(trip_distance, rownames.force = NA)
-mean(analysis)
-median(analysis)
-max(analysis)
-min(analysis)
+mean <- mean(analysis)
+median <- median(analysis)
+max <- max(analysis)
+min <- min(analysis)
+
+#doing printing
+print(mean)
+print(median)
+print(max)
+print(min)
 
 
 ```
