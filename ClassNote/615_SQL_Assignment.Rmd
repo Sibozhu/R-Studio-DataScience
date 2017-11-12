@@ -96,6 +96,21 @@ Note any meaningful insights you find.
 library(ggplot2)
 
 # add ggplot code + summary stats + insights in this chunk!
+c <- ggplot(data = trip_distance, aes(trip_distance)) +
+  geom_histogram(breaks = seq (0,45, by =5),
+                 col = "blue",
+                 fill = "white") +
+  labs (title = "Trip Distance") +
+  labs (x = "Distance", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))
+c
+
+#Summarize states with igonring the NA values
+analysis <- data.matrix(trip_distance, rownames.force = NA)
+mean(analysis)
+median(analysis)
+max(analysis)
+min(analysis)
 
 
 ```
