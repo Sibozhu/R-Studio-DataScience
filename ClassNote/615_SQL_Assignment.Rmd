@@ -162,7 +162,10 @@ ggplot(data = trip_distance, aes(x=trip_distance,y=passenger_count)) +
   geom_jitter(color = "blue",alpha=0.7) +
   scale_x_continuous(expand = c(0,0))+
   scale_y_continuous(expand = c(0,0))+
-  labs (x = "Distance", y = "Number of Passenger")
+  labs (title="Relationship between Distance and Passenger Count")+
+  labs (x = "Distance", y = "Number of Passenger")+
+  theme(plot.title = element_text(hjust = 0.5))
+
 
 #Insight: From the graph, we can see that there's a trend that the less number of passenger are, the longer distance travel are being made. Distance longer than 75 miles trips are only happening in 1 passenger scenario. When number of passenger is bigger than 1, the tranvel distance will be mostly hold within 25 miles. 
 
@@ -170,7 +173,10 @@ ggplot(data = trip_distance, aes(x = trip_distance, y=trip_time_in_mins)) +
   geom_jitter(color="dark orange",alpha=0.7) +
   scale_x_continuous(expand = c(0,0))+
   scale_y_continuous(expand = c(0,0))+
-  labs (x = "Distance", y = "Trip Time(min)")
+  labs(title="Relationship between Distance and Trip Time")+
+  labs (x = "Distance", y = "Trip Time(min)")+
+  theme(plot.title = element_text(hjust = 0.5))
+
   
 #Insight: We can see there's a trend that indicate longer distance brings less trip time. This seems unreasonable, but it can be explained that when trip distance is relatively long, the taxi usually need to travel through highway, which is much faster than regular road. On the other side, when trip is relatively short, there're high chance that the trip is happening between rush hour and downtown of city, in which explained some record that is pretty short but last long time. 
 ```
@@ -202,10 +208,14 @@ Info on the payment types
 
 ```{r}
 dbGetQuery(con, statement = "
-           
-           ")
+SELECT payment_type, count(*) as num_transactions
+FROM trip_fares
+GROUP BY payment_type
+ORDER BY payment_type DESC
+           ")     
 
 # what does the query output tell us?
+# Anwser: The debit/credit card has the biggest amount of transactions, while the cash transaction is a bit behind. Meanwhile, the transaction of disputed fare, no charge and unknown are the least type of transactions made in the records.
 ```
 
 
@@ -215,11 +225,14 @@ What does the output tell us? Are there any insights you can draw?
 
 ```{r}
 dbGetQuery(con, statement = "
-                            
-                            ")
+SELECT payment_type, avg(total_amount) as ave_amount
+FROM trip_fares
+GROUP BY payment_type
+ORDER BY ave_amount DESC
+           ")  
 
 # what does the query output tell us?
-
+# Answer: The unknown type of transaction made the biggest average amount of payment, while the cash is the least average amount of transaction type. Debit/Credit card, disputed fate and no charge are in the middle class. The "cash" record could be explained by that people are more like to pay cash for small amount of payment for example in the grocery store.
 ```
 
 
@@ -229,11 +242,14 @@ What does the output tell us? Are there any insights you can draw?
 
 ```{r}
 dbGetQuery(con, statement = "
-                            
-                            ")
+SELECT payment_type, avg(tip_amount) as ave_tip
+FROM trip_fares
+GROUP BY payment_type
+ORDER BY ave_tip DESC
+           ")  
 
 # what does the query output tell us?
-
+# Answer: The Unknown type of transaction get the biggest average tip among all the five transaction types, while debit/credit card make the second largest amount of average tip. Meanwhile, disputed fare, cash and no charge almost make no average tip in payment and they are the three least type of transaction in average tip record.
 ```
 
 Create a chart or two for payment_type. 
@@ -246,11 +262,38 @@ Please note the chart(s) you create tell us. Note any meaningful insights.
 
 ```{r}
 data_for_chart <- dbGetQuery(con, statement = "
-                             
-                             ")
+SELECT payment_type, count(*) as num_transactions, avg(total_amount) as ave_amount, avg(tip_amount) as ave_tip
+FROM trip_fares
+WHERE payment_type = 'CSH' or payment_type = 'CRD' 
+GROUP BY payment_type
+ORDER BY payment_type DESC
+           ")  
 
+#Create another chunk here in order to skip the loading time of "data_for_chart"
+```
 
+```{r}
 # add ggplot code + insights here!
+
+ggplot(data_for_chart, aes(x=reorder(payment_type, num_transactions), y=num_transactions)) +
+  geom_bar(stat="identity",fill="blue",alpha=0.7,width=0.6) +
+  labs(title = "Relationship between Type and Number of Transactions") +
+  labs (x = "Payment Type", y = "Number of Transactions")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(data_for_chart, aes(y=ave_amount, x=reorder(payment_type, ave_amount))) +
+  geom_bar(stat="identity",fill="blue",alpha=0.7,width=0.6) +
+  labs(title = "Relationship between Type and Average Amount of Transactions") +
+  labs (x = "Type of Payment", y = "Average Amount of Transaction")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(data_for_chart, aes(y=ave_tip, x=reorder(payment_type, ave_tip))) +
+  geom_bar(stat="identity",fill="blue",alpha=0.7,width=0.6) +
+  labs(title = "Relationship between Type and Average Tip of Transactions") +
+  labs (x = "Type of Payment", y = "Average Tip of Transaction")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+# Insight: From the three graphs above, we can see that the biggest variation between two types of payment are their average tips. The average tip of cash are barely 0 while debit/credit card's is almost 2.4. This can be explained that people are less likely to pay tips with cash because that may break their cash into numbers of coins while this won't be a bother when people are using card.
 
 
 ```
