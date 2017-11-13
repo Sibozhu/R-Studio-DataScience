@@ -120,7 +120,7 @@ print(median)
 print(max)
 print(min)
 
-# Insights: From the histogram of "Trip Distance", we can see that more than 15 thousands people (almost 90% of the total number) choose to take taxi to travel within 5 miles. Since among 20000 total people are being surveyed in this record, taxi company might find this histogram useful in deciding their seasonal strategy of short-distance traveling package. 
+#Insight: From the histogram of "Trip Distance", we can see that more than 15 thousands people (almost 90% of the total number) choose to take taxi to travel within 5 miles. Since among 20000 total people are being surveyed in this record, taxi company might find this histogram useful in deciding their seasonal strategy of short-distance traveling package. 
 
 ```
 
@@ -159,13 +159,20 @@ One would expect that a high distance value would likely be associated with a hi
 ```{r}
 # add ggplot code + insights in this chunk!
 ggplot(data = trip_distance, aes(x=trip_distance,y=passenger_count)) + 
-  geom_jitter(color = "blue",alpha=0.7) 
-
-ggplot(data = trip_distance, aes(x = trip_distance, y=trip_time_in_mins)) +
+  geom_jitter(color = "blue",alpha=0.7) +
   scale_x_continuous(expand = c(0,0))+
   scale_y_continuous(expand = c(0,0))+
-  geom_point() +
-  geom_smooth(method="lm", color= "darkred",se=FALSE) 
+  labs (x = "Distance", y = "Number of Passenger")
+
+#Insight: From the graph, we can see that there's a trend that the less number of passenger are, the longer distance travel are being made. Distance longer than 75 miles trips are only happening in 1 passenger scenario. When number of passenger is bigger than 1, the tranvel distance will be mostly hold within 25 miles. 
+
+ggplot(data = trip_distance, aes(x = trip_distance, y=trip_time_in_mins)) +
+  geom_jitter(color="dark orange",alpha=0.7) +
+  scale_x_continuous(expand = c(0,0))+
+  scale_y_continuous(expand = c(0,0))+
+  labs (x = "Distance", y = "Trip Time(min)")
+  
+#Insight: We can see there's a trend that indicate longer distance brings less trip time. This seems unreasonable, but it can be explained that when trip distance is relatively long, the taxi usually need to travel through highway, which is much faster than regular road. On the other side, when trip is relatively short, there're high chance that the trip is happening between rush hour and downtown of city, in which explained some record that is pretty short but last long time. 
 ```
 
 
