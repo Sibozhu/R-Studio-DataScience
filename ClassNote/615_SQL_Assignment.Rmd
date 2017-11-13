@@ -120,6 +120,7 @@ print(median)
 print(max)
 print(min)
 
+# Insights: From the histogram of "Trip Distance", we can see that more than 15 thousands people (almost 90% of the total number) choose to take taxi to travel within 5 miles. Since among 20000 total people are being surveyed in this record, taxi company might find this histogram useful in deciding their seasonal strategy of short-distance traveling package. 
 
 ```
 
@@ -143,6 +144,12 @@ trip_distance_in_mins <- dbGetQuery(con, statement = "
                  SELECT trip_time_in_secs/60 AS trip_time_in_mins FROM trip_data LIMIT 20000
                  ")
 
+#countting only passengers for future use
+passenger_count <- dbGetQuery(con, statement = "
+                 SELECT passenger_count
+                 FROM trip_data
+                 LIMIT 20000")
+
 ```
 
 Visually explore the relationship between *trip_distance* and *passenger_count*. Also, visualize the relationship between *trip_distance* and *trip_time_in_secs* [or trip_time_in_mins]. Use whatever graph style you think is best.
@@ -151,8 +158,14 @@ One would expect that a high distance value would likely be associated with a hi
 
 ```{r}
 # add ggplot code + insights in this chunk!
+ggplot(data = trip_distance, aes(x=trip_distance,y=passenger_count)) + 
+  geom_jitter(color = "blue",alpha=0.7) 
 
-
+ggplot(data = trip_distance, aes(x = trip_distance, y=trip_time_in_mins)) +
+  scale_x_continuous(expand = c(0,0))+
+  scale_y_continuous(expand = c(0,0))+
+  geom_point() +
+  geom_smooth(method="lm", color= "darkred",se=FALSE) 
 ```
 
 
