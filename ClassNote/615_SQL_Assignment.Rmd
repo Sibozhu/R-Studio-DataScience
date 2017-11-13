@@ -312,8 +312,13 @@ As a bonus, try your best to create a map! You can either visualize pickup_longi
 Here's a sample query you can run to get the data you need. You will need to add a LIMIT statement.  
 
 ```{r}
-map_data <- dbGetQuery(con, statement = "
+map_data_pickup <- dbGetQuery(con, statement = "
                        SELECT pickup_longitude, pickup_latitude
+                       FROM trip_data
+                       LIMIT 5000")
+
+map_data_dropoff <- dbGetQuery(con, statement = "
+                       SELECT dropoff_longitude, dropoff_latitude
                        FROM trip_data
                        LIMIT 5000")
 ```
@@ -329,7 +334,20 @@ library(ggmap)
 
 # add ggmap code + insights in this chunk!
 
+Map <- get_map(location = "New York City",
+                  zoom = 12,
+                  crop = TRUE)
+ggmap(Map) + 
+  geom_point(data = map_data_pickup, aes(x = pickup_longitude, y = pickup_latitude),color="red",alpha=0.7)+
+  labs(title = "Data Visualization of New York City Map Pickup Record") +
+  theme(plot.title = element_text(hjust = 0.5))
 
+ggmap(Map) + 
+  geom_point(data = map_data_dropoff, aes(x = dropoff_longitude, y = dropoff_latitude),color="blue",alpha=0.7)+
+  labs(title = "Data Visualization of New York City Map Dropoff Record") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+#We can see that from the side of location, no matter for pickup or dropoff, most data are collected within Manhattan area. This result shows us that NYC taxi companies should focus their target area within Manhattan.  
 ```
 
 
