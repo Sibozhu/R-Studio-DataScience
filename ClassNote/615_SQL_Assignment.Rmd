@@ -132,11 +132,16 @@ If you'd like, you can convert trip_time_in_secs to minutes within the query.
 Example: _SELECT trip_time_in_secs/60 AS trip_time_in_mins FROM trip_data LIMIT 20000_
 
 ```{r}
+#Adding passenger_count and trip_time_in_secs
 trip_distance <- dbGetQuery(con, statement = "
-                SELECT trip_distance, passenger_count, trip_time_in_secs
-                FROM trip_data
-                LIMIT 20000
-                            ")
+                 SELECT trip_distance,passenger_count,trip_time_in_secs
+                 FROM trip_data
+                 LIMIT 20000")
+
+#convert trip_time_in_secs to minutes within the query.
+trip_distance_in_mins <- dbGetQuery(con, statement = "
+                 SELECT trip_time_in_secs/60 AS trip_time_in_mins FROM trip_data LIMIT 20000
+                 ")
 
 ```
 
