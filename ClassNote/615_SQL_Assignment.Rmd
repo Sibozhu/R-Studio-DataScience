@@ -326,6 +326,7 @@ What does your map tell us? Are there any insights you can draw from your map?
 # install.packages("ggmap")
 library(ggmap)
 
+
 # add ggmap code + insights in this chunk!
 
 
