@@ -1,0 +1,51 @@
+---
+title: "Final_Proj"
+author: "Sibo Zhu"
+date: "2017/12/15"
+output: pdf_document
+---
+
+```{r setup, include = FALSE}
+# prepare packages
+library(ROAuth)
+library(streamR)
+library(twitteR)
+library(tm)
+library(SnowballC)
+library(ggplot2)
+library(ggvis)
+library(ggmap)
+library(grid) 
+library(dplyr)
+library(wordcloud)
+library(plyr)
+library(stringr)
+library(dplyr)
+library(wordcloud)
+library(gridExtra)
+library(topicmodels)
+```
+
+
+```{r}
+# set up connection
+requestURL <- "https://api.twitter.com/oauth/request_token"
+accessURL <- "https://api.twitter.com/oauth/access_token"
+authURL <- "https://api.twitter.com/oauth/authorize"
+api_key             <- "dSzLRlqni1W2f9CJagS19RP6b"
+api_secret          <- "pLX7gIERogxsgn7AT2eEAQlhmxGKwEx9de5pjeOtjkQDDbVVCD"
+access_token        <- "3134023545-OZ9TIdXFbEFW66HmsCUo0EWGIANJ4SgS1OgdDO7"
+access_token_secret <- "kAzcVK0EMOhCFAs13Mau2Y8q2fCYHjvA5XXl7Rd0SCO1o"
+######### Prepare for streamR
+my_oauth <- OAuthFactory$new(consumerKey = api_key, consumerSecret = api_secret, 
+requestURL = requestURL, accessURL = accessURL, authURL = authURL)
+my_oauth$handshake(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl"))
+save(my_oauth, file = "my_oauth.Rdata")
+load("my_oauth.Rdata")
+
+######### Prepare for twitteR
+setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
+
+```
+
+
