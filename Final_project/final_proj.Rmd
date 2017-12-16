@@ -44,10 +44,22 @@ save(my_oauth, file = "my_oauth.Rdata")
 load("my_oauth.Rdata")
 
 ######### Prepare for twitteR
-setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
+#setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
 
 ```
 
-#yeah
+```{r}
+load("my_oauth.Rdata")
+
+## capture tweets sent from New York City in Spanish only, and saving as an object in memory
+#tweets <- filterStream( file.name="nyc_tweet", language="en",
+ #                       locations=c(-125, 25, -66, 50), timeout=600, oauth=my_oauth )
+
+## capture tweets mentioning the "realDonaldTrump" hashtag or sent from United States
+  filterStream( file="Trump_tweet.json", track="realDonaldTrump",
+      locations=c(-74,40,-73,41), timeout=10, oauth=my_oauth )
+```
+
+
 
 
