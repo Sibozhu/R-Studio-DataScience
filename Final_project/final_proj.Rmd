@@ -94,19 +94,20 @@ tweets.df <- tweets.df[tweets.df$geo_enabled==TRUE,]     #filtering for goelocat
 
 
 write.csv(tweets.df,"cleaned_tweets_df.csv")     #writing cleaned data into CSV 
+```
 
-
+```{r}
 #filtering out three typical states that worth analyzing
 ca <- data.frame(filter(tweets.df, grepl(', CA', full_name)))
 nj <- data.frame(filter(tweets.df, grepl(', NJ', full_name)))
 ny <- data.frame(filter(tweets.df, grepl(', NY', full_name)))
 
 ###Plotting
-NJplot <- qmplot(place_lon, place_lat, data = nj, colour = I('purple'), size = I(1), 
+NJplot <- qmplot(place_lon, place_lat, data = nj, colour = I('purple'), size = I(3), alpha=I(0.4),
        mapcolor = "bw", main="New Jersey")     
-NYplot <- qmplot(place_lon, place_lat, data = ny, colour = I('red'), size = I(1),
+NYplot <- qmplot(place_lon, place_lat, data = ny, colour = I('darkred'), size = I(3), alpha=I(0.4),
        mapcolor = "bw", main="New York")
-CAplot <- qmplot(place_lon, place_lat, data = ca, colour = I('blue'), size = I(1), 
+CAplot <- qmplot(place_lon, place_lat, data = ca, colour = I('blue'), size = I(3), alpha=I(0.4),
        mapcolor = "bw",main="California")
 
 ###Plotting data within whole USA region
@@ -118,6 +119,9 @@ USAplot <- ggmap(USMap) +
 
 
 ```{r}
+NYplot
+NJplot
+CAplot
 USAplot
 #Analysis about states and USA plots goes here
 ```
