@@ -29,13 +29,13 @@ library(topicmodels)
 
 ```{r}
 # set up connection
-requestURL <- "https://api.twitter.com/oauth/request_token"
-accessURL <- "https://api.twitter.com/oauth/access_token"
-authURL <- "https://api.twitter.com/oauth/authorize"
-api_key             <- "dSzLRlqni1W2f9CJagS19RP6b"
-api_secret          <- "pLX7gIERogxsgn7AT2eEAQlhmxGKwEx9de5pjeOtjkQDDbVVCD"
-access_token        <- "3134023545-OZ9TIdXFbEFW66HmsCUo0EWGIANJ4SgS1OgdDO7"
-access_token_secret <- "kAzcVK0EMOhCFAs13Mau2Y8q2fCYHjvA5XXl7Rd0SCO1o"
+#requestURL <- "https://api.twitter.com/oauth/request_token"
+#accessURL <- "https://api.twitter.com/oauth/access_token"
+#authURL <- "https://api.twitter.com/oauth/authorize"
+#api_key             <- "dSzLRlqni1W2f9CJagS19RP6b"
+#api_secret          <- "pLX7gIERogxsgn7AT2eEAQlhmxGKwEx9de5pjeOtjkQDDbVVCD"
+#access_token        <- "3134023545-OZ9TIdXFbEFW66HmsCUo0EWGIANJ4SgS1OgdDO7"
+#access_token_secret <- "kAzcVK0EMOhCFAs13Mau2Y8q2fCYHjvA5XXl7Rd0SCO1o"
 ######### Prepare for streamR
 #my_oauth <- OAuthFactory$new(consumerKey = api_key, consumerSecret = api_secret, 
 #requestURL = requestURL, accessURL = accessURL, authURL = authURL)
@@ -43,32 +43,34 @@ access_token_secret <- "kAzcVK0EMOhCFAs13Mau2Y8q2fCYHjvA5XXl7Rd0SCO1o"
 #save(my_oauth, file = "my_oauth.Rdata")
 #load("my_oauth.Rdata")
 
-######### Prepare for twitteR
-setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
 
 ```
 
-<<<<<<< HEAD
 ```{r}
-#load("my_oauth.Rdata")
+#load("my_oauth.Rdata")     #Load my Oauth file save above to avoid authentication everytime running the code
 
-## capture tweets mentioning the "realDonaldTrump" hashtag or sent from United States
-#  filterStream( file="D_Tweet.json", track="realDonaldTrump",
-#      locations=c(-74,40,-73,41), timeout=7200, oauth=my_oauth )
+#  filterStream( file="D_Tweet.json", track="realDonaldTrump",  #naming the downloaded file as "D_Tweet.json", and hashtag with "realDonaldTrump"
+#      locations=c(-74,40,-73,41), timeout=7200, oauth=my_oauth )     #restrict tweets within United States area, capturing tweets within 2 hours
+
+###Since it would take 2 hours to complete the capturing, it's certainly meaningless to let this chunk run for each run; 
+###If you'd like to run the code yourself, you are welcome to uncomment the above lines and go for it;
+###Also, due to Github's regulation of file size restriction of 100MB maximum, I cannot upload my "D_Tweet.json", but all the
+### data in that json file will be cleaned and write into "cleaned_tweets_df.csv" later
 ```
 
 ```{r}
-tweets_raw.df <- parseTweets("DT_Tweet.json",verbose = FALSE)
+
+#tweets_raw.df <- parseTweets("DT_Tweet.json",verbose = FALSE)
 
 
-keep <- c("text","lang","listed_count","geo_enabled","statuses_count","followers_count",
-          "favourites_count","friends_count","time_zone","country_code","full_name",
-          "place_lat","place_lon")
+#keep <- c("text","lang","listed_count","geo_enabled","statuses_count","followers_count",
+#          "favourites_count","friends_count","time_zone","country_code","full_name",
+#          "place_lat","place_lon")
 
-tweets.df <- tweets_raw.df[,keep];
+#tweets.df <- tweets_raw.df[,keep];
 
 
-write.csv(tweets.df,"tweets_df.csv") 
+#write.csv(tweets.df,"tweets_df.csv") 
 
 ```
 
