@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 ```{r setup, include = FALSE}
-# prepare packages
+### prepare packages
 library(ROAuth)
 library(streamR)
 library(twitteR)
@@ -15,6 +15,10 @@ library(SnowballC)
 library(ggplot2)
 library(ggvis)
 library(ggmap)
+library(RgoogleMaps)
+library(devtools)
+library(maps)
+library(mapdata)
 library(grid) 
 library(dplyr)
 library(wordcloud)
@@ -28,7 +32,7 @@ library(topicmodels)
 
 
 ```{r}
-# setting up connections for Twitter 
+### setting up connections for Twitter 
 #requestURL <- "https://api.twitter.com/oauth/request_token"
 #accessURL <- "https://api.twitter.com/oauth/access_token"
 #authURL <- "https://api.twitter.com/oauth/authorize"
@@ -104,14 +108,17 @@ ny <- data.frame(filter(tweets.df, grepl(', NY', full_name)))
 ###Plotting
 NJplot <- qmplot(place_lon, place_lat, data = nj, colour = I('purple'), size = I(1), 
        mapcolor = "bw", main="New Jersey")     
-NYplot <- qmplot(place_lon, place_lat, data = ny, colour = I('orange'), size = I(1),
+NYplot <- qmplot(place_lon, place_lat, data = ny, colour = I('red'), size = I(1),
        mapcolor = "bw", main="New York")
 CAplot <- qmplot(place_lon, place_lat, data = ca, colour = I('blue'), size = I(1), 
        mapcolor = "bw",main="California")
-
+NJplot
 ###Plotting data within whole USA region
-USAplot <- qmplot(place_lon, place_lat, data = tweets.df, colour = I('red'), size = I(3), 
-       mapcolor = "bw",main="United States")
+USMap <- get_map (location = c(lon = -95.71289, lat = 37.09024), zoom=4, scale=2, maptype="roadmap", source="google",crop=TRUE)
+USAplot <- ggmap(USMap) +
+  geom_point(data = tweets.df, aes(x=tweets.df$place_lon,y=tweets.df$place_lat),alpha=0.4,color="red") +
+  ggtitle("US Map for the Total Dataset")
+USAplot
 ```
 
 
@@ -171,9 +178,12 @@ CACplot <- ggplot(ca_city_count,aes(reorder(rownames(ca_city_count),count),count
 
 USCplot <- ggplot(us_city_count,aes(reorder(rownames(us_city_count),count),count))+
   geom_bar(stat = "identity")+coord_flip()+xlab("City")+ggtitle("United States")
+
 #uscityplot
 
 ```
+
+
 ```{r}
 #Analysis about cities and USA tweets count goes here
 ```
