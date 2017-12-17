@@ -1,5 +1,5 @@
 ---
-title: "MA415 Final Project- Analysis of Tweets' Hashtag About President Trump"
+title: "MA415 Final Project- Analysis of Tweets About President Trump"
 author: "Sibo Zhu"
 date: "2017/12/15"
 output: pdf_document
@@ -7,8 +7,8 @@ output: pdf_document
 
 ##Introduction
 
-  I believe celebrities' work can be reflected by how people talk about them. As President Trump has inaugurated for already an whole year, how people discuss about him within their social media could express their current attitude towards President Trump, and the work he has done. 
-  By utilizing the Twitter api, with all the tweets contains hashtag about Trump and the geo location info, researches about regions that interested in President Trump and related analysis would also be useful.
+I believe celebrities' work can be reflected by how people talk about them. As President Trump has inaugurated for already an whole year, how people discuss about him within their social media could express their current attitude towards President Trump, and the work he has done.\par 
+By utilizing the Twitter api, with all the tweets contains hashtag about Trump and the geo location info, researches about regions that interested in President Trump and related analysis would also be useful.\par
 
 
 
@@ -208,6 +208,7 @@ cor(total_us[,c(3,5,6,7,8)])
 
 
 ```{r}
+
 model_fl <- lm(followers_count~listed_count,data=total_us)
 summary(model_fl)
 regplot <- ggplot(total_us,aes(x=listed_count,y=followers_count))+geom_point()+geom_smooth(method = "lm")
