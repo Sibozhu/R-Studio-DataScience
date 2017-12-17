@@ -30,6 +30,7 @@ library(grid)
 library(dplyr)
 library(wordcloud)
 library(plyr)
+library(shiny)
 library(stringr)
 library(dplyr)
 library(wordcloud)
@@ -40,15 +41,16 @@ library(topicmodels)
 
 ```{r}
 ### setting up connections for Twitter 
-#requestURL <- "https://api.twitter.com/oauth/request_token"
-#accessURL <- "https://api.twitter.com/oauth/access_token"
-#authURL <- "https://api.twitter.com/oauth/authorize"
-#api_key             <- "dSzLRlqni1W2f9CJagS19RP6b"
-#api_secret          <- "pLX7gIERogxsgn7AT2eEAQlhmxGKwEx9de5pjeOtjkQDDbVVCD"
-#access_token        <- "3134023545-OZ9TIdXFbEFW66HmsCUo0EWGIANJ4SgS1OgdDO7"
-#access_token_secret <- "kAzcVK0EMOhCFAs13Mau2Y8q2fCYHjvA5XXl7Rd0SCO1o"
+requestURL <- "https://api.twitter.com/oauth/request_token"
+accessURL <- "https://api.twitter.com/oauth/access_token"
+authURL <- "https://api.twitter.com/oauth/authorize"
+api_key             <- "dSzLRlqni1W2f9CJagS19RP6b"
+api_secret          <- "pLX7gIERogxsgn7AT2eEAQlhmxGKwEx9de5pjeOtjkQDDbVVCD"
+access_token        <- "3134023545-OZ9TIdXFbEFW66HmsCUo0EWGIANJ4SgS1OgdDO7"
+access_token_secret <- "kAzcVK0EMOhCFAs13Mau2Y8q2fCYHjvA5XXl7Rd0SCO1o"
 
-###Above codes are my personal Twitter App Keys, I shouldn't have include them in this project, 
+
+###Above codes are my personal Twitter App Keys, I shouldn't have included them in this project, 
 ###but I just did so for your convenience, so please don't use them to do bad things
 
 ### Setting up streamR
@@ -57,6 +59,7 @@ library(topicmodels)
 #requestURL = requestURL, accessURL = accessURL, authURL = authURL)
 #my_oauth$handshake(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl"))
 #save(my_oauth, file = "my_oauth.Rdata")      #Save my Oauth info for future convenience
+
 
 
 ```
@@ -110,11 +113,11 @@ nj <- data.frame(filter(tweets.df, grepl(', NJ', full_name)))
 ny <- data.frame(filter(tweets.df, grepl(', NY', full_name)))
 
 ###Plotting
-NJplot <- qmplot(place_lon, place_lat, data = nj, colour = I('purple'), size = I(3), alpha=I(0.4),
+NJplot <- qmplot(place_lon, place_lat, data = nj, colour = I('purple'), size = I(2), alpha=I(0.4),
        mapcolor = "bw", main="New Jersey")     
-NYplot <- qmplot(place_lon, place_lat, data = ny, colour = I('darkred'), size = I(3), alpha=I(0.4),
+NYplot <- qmplot(place_lon, place_lat, data = ny, colour = I('darkred'), size = I(2), alpha=I(0.4),
        mapcolor = "bw", main="New York")
-CAplot <- qmplot(place_lon, place_lat, data = ca, colour = I('blue'), size = I(3), alpha=I(0.4),
+CAplot <- qmplot(place_lon, place_lat, data = ca, colour = I('blue'), size = I(2), alpha=I(0.4),
        mapcolor = "bw",main="California")
 
 ###Plotting data within whole USA region
@@ -220,16 +223,16 @@ plot(model_fl,2)
 ```{r}
 #wordcloud
 
-tweets_sample.df <- total_us
-tweets_sample.df <- tweets_sample.df[tweets_sample.df$lang=="en",]
-tweets_sample.df <- tweets_sample.df[tweets_sample.df$geo_enabled==TRUE,]
-tweets_sample.df <- tweets_sample.df[tweets_sample.df$place_lat >25 & 
-                    tweets_sample.df$place_lat <50 & tweets_sample.df$place_lon > -125 & 
-                    tweets_sample.df$place_lon< -66,]
-tweets_sample.df$geo_enabled <- NULL
+total_us_word <- total_us
+total_us_word <- total_us_word[total_us_word$lang=="en",]
+total_us_word <- total_us_word[total_us_word$geo_enabled==TRUE,]
+total_us_word <- total_us_word[total_us_word$place_lat >25 & 
+                    total_us_word$place_lat <50 & total_us_word$place_lon > -125 & 
+                    total_us_word$place_lon< -66,]
+total_us_word$geo_enabled <- NULL
 
 # build a corpus, and specify the source to be character vectors
-myCorpus <- Corpus(VectorSource(tweets_sample.df$text))
+myCorpus <- Corpus(VectorSource(total_us_word$text))
 # remove anything other than English letters or space(!!!)
 removeNumPunct <- function(x) gsub("[^[:alpha:][:space:]]*", "", x)
 myCorpus <- tm_map(myCorpus, content_transformer(removeNumPunct))
@@ -245,34 +248,100 @@ myCorpus <- tm_map(myCorpus, removeWords, myStopwords)
 myCorpus <- tm_map(myCorpus, stripWhitespace)
 # remove punctuation
 myCorpus <- tm_map(myCorpus, removePunctuation)
-```
 
-```{r}
 # Build Term Document Matrix
 tdm <- TermDocumentMatrix(myCorpus, control = list(wordLengths = c(1, Inf)))
 term.freq <- rowSums(as.matrix(tdm))
-term.freq2 <- subset(term.freq, term.freq >= 200)
+term.freq2 <- subset(term.freq, term.freq >= 5)
 df <- data.frame(term = names(term.freq2), freq = term.freq2)
-par(mfrow=c(1,1))
-ggplot(df, aes(x=term, y=freq)) + geom_bar(stat="identity") + xlab("Terms") +
-  ylab("Count") + coord_flip() + theme(axis.text=element_text(size=7))
+m <- as.matrix(tdm)
+
 ```
 
 ```{r}
-m <- as.matrix(tdm)
 
 # calculate the frequency of words and sort it by frequency
 word.freq <- sort(rowSums(m), decreasing = T)
 
-# colors
-pal <- brewer.pal(8, "Dark2")
-
 # plot word cloud
-wordcloud(words = names(word.freq), freq = word.freq, min.freq = 800, 
-          random.order = F, colors = pal, max.words = 60)
+wordcloud(words = names(word.freq), 
+          freq = word.freq, 
+          max.words = 50,
+          min.freq = 3, 
+          scale = c(4.5, 1),
+          colors = brewer.pal(8, "Dark2"),
+          random.color = T,
+          random.order = F)
+
 
 #analysis of wordcloud goes here
 ```
+
+```{r}
+###Also, on the other hand, let's see President Trump his wordcloud analysis
+
+###Here I used a new Twitter Application Api keys for different purpose, I also shouldn't have included this but still I did so.
+
+api_key             <- "RE3jcprdcB3YwIXwcCG2rHPmj"
+api_secret          <- "rPeMG3nqOwDVKtXOuIsd4czCZjJd1eBh9BHqPWuUf8xBDaIY4j"
+access_token        <- "3134023545-cJbCbhXSeklrnVtEKU2yvv3bTI7APn93As93WiS"
+access_token_secret <- "glaUQunnz9e2QQT2gpKNgJHWtqKGRBK12JP9HtN44rCdT"
+setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
+
+user_id <- "@realDonaldTrump"
+trump_tweets_raw <- userTimeline(user_id, n = 3200)
+
+save(trump_tweets_raw, file = "trump_tweets_raw.Rdata")
+```
+
+```{r}
+load("trump_tweets_raw.Rdata")
+
+# remove retweets
+trump_tweets_df <- twListToDF(strip_retweets(trump_tweets_raw, strip_manual = TRUE, strip_mt = TRUE))
+
+# normalize data
+trump_tweets_df$text <- iconv(trump_tweets_df$text, 'latin1', 'ASCII', 'byte')
+
+Trump_Corpus <- Corpus(VectorSource(trump_tweets_df$text))      # build a corpus, and specify the source to be character vectors
+
+removeNumPunct <- function(x) gsub("[^[:alpha:][:space:]]*", "", x)     # remove anything other than English letters or space(!!!)
+Trump_Corpus <- tm_map(Trump_Corpus, content_transformer(removeNumPunct))
+
+Trump_Corpus <- tm_map(Trump_Corpus, stripWhitespace)     # remove extra whitespace
+
+Trump_Corpus <- tm_map(Trump_Corpus, content_transformer(tolower))      # convert to lower case
+
+myStopwords <- c(stopwords('english'),"use", "see", "used", "via", "amp","im")      # remove stopwords
+Trump_Corpus <- tm_map(Trump_Corpus, removeWords, myStopwords)
+
+rm_url   <- function(x) gsub("http[^[:space:]]*", "", x)      # remove urls
+Trump_Corpus <- tm_map(Trump_Corpus, content_transformer(rm_url))
+
+Trump_Corpus <- tm_map(Trump_Corpus, removePunctuation)     # remove punctuation
+
+
+
+# build term document matrix
+Trump_tdm <- TermDocumentMatrix(Trump_Corpus, control = list(wordLengths = c(1, Inf)))
+Trump_term.freq <- rowSums(as.matrix(Trump_tdm))
+Trump_term.freq <- subset(Trump_term.freq, Trump_term.freq >= 5)
+df <- data.frame(term = names(Trump_term.freq), freq = Trump_term.freq)
+Trump_m  <- as.matrix(Trump_tdm)
+
+# calculate the frequency of words and sort it by frequency
+Trump_word_freq <- sort(rowSums(Trump_m), decreasing = T)
+
+wordcloud(words = names(Trump_word_freq),
+          freq  = Trump_word_freq,
+          scale = c(4.5, 1),
+          max.words = 50,
+          min.freq = 3,
+          colors = brewer.pal(8, "Dark2"),
+          random.color = T,
+          random.order = F)
+```
+
 
 ```{r}
 # remove sparse terms
