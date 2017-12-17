@@ -37,29 +37,250 @@ api_secret          <- "pLX7gIERogxsgn7AT2eEAQlhmxGKwEx9de5pjeOtjkQDDbVVCD"
 access_token        <- "3134023545-OZ9TIdXFbEFW66HmsCUo0EWGIANJ4SgS1OgdDO7"
 access_token_secret <- "kAzcVK0EMOhCFAs13Mau2Y8q2fCYHjvA5XXl7Rd0SCO1o"
 ######### Prepare for streamR
-my_oauth <- OAuthFactory$new(consumerKey = api_key, consumerSecret = api_secret, 
-requestURL = requestURL, accessURL = accessURL, authURL = authURL)
-my_oauth$handshake(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl"))
-save(my_oauth, file = "my_oauth.Rdata")
-load("my_oauth.Rdata")
+#my_oauth <- OAuthFactory$new(consumerKey = api_key, consumerSecret = api_secret, 
+#requestURL = requestURL, accessURL = accessURL, authURL = authURL)
+#my_oauth$handshake(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl"))
+#save(my_oauth, file = "my_oauth.Rdata")
+#load("my_oauth.Rdata")
 
 ######### Prepare for twitteR
-#setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
+setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
 
+```
+
+<<<<<<< HEAD
+```{r}
+#load("my_oauth.Rdata")
+
+## capture tweets mentioning the "realDonaldTrump" hashtag or sent from United States
+#  filterStream( file="D_Tweet.json", track="realDonaldTrump",
+#      locations=c(-74,40,-73,41), timeout=7200, oauth=my_oauth )
 ```
 
 ```{r}
-load("my_oauth.Rdata")
+tweets_raw.df <- parseTweets("DT_Tweet.json",verbose = FALSE)
 
-## capture tweets sent from New York City in Spanish only, and saving as an object in memory
-#tweets <- filterStream( file.name="nyc_tweet", language="en",
- #                       locations=c(-125, 25, -66, 50), timeout=600, oauth=my_oauth )
 
-## capture tweets mentioning the "realDonaldTrump" hashtag or sent from United States
-  filterStream( file="Trump_tweet.json", track="realDonaldTrump",
-      locations=c(-74,40,-73,41), timeout=10, oauth=my_oauth )
+keep <- c("text","lang","listed_count","geo_enabled","statuses_count","followers_count",
+          "favourites_count","friends_count","time_zone","country_code","full_name",
+          "place_lat","place_lon")
+
+tweets.df <- tweets_raw.df[,keep];
+
+
+write.csv(tweets.df,"tweets_df.csv") 
+
+```
+
+```{r} 
+tweets.df <- tweets.df[tweets.df$lang=="en",]
+tweets.df <- tweets.df[tweets.df$country_code=="US",]
+tweets.df <- tweets.df[tweets.df$geo_enabled==TRUE,]
+tweets.df <- tweets.df[tweets.df$place_lat >25 & tweets.df$place_lat <50 & 
+                         tweets.df$place_lon > -125 & tweets.df$place_lon< -66,]
+
+write.csv(tweets.df,"cleaned_tweets_df.csv") 
+
+
+#filter with place
+ca <- data.frame(filter(tweets.df, grepl(', CA', full_name)))
+nj <- data.frame(filter(tweets.df, grepl(', NJ', full_name)))
+ny <- data.frame(filter(tweets.df, grepl(', NY', full_name)))
+fl <- data.frame(filter(tweets.df, grepl(', FL', full_name)))
+
+#write.csv(il,"il.csv") 
+
+
+```
+
+```{r, warning=FALSE,message=FALSE}
+NJplot <- qmplot(place_lon, place_lat, data = nj, colour = I('purple'), size = I(3), 
+       mapcolor = "bw", main="NJ")
+NYplot <- qmplot(place_lon, place_lat, data = ny, colour = I('green'), size = I(3),
+       mapcolor = "bw", main="NY")
+CAplot <- qmplot(place_lon, place_lat, data = ca, colour = I('blue'), size = I(3), 
+       mapcolor = "bw",main="CA")
+USAplot <- qmplot(place_lon, place_lat, data = tweets.df, colour = I('red'), size = I(3), 
+       mapcolor = "bw",main="United States")
+```
+```{r}
+#Analysis about states and USA plots goes here
 ```
 
 
+```{r}
+#add new variable state
+ny[,"state"] <- rep("NY",nrow(ny));
+nj[,"state"] <- rep("NJ",nrow(nj));
+ca[,"state"] <- rep("CA",nrow(ca));
+
+#get city name
+ny$full_name <- as.character(ny$full_name);
+nj$full_name <- as.character(nj$full_name);
+ca$full_name <- as.character(ca$full_name);
+tweets.df$full_name <- as.character(tweets.df$full_name);
 
 
+get_city <- function(x){
+  city_name <- c()
+  name <- strsplit(x$full_name,",")
+  for(i in 1:nrow(x)){
+    city_name <- c(city_name,name[[i]][1])
+  }
+  return(city_name)
+}
+
+
+# transform to factor
+ny[,"city"] <- factor(get_city(ny));
+nj[,"city"] <- factor(get_city(nj));
+ca[,"city"] <- factor(get_city(ca));
+tweets.df[,"city"] <- factor(get_city(tweets.df))
+
+
+#combine together
+total <- rbind(rbind(ny,nj),ca)
+total$lang <- as.character(total$lang)
+tweets.df$lang <- as.character(tweets.df$lang)
+total_us <- filter(tweets.df,lang=="en")
+total <- filter(total,lang=="en")
+```
+
+```{r}
+# tweet number for every city in state
+count <- summary(ny$city)[1:15];ny_city_count <- as.data.frame(count)
+count <- summary(nj$city)[1:15];nj_city_count <- as.data.frame(count)
+count <- summary(ca$city)[1:15];ca_city_count <- as.data.frame(count)
+count <- summary(tweets.df$city)[1:15];us_city_count <- as.data.frame(count)
+
+
+NYCplot <- ggplot(ny_city_count,aes(reorder(rownames(ny_city_count),count),count))+
+  geom_bar(stat = "identity")+coord_flip()+xlab("City")+ggtitle("NY")
+#nycityplot
+NJCyplot <- ggplot(nj_city_count,aes(reorder(rownames(nj_city_count),count),count))+
+  geom_bar(stat = "identity")+coord_flip()+xlab("City")+ggtitle("NJ")
+#njcityplot
+CACplot <- ggplot(ca_city_count,aes(reorder(rownames(ca_city_count),count),count))+
+  geom_bar(stat = "identity")+coord_flip()+xlab("City")+ggtitle("CA")
+#cacityplot
+#grid.arrange(nycityplot, njcityplot, cacityplot, ncol=3)
+
+USCplot <- ggplot(us_city_count,aes(reorder(rownames(us_city_count),count),count))+
+  geom_bar(stat = "identity")+coord_flip()+xlab("City")+ggtitle("United States")
+#uscityplot
+
+```
+```{r}
+#Analysis about cities and USA tweets count goes here
+```
+
+
+```{r}
+pairs(~listed_count+statuses_count+followers_count+favourites_count+friends_count, data=total_us)
+cor(total[,c(3,5,6,7,8)])
+```
+
+```{r}
+#pairs and correlations goes here
+```
+
+=======
+#yeah
+>>>>>>> parent of 8798408... update
+
+```{r}
+model_fl <- lm(followers_count~listed_count,data=total_us)
+summary(model_fl)
+regplot <- ggplot(total,aes(x=listed_count,y=followers_count))+geom_point()+geom_smooth(method = "lm")
+regplot
+#analysis of regression goes here
+par(mfrow=c(1,2))
+plot(model_fl,1)
+plot(model_fl,2)
+```
+
+
+```{r}
+#wordcloud
+
+tweets_sample.df <- total_us
+tweets_sample.df <- tweets_sample.df[tweets_sample.df$lang=="en",]
+tweets_sample.df <- tweets_sample.df[tweets_sample.df$geo_enabled==TRUE,]
+tweets_sample.df <- tweets_sample.df[tweets_sample.df$place_lat >25 & 
+                    tweets_sample.df$place_lat <50 & tweets_sample.df$place_lon > -125 & 
+                    tweets_sample.df$place_lon< -66,]
+tweets_sample.df$geo_enabled <- NULL
+
+# build a corpus, and specify the source to be character vectors
+myCorpus <- Corpus(VectorSource(tweets_sample.df$text))
+# remove anything other than English letters or space(!!!)
+removeNumPunct <- function(x) gsub("[^[:alpha:][:space:]]*", "", x)
+myCorpus <- tm_map(myCorpus, content_transformer(removeNumPunct))
+# convert to lower case
+myCorpus <- tm_map(myCorpus, content_transformer(tolower))
+# remove URLs
+removeURL <- function(x) gsub("http[^[:space:]]*", "", x)
+myCorpus <- tm_map(myCorpus, content_transformer(removeURL))
+# remove stopwords
+myStopwords <- c(stopwords('english'),"use", "see", "used", "via", "amp","im")
+myCorpus <- tm_map(myCorpus, removeWords, myStopwords)
+# remove extra whitespace
+myCorpus <- tm_map(myCorpus, stripWhitespace)
+# remove punctuation
+myCorpus <- tm_map(myCorpus, removePunctuation)
+```
+
+```{r}
+# Build Term Document Matrix
+tdm <- TermDocumentMatrix(myCorpus, control = list(wordLengths = c(1, Inf)))
+term.freq <- rowSums(as.matrix(tdm))
+term.freq2 <- subset(term.freq, term.freq >= 200)
+df <- data.frame(term = names(term.freq2), freq = term.freq2)
+par(mfrow=c(1,1))
+ggplot(df, aes(x=term, y=freq)) + geom_bar(stat="identity") + xlab("Terms") +
+  ylab("Count") + coord_flip() + theme(axis.text=element_text(size=7))
+```
+
+```{r}
+m <- as.matrix(tdm)
+
+# calculate the frequency of words and sort it by frequency
+word.freq <- sort(rowSums(m), decreasing = T)
+
+# colors
+pal <- brewer.pal(8, "Dark2")
+
+# plot word cloud
+wordcloud(words = names(word.freq), freq = word.freq, min.freq = 800, 
+          random.order = F, colors = pal, max.words = 60)
+
+#analysis of wordcloud goes here
+```
+
+```{r}
+# remove sparse terms
+tdm2 <- removeSparseTerms(tdm,sparse = 0.965)
+# showing the words that are left gor the analysis
+print(dimnames(tdm2)$Terms)
+m2 <- as.matrix(tdm2)
+m3 <- t(m2)   # transpose the matrix to cluster documents
+set.seed(122)   # set a fixed random seed
+k <- 6   # number of clusters
+kmeansResult <- kmeans(m3,k)
+round(kmeansResult$centers, digits = 3)   # cluster centers
+for(i in 1:k){
+  cat(paste("cluster ", i, ": ", sep = ""))
+  s <- sort(kmeansResult$centers[i,],decreasing = T)
+  cat(names(s)[1:5],"\n")
+  #print the tweet of every cluster
+}
+```
+
+```{r}
+# cluster terms
+distMatrix <- dist(scale(m2))
+fit <- hclust(distMatrix, method = "complete")
+# show cluster dendrogram 
+p <- plot(fit, xlab="")
+p <- rect.hclust(fit, k=6)
+```
