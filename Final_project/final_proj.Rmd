@@ -1,5 +1,5 @@
 ---
-title: "MA415 Final Project- "
+title: "MA415 Final Project- Analysis of Tweets' Hashtag About President Trump"
 author: "Sibo Zhu"
 date: "2017/12/15"
 output: pdf_document
@@ -92,7 +92,7 @@ tweets.df <- tweets.df[tweets.df$geo_enabled==TRUE,]     #filtering for goelocat
 write.csv(tweets.df,"cleaned_tweets_df.csv")     #writing cleaned data into CSV 
 
 
-#filtering out four typical states that worth analyzing
+#filtering out three typical states that worth analyzing
 ca <- data.frame(filter(tweets.df, grepl(', CA', full_name)))
 nj <- data.frame(filter(tweets.df, grepl(', NJ', full_name)))
 ny <- data.frame(filter(tweets.df, grepl(', NY', full_name)))
@@ -100,14 +100,16 @@ ny <- data.frame(filter(tweets.df, grepl(', NY', full_name)))
 
 ```
 
-```{r, warning=FALSE,message=FALSE}
+```{r}
+###Plotting
 NJplot <- qmplot(place_lon, place_lat, data = nj, colour = I('purple'), size = I(1), 
-       mapcolor = "bw", main="New Jersey")
+       mapcolor = "bw", main="New Jersey")     
 NYplot <- qmplot(place_lon, place_lat, data = ny, colour = I('orange'), size = I(1),
        mapcolor = "bw", main="New York")
 CAplot <- qmplot(place_lon, place_lat, data = ca, colour = I('blue'), size = I(1), 
        mapcolor = "bw",main="California")
 
+###Plotting data within whole USA region
 USAplot <- qmplot(place_lon, place_lat, data = tweets.df, colour = I('red'), size = I(3), 
        mapcolor = "bw",main="United States")
 ```
@@ -120,19 +122,19 @@ USAplot
 
 
 ```{r}
-#add new variable state
+###Adding a new variable named "state" for future usage
 ny[,"state"] <- rep("NY",nrow(ny));
 nj[,"state"] <- rep("NJ",nrow(nj));
 ca[,"state"] <- rep("CA",nrow(ca));
 
-#get city name
+###getting city's names
 ny$full_name <- as.character(ny$full_name);
 nj$full_name <- as.character(nj$full_name);
 ca$full_name <- as.character(ca$full_name);
 tweets.df$full_name <- as.character(tweets.df$full_name);
 
-
-get_city <- function(x){
+### helping function that used for capturing cities
+city_get <- function(x){
   city_name <- c()
   name <- strsplit(x$full_name,",")
   for(i in 1:nrow(x)){
@@ -141,27 +143,18 @@ get_city <- function(x){
   return(city_name)
 }
 
-
-# transform to factor
-ny[,"city"] <- factor(get_city(ny));
-nj[,"city"] <- factor(get_city(nj));
-ca[,"city"] <- factor(get_city(ca));
-tweets.df[,"city"] <- factor(get_city(tweets.df))
-
-
-#combine together
-total <- rbind(rbind(ny,nj),ca)
-total$lang <- as.character(total$lang)
-tweets.df$lang <- as.character(tweets.df$lang)
-total_us <- filter(tweets.df,lang=="en")
-total <- filter(total,lang=="en")
+ny[,"city"] <- factor(city_get(ny));
+nj[,"city"] <- factor(city_get(nj));
+ca[,"city"] <- factor(city_get(ca));
+tweets.df[,"city"] <- factor(city_get(tweets.df))
 ```
 
 ```{r}
-# tweet number for every city in state
+###Counting tweets for every city in each states
 count <- summary(ny$city)[1:15];ny_city_count <- as.data.frame(count)
 count <- summary(nj$city)[1:15];nj_city_count <- as.data.frame(count)
 count <- summary(ca$city)[1:15];ca_city_count <- as.data.frame(count)
+###Do the same thing towards whole United States region
 count <- summary(tweets.df$city)[1:15];us_city_count <- as.data.frame(count)
 
 
@@ -188,21 +181,18 @@ USCplot <- ggplot(us_city_count,aes(reorder(rownames(us_city_count),count),count
 
 ```{r}
 pairs(~listed_count+statuses_count+followers_count+favourites_count+friends_count, data=total_us)
-cor(total[,c(3,5,6,7,8)])
+cor(total_us[,c(3,5,6,7,8)])
 ```
 
 ```{r}
 #pairs and correlations goes here
 ```
 
-=======
-#yeah
->>>>>>> parent of 8798408... update
 
 ```{r}
 model_fl <- lm(followers_count~listed_count,data=total_us)
 summary(model_fl)
-regplot <- ggplot(total,aes(x=listed_count,y=followers_count))+geom_point()+geom_smooth(method = "lm")
+regplot <- ggplot(total_us,aes(x=listed_count,y=followers_count))+geom_point()+geom_smooth(method = "lm")
 regplot
 #analysis of regression goes here
 par(mfrow=c(1,2))
