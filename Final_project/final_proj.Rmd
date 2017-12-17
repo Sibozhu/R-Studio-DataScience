@@ -12,7 +12,7 @@ output: pdf_document
 
 
 
-```{r setup, include = FALSE}
+```{r setup, include = TRUE}
 ### prepare packages
 library(ROAuth)
 library(streamR)
@@ -41,13 +41,13 @@ library(topicmodels)
 
 ```{r}
 ### setting up connections for Twitter 
-requestURL <- "https://api.twitter.com/oauth/request_token"
-accessURL <- "https://api.twitter.com/oauth/access_token"
-authURL <- "https://api.twitter.com/oauth/authorize"
-api_key             <- "dSzLRlqni1W2f9CJagS19RP6b"
-api_secret          <- "pLX7gIERogxsgn7AT2eEAQlhmxGKwEx9de5pjeOtjkQDDbVVCD"
-access_token        <- "3134023545-OZ9TIdXFbEFW66HmsCUo0EWGIANJ4SgS1OgdDO7"
-access_token_secret <- "kAzcVK0EMOhCFAs13Mau2Y8q2fCYHjvA5XXl7Rd0SCO1o"
+#requestURL <- "https://api.twitter.com/oauth/request_token"
+#accessURL <- "https://api.twitter.com/oauth/access_token"
+#authURL <- "https://api.twitter.com/oauth/authorize"
+#api_key             <- "dSzLRlqni1W2f9CJagS19RP6b"
+#api_secret          <- "pLX7gIERogxsgn7AT2eEAQlhmxGKwEx9de5pjeOtjkQDDbVVCD"
+#access_token        <- "3134023545-OZ9TIdXFbEFW66HmsCUo0EWGIANJ4SgS1OgdDO7"
+#access_token_secret <- "kAzcVK0EMOhCFAs13Mau2Y8q2fCYHjvA5XXl7Rd0SCO1o"
 
 
 ###Above codes are my personal Twitter App Keys, I shouldn't have included them in this project, 
@@ -101,12 +101,10 @@ tweets.df <- tweets.df[tweets.df$lang=="en",]     #filtering for only English tw
 tweets.df <- tweets.df[tweets.df$country_code=="US",]     #filtering for US region tweets
 tweets.df <- tweets.df[tweets.df$geo_enabled==TRUE,]     #filtering for goelocations enabled tweets
 
-
-
 write.csv(tweets.df,"cleaned_tweets_df.csv")     #writing cleaned data into CSV 
 ```
 
-```{r}
+```{r,warning=FALSE,message=FALSE}
 #filtering out three typical states that worth analyzing
 ca <- data.frame(filter(tweets.df, grepl(', CA', full_name)))
 nj <- data.frame(filter(tweets.df, grepl(', NJ', full_name)))
@@ -163,6 +161,7 @@ ny[,"city"] <- factor(city_get(ny));
 nj[,"city"] <- factor(city_get(nj));
 ca[,"city"] <- factor(city_get(ca));
 tweets.df[,"city"] <- factor(city_get(tweets.df))
+total_us <- filter(tweets.df,lang=="en")
 ```
 
 ```{r}
@@ -282,16 +281,20 @@ wordcloud(words = names(word.freq),
 
 ###Here I used a new Twitter Application Api keys for different purpose, I also shouldn't have included this but still I did so.
 
-api_key             <- "RE3jcprdcB3YwIXwcCG2rHPmj"
-api_secret          <- "rPeMG3nqOwDVKtXOuIsd4czCZjJd1eBh9BHqPWuUf8xBDaIY4j"
-access_token        <- "3134023545-cJbCbhXSeklrnVtEKU2yvv3bTI7APn93As93WiS"
-access_token_secret <- "glaUQunnz9e2QQT2gpKNgJHWtqKGRBK12JP9HtN44rCdT"
-setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
+#api_key             <- "RE3jcprdcB3YwIXwcCG2rHPmj"
+#api_secret          <- "rPeMG3nqOwDVKtXOuIsd4czCZjJd1eBh9BHqPWuUf8xBDaIY4j"
+#access_token        <- "3134023545-cJbCbhXSeklrnVtEKU2yvv3bTI7APn93As93WiS"
+#access_token_secret <- "glaUQunnz9e2QQT2gpKNgJHWtqKGRBK12JP9HtN44rCdT"
+#setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
 
-user_id <- "@realDonaldTrump"
-trump_tweets_raw <- userTimeline(user_id, n = 3200)
+###I comment this chunk out for avoid unneccessary time when kniting the whole project, but you are welcome to 
+###uncomment them for running the code throughly. However, since I will store Trump's tweets later and load them in the next chunk,
+###There won't be any problem you just leave this chunk commented out.
 
-save(trump_tweets_raw, file = "trump_tweets_raw.Rdata")
+#user_id <- "@realDonaldTrump"
+#trump_tweets_raw <- userTimeline(user_id, n = 3200)
+
+#save(trump_tweets_raw, file = "trump_tweets_raw.Rdata")
 ```
 
 ```{r}
