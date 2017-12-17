@@ -1,5 +1,5 @@
 ---
-title: "Final_Proj"
+title: "MA415 Final Project- "
 author: "Sibo Zhu"
 date: "2017/12/15"
 output: pdf_document
@@ -28,7 +28,7 @@ library(topicmodels)
 
 
 ```{r}
-# set up connection
+# setting up connections for Twitter 
 #requestURL <- "https://api.twitter.com/oauth/request_token"
 #accessURL <- "https://api.twitter.com/oauth/access_token"
 #authURL <- "https://api.twitter.com/oauth/authorize"
@@ -36,12 +36,16 @@ library(topicmodels)
 #api_secret          <- "pLX7gIERogxsgn7AT2eEAQlhmxGKwEx9de5pjeOtjkQDDbVVCD"
 #access_token        <- "3134023545-OZ9TIdXFbEFW66HmsCUo0EWGIANJ4SgS1OgdDO7"
 #access_token_secret <- "kAzcVK0EMOhCFAs13Mau2Y8q2fCYHjvA5XXl7Rd0SCO1o"
-######### Prepare for streamR
+
+###Above codes are my personal Twitter App Keys, I shouldn't have include them in this project, 
+###but I just did so for your convenience, so please don't use them to do bad things
+
+### Setting up streamR
+
 #my_oauth <- OAuthFactory$new(consumerKey = api_key, consumerSecret = api_secret, 
 #requestURL = requestURL, accessURL = accessURL, authURL = authURL)
 #my_oauth$handshake(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl"))
-#save(my_oauth, file = "my_oauth.Rdata")
-#load("my_oauth.Rdata")
+#save(my_oauth, file = "my_oauth.Rdata")      #Save my Oauth info for future convenience
 
 
 ```
@@ -72,40 +76,45 @@ library(topicmodels)
 
 #write.csv(tweets.df,"tweets_df.csv") 
 
+#save(tweets.df, file = "tweets.df.Rdata")      #save data for future convenience
 ```
 
-```{r} 
-tweets.df <- tweets.df[tweets.df$lang=="en",]
-tweets.df <- tweets.df[tweets.df$country_code=="US",]
-tweets.df <- tweets.df[tweets.df$geo_enabled==TRUE,]
-tweets.df <- tweets.df[tweets.df$place_lat >25 & tweets.df$place_lat <50 & 
-                         tweets.df$place_lon > -125 & tweets.df$place_lon< -66,]
+```{r}
 
-write.csv(tweets.df,"cleaned_tweets_df.csv") 
+load("tweets.df.Rdata")      #load data
+
+tweets.df <- tweets.df[tweets.df$lang=="en",]     #filtering for only English tweets
+tweets.df <- tweets.df[tweets.df$country_code=="US",]     #filtering for US region tweets
+tweets.df <- tweets.df[tweets.df$geo_enabled==TRUE,]     #filtering for goelocations enabled tweets
 
 
-#filter with place
+
+write.csv(tweets.df,"cleaned_tweets_df.csv")     #writing cleaned data into CSV 
+
+
+#filtering out four typical states that worth analyzing
 ca <- data.frame(filter(tweets.df, grepl(', CA', full_name)))
 nj <- data.frame(filter(tweets.df, grepl(', NJ', full_name)))
 ny <- data.frame(filter(tweets.df, grepl(', NY', full_name)))
-fl <- data.frame(filter(tweets.df, grepl(', FL', full_name)))
-
-#write.csv(il,"il.csv") 
 
 
 ```
 
 ```{r, warning=FALSE,message=FALSE}
-NJplot <- qmplot(place_lon, place_lat, data = nj, colour = I('purple'), size = I(3), 
-       mapcolor = "bw", main="NJ")
-NYplot <- qmplot(place_lon, place_lat, data = ny, colour = I('green'), size = I(3),
-       mapcolor = "bw", main="NY")
-CAplot <- qmplot(place_lon, place_lat, data = ca, colour = I('blue'), size = I(3), 
-       mapcolor = "bw",main="CA")
+NJplot <- qmplot(place_lon, place_lat, data = nj, colour = I('purple'), size = I(1), 
+       mapcolor = "bw", main="New Jersey")
+NYplot <- qmplot(place_lon, place_lat, data = ny, colour = I('orange'), size = I(1),
+       mapcolor = "bw", main="New York")
+CAplot <- qmplot(place_lon, place_lat, data = ca, colour = I('blue'), size = I(1), 
+       mapcolor = "bw",main="California")
+
 USAplot <- qmplot(place_lon, place_lat, data = tweets.df, colour = I('red'), size = I(3), 
        mapcolor = "bw",main="United States")
 ```
+
+
 ```{r}
+USAplot
 #Analysis about states and USA plots goes here
 ```
 
