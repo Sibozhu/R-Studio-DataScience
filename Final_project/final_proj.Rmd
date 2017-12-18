@@ -1,5 +1,5 @@
 ---
-title: "MA415 Final Project- Tweets' Analysis of President Trump"
+title: "MA415 Final Project - Tweets that Mentioning President Trump"
 author: "Sibo Zhu"
 date: "2017/12/15"
 output: pdf_document
@@ -12,7 +12,7 @@ By utilizing the Twitter api, with all the tweets contains hashtag about Trump a
 
 
 
-```{r setup, include = TRUE}
+```{r setup, include = FALSE}
 ### prepare packages
 library(ROAuth)
 library(streamR)
