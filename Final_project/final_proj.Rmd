@@ -1,5 +1,5 @@
 ---
-title: "MA415 Final Project- Analysis of Tweets About President Trump"
+title: "MA415 Final Project- Tweets' Analysis of President Trump"
 author: "Sibo Zhu"
 date: "2017/12/15"
 output: pdf_document
@@ -122,7 +122,7 @@ CAplot <- qmplot(place_lon, place_lat, data = ca, colour = I('blue'), size = I(2
 USMap <- get_map (location = c(lon = -95.71289, lat = 37.09024), zoom=4, scale=2, maptype="roadmap", source="google",crop=TRUE)
 USAplot <- ggmap(USMap) +
   geom_point(data = tweets.df, aes(x=tweets.df$place_lon,y=tweets.df$place_lat),alpha=0.4,color="red") +
-  ggtitle("US Map for the Total Dataset")
+  ggtitle("US Map for the whole dataset")
 ```
 
 
@@ -198,8 +198,8 @@ USCplot <- ggplot(us_city_count,aes(reorder(rownames(us_city_count),count),count
 
 
 ```{r}
-pairs(~listed_count+statuses_count+followers_count+favourites_count+friends_count, data=total_us)
-cor(total_us[,c(3,5,6,7,8)])
+pairs(~listed_count+statuses_count+followers_count+favourites_count+friends_count, data=total_us)     #utilizing particular value for analysis
+cor(total_us[,c(3,5,6,7,8)])      #analyzing correlations
 ```
 
 ```{r}
@@ -208,7 +208,7 @@ cor(total_us[,c(3,5,6,7,8)])
 
 
 ```{r}
-
+###plotting linear regression for the dataset
 model_fl <- lm(followers_count~listed_count,data=total_us)
 summary(model_fl)
 regplot <- ggplot(total_us,aes(x=listed_count,y=followers_count))+geom_point()+geom_smooth(method = "lm")
@@ -223,12 +223,12 @@ plot(model_fl,2)
 ```{r}
 #wordcloud
 
-total_us_word <- total_us
-total_us_word <- total_us_word[total_us_word$lang=="en",]
-total_us_word <- total_us_word[total_us_word$geo_enabled==TRUE,]
+total_us_word <- total_us     #import data
+total_us_word <- total_us_word[total_us_word$lang=="en",]     #filter out only the english data
+total_us_word <- total_us_word[total_us_word$geo_enabled==TRUE,]     #filter out data with geocode enabled
 total_us_word <- total_us_word[total_us_word$place_lat >25 & 
                     total_us_word$place_lat <50 & total_us_word$place_lon > -125 & 
-                    total_us_word$place_lon< -66,]
+                    total_us_word$place_lon< -66,]     #filter out extreme value 
 total_us_word$geo_enabled <- NULL
 
 # build a corpus, and specify the source to be character vectors
@@ -299,13 +299,11 @@ wordcloud(words = names(word.freq),
 ```
 
 ```{r}
-load("trump_tweets_raw.Rdata")
+load("trump_tweets_raw.Rdata")     #loading captured data that stored before
 
-# remove retweets
-trump_tweets_df <- twListToDF(strip_retweets(trump_tweets_raw, strip_manual = TRUE, strip_mt = TRUE))
+trump_tweets_df <- twListToDF(strip_retweets(trump_tweets_raw, strip_manual = TRUE, strip_mt = TRUE))     # remove retweets
 
-# normalize data
-trump_tweets_df$text <- iconv(trump_tweets_df$text, 'latin1', 'ASCII', 'byte')
+trump_tweets_df$text <- iconv(trump_tweets_df$text, 'latin1', 'ASCII', 'byte')      # normalize data
 
 Trump_Corpus <- Corpus(VectorSource(trump_tweets_df$text))      # build a corpus, and specify the source to be character vectors
 
@@ -323,8 +321,6 @@ rm_url   <- function(x) gsub("http[^[:space:]]*", "", x)      # remove urls
 Trump_Corpus <- tm_map(Trump_Corpus, content_transformer(rm_url))
 
 Trump_Corpus <- tm_map(Trump_Corpus, removePunctuation)     # remove punctuation
-
-
 
 # build term document matrix
 Trump_tdm <- TermDocumentMatrix(Trump_Corpus, control = list(wordLengths = c(1, Inf)))
@@ -348,15 +344,13 @@ wordcloud(words = names(Trump_word_freq),
 
 
 ```{r}
-# remove sparse terms
-tdm2 <- removeSparseTerms(tdm,sparse = 0.965)
-# showing the words that are left gor the analysis
-print(dimnames(tdm2)$Terms)
-m2 <- as.matrix(tdm2)
-m3 <- t(m2)   # transpose the matrix to cluster documents
-set.seed(122)   # set a fixed random seed
-k <- 6   # number of clusters
-kmeansResult <- kmeans(m3,k)
+clst <- removeSparseTerms(tdm,sparse = 0.965)     # removing sparse terms
+print(dimnames(clst)$Terms)
+clst2 <- as.matrix(clst)
+clst3 <- t(clst2)   # transpose matrix to cluster documents
+set.seed(122)   # setting seed
+k <- 6   # k value
+kmeansResult <- kmeans(clst3,k)
 round(kmeansResult$centers, digits = 3)   # cluster centers
 for(i in 1:k){
   cat(paste("cluster ", i, ": ", sep = ""))
@@ -367,10 +361,11 @@ for(i in 1:k){
 ```
 
 ```{r}
-# cluster terms
-distMatrix <- dist(scale(m2))
-fit <- hclust(distMatrix, method = "complete")
-# show cluster dendrogram 
-p <- plot(fit, xlab="")
+distMatrix <- dist(scale(clst2))      # cluster terms
+fit <- hclust(distMatrix, 
+              method = "complete"
+              )
+
+p <- plot(fit, xlab="")     # show cluster dendrogram 
 p <- rect.hclust(fit, k=6)
 ```
