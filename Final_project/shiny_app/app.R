@@ -8,9 +8,6 @@
 #
 
 library(shiny)
-library(dplyr)
-library(leaflet)
-library(memoise)
 
 ui <- navbarPage(
   title = "Tweets that Mentioning President Trump",
