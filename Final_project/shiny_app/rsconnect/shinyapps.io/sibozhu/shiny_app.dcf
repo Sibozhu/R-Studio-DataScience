@@ -1,0 +1,10 @@
+name: shiny_app
+title:
+username:
+account: sibozhu
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 250073
+bundleId: 1141874
+url: https://sibozhu.shinyapps.io/shiny_app/
+when: 1513644837.13282
