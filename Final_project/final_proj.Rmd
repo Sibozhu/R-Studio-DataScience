@@ -2,15 +2,18 @@
 title: "MA415 Final Project - Tweets that Mentioning President Trump"
 author: "Sibo Zhu"
 date: "2017/12/15"
-output: pdf_document
+output: 
+  html_document: default
+  pdf_document: default
 ---
 
-##Introduction
+##1 Introduction
 
-I believe celebrities' work can be reflected by how people talk about them. As President Trump has inaugurated for already an whole year, how people discuss about him within their social media could express their current attitude towards President Trump, and the work he has done.\par 
-By utilizing the Twitter api, with all the tweets contains hashtag about Trump and the geo location info, researches about regions that interested in President Trump and related analysis would also be useful.\par
+\indent President Donald John Trump, as inaugurated for an how year already, are always included in people's topic. I believe politics' work can be reflected by how people talk about them. Therefore I believe how people discuss him via their social media could express their current attitudes towards President Trump, and the work he has done.\par 
 
+###1.1 Data Description
 
+\indent By utilizing the Twitter API, with all the tweets contains hashtag about Trump and the geolocation info, I captured over two 200,000 tweets in 2 hours within the United States region that mention president Trump. In the latter part of this project, I'm going to analyze and research on word frequencies of all these tweets that I've captured, comparing them among different locations, and trying to find some underlying relations of the data.\par
 
 ```{r setup, include = FALSE}
 ### prepare packages
@@ -68,7 +71,7 @@ library(topicmodels)
 #load("my_oauth.Rdata")     #Load my Oauth file save above to avoid authentication everytime running the code
 
 #  filterStream( file="D_Tweet.json", track="realDonaldTrump",  #naming the downloaded file as "D_Tweet.json", and hashtag with "realDonaldTrump"
-#      locations=c(-74,40,-73,41), timeout=7200, oauth=my_oauth )     #restrict tweets within United States area, capturing tweets within 2 hours
+#      locations=c(-125, 25, -66, 50), timeout=7200, oauth=my_oauth )     #restrict tweets within United States area, capturing tweets within 2 hours
 
 ###Since it would take 2 hours to complete the capturing, it's certainly meaningless to let this chunk run for each run; 
 ###If you'd like to run the code yourself, you are welcome to uncomment the above lines and go for it;
@@ -76,6 +79,13 @@ library(topicmodels)
 ### data in that json file will be cleaned and write into "cleaned_tweets_df.csv" later
 ```
 
+In the above codes I'm capturing tweets that mentioning "realDonaldTrump" (President Trump's Twitter Account) within the United States "(-125, 25, -66, 50)" region for 2 hours (7200 seconds). Turns out I captured over 200,000 tweets, which is a very big number.\par
+
+##2 Data Cleaning 
+
+Later I'm doing data cleaning, including filtering for language, geolocation enabled or not and three typical states (CA, NJ, NY).\par
+
+Then I'm doing plots in these three states with tweets that contain geolocations and analysis the results based on the plots.\par
 ```{r}
 
 #tweets_raw.df <- parseTweets("DT_Tweet.json",verbose = FALSE)
@@ -104,6 +114,8 @@ tweets.df <- tweets.df[tweets.df$geo_enabled==TRUE,]     #filtering for goelocat
 write.csv(tweets.df,"cleaned_tweets_df.csv")     #writing cleaned data into CSV 
 ```
 
+##3 Geolocation Analysis
+
 ```{r,warning=FALSE,message=FALSE}
 #filtering out three typical states that worth analyzing
 ca <- data.frame(filter(tweets.df, grepl(', CA', full_name)))
@@ -127,11 +139,11 @@ USAplot <- ggmap(USMap) +
 
 
 ```{r}
+USAplot
+###From the above plot I can clearly see that most tweets about President Trump come from major cities of east coast and west coast areas. By looking at the following pictures I can confirm that major cities of each state contribute the most in tweets' states.
 NYplot
 NJplot
 CAplot
-USAplot
-#Analysis about states and USA plots goes here
 ```
 
 
@@ -191,20 +203,27 @@ USCplot <- ggplot(us_city_count,aes(reorder(rownames(us_city_count),count),count
 
 ```
 
-
+In below I plot TOP15 cities of the number of tweets in three states and in the aspect of whole the United States. Not surprisingly, in NY and CA, most tweets are posted in Manhattan and Los Angeles, and the sum of remaining nine cities is just equal to this super city. In NJ, most cities the similar amount of tweets. By that analysis, I can tell it's still the biggest cities care about President Trump more.\par
 ```{r}
+NYCplot
+NJCyplot
+CACplot
+USCplot
 #Analysis about cities and USA tweets count goes here
 ```
 
+##4 Popularity Study
 
 ```{r}
 pairs(~listed_count+statuses_count+followers_count+favourites_count+friends_count, data=total_us)     #utilizing particular value for analysis
 cor(total_us[,c(3,5,6,7,8)])      #analyzing correlations
 ```
 
-```{r}
-#pairs and correlations goes here
-```
+The number of followers has always been considered as a decent indication of a Twitter account's popularity. Though it's not so hard to have a big amount of followers, it shows people's attitude towards their social media's reputation. I believe there could have some correlations between accounts with large number of followers and the number of their tweets about President Trump.\par
+
+In above the matrix plot shows the relationship among listed count, statuses count, followers count, favourites count and friends count. From the output, I can see there's slight linear relation between followers count and listed count and statuses count also have slight linear relation with friends count.\par
+
+Therefore I believe a linear regression between followers count and listed count would be useful and good looking at my analysis.\par
 
 
 ```{r}
@@ -219,6 +238,13 @@ plot(model_fl,1)
 plot(model_fl,2)
 ```
 
+The model is not very good with two significant variables and the R-squared is 0.1275, which means there are not so much connection between listed count and the number of followers. Also Residuals vs Fitted plot and Normal Q-Q plot are not good, indicating that there are heteroskedasticity and unlinear problems in the model.\par
+
+##5 Text Study
+
+By utilizing the word cloud interface, I'm introducing all my tweets toward word clouds and conduct text mining on them.\par
+
+First of all, since there are too many meaningless words in my data, I need to clean these distracting words by building a corpus and specify the certain filters to get the best-cleaned data for word clouding.\par
 
 ```{r}
 #wordcloud
@@ -258,6 +284,7 @@ m <- as.matrix(tdm)
 
 ```
 
+
 ```{r}
 
 # calculate the frequency of words and sort it by frequency
@@ -277,8 +304,10 @@ wordcloud(words = names(word.freq),
 #analysis of wordcloud goes here
 ```
 
+Also, on the other hand, let's see President Trump his word cloud analysis. Since I don't have President Trump's previous tweets, I decide to do use Twitter API again and then capture his past 3000 tweets as my new dataset.\par
+
+
 ```{r}
-###Also, on the other hand, let's see President Trump his wordcloud analysis
 
 ###Here I used a new Twitter Application Api keys for different purpose, I also shouldn't have included this but still I did so.
 
@@ -341,31 +370,20 @@ wordcloud(words = names(Trump_word_freq),
           random.color = T,
           random.order = F)
 ```
+Surprisingly, we can easily find some similar words and attitudes in both tweets mentioning President Trump and President Trump's own tweets, such as "job","hiring","working" those words that are related employment. I believe this somehow reflects that President Trump's new policy and work towards jobs are causing people talking about it and there might still have problem with the rate of unemployment.\par
+
+##6 Shiny Application
+For the Shiny application, I created a navbar with all the graphs that I created earlier in different tabs, including Maps, statistic plots, and word cloud comparison. Descriptions of each graph are also included\par
+
+All shiny codes are included in the folder called "shiny_app".\par
+
+Shiny application are available through here: https://sibozhu.shinyapps.io/shiny_app/ \par
+
+##7 Conclusion
+
+In this analysis of Tweets mentioning President Trump, I captured a large number of tweets and researched in the density of those tweets that are posted in different states and cities, making plots to compared in different situations. Also, I tried to find the relations among followers count, listed count and friends count, which could represent its popularity and reputation among social media, to check their words influence toward topics about President Trump. Finally, I plotted the most frequent words in my tweets data with their word cloud and comparing it with President Trump's own word cloud.\par
 
 
-```{r}
-clst <- removeSparseTerms(tdm,sparse = 0.965)     # removing sparse terms
-print(dimnames(clst)$Terms)
-clst2 <- as.matrix(clst)
-clst3 <- t(clst2)   # transpose matrix to cluster documents
-set.seed(122)   # setting seed
-k <- 6   # k value
-kmeansResult <- kmeans(clst3,k)
-round(kmeansResult$centers, digits = 3)   # cluster centers
-for(i in 1:k){
-  cat(paste("cluster ", i, ": ", sep = ""))
-  s <- sort(kmeansResult$centers[i,],decreasing = T)
-  cat(names(s)[1:5],"\n")
-  #print the tweet of every cluster
-}
-```
 
-```{r}
-distMatrix <- dist(scale(clst2))      # cluster terms
-fit <- hclust(distMatrix, 
-              method = "complete"
-              )
 
-p <- plot(fit, xlab="")     # show cluster dendrogram 
-p <- rect.hclust(fit, k=6)
-```
+

@@ -5,6 +5,6 @@ account: sibozhu
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 250073
-bundleId: 1141874
+bundleId: 1141976
 url: https://sibozhu.shinyapps.io/shiny_app/
-when: 1513644837.13282
+when: 1513651131.61925
